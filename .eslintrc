@@ -12,6 +12,8 @@
     "rules": {
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/jsx-boolean-value": "off",
+         "jsx-a11y/href-no-hash": "off",
+         "jsx-a11y/anchor-is-valid": ["warn", { "aspects": ["invalidHref"] }],
         "react/no-array-index-key": "off",
         "jsx-a11y/img-redundant-alt": "off",
         "react/forbid-prop-types": "off",
@@ -45,7 +47,5 @@
     },
     "env": {
     "jest": true
-    },
-    "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
-    "arrow-body-style": ["error", "as-needed"]
+    }
 }
