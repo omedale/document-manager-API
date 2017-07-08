@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true,
       }
     },
+    usertype: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -40,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (models) => {
     User.hasMany(models.Document, {
       foreignKey: 'userId',
-      as: 'documents',
+      as: 'myDocuments',
     });
   };
   return User;
