@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Initialize localstorage
-if (typeof localStorage === "undefined" || localStorage === null) {
+if (typeof localStorage === 'undefined' || localStorage === null) {
   localStorage = new LocalStorage('./scratch');
 }
 // verifies all routes that starts with users

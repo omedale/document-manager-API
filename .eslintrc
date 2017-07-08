@@ -11,6 +11,8 @@
   },
     "rules": {
         "no-else-return": "off",
+        "arrow-body-style": "off",
+        "no-lonely-if": "off",
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/jsx-boolean-value": "off",
          "jsx-a11y/href-no-hash": "off",

@@ -5,7 +5,7 @@ module.exports = (app, passport) => {
     message: 'API home route',
   }));
   app.use(passport.initialize());
-  
+
   app.post('/users/auth/register', usersController.signUp);
   app.post('/users/auth/login', usersController.signIn);
   app.get('/users/test', usersController.test);
