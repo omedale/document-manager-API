@@ -2,6 +2,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -37,8 +38,17 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
   };
 
-  User.prototype.validatePassword = (password, hashPassword) => {
-    return bcrypt.compareSync(password, hashPassword);
+  User.prototype.validatePassword = (password, savedPassword) => {
+    return bcrypt.compareSync(password, savedPassword);
+  };
+
+  User.prototype.generateJWT = (id, email, name) => {
+    return jwt.sign({
+      id,
+      email,
+      name,
+      exp: Math.floor(Date.now() / 1000) + (60 * 60),
+    }, 'omedale');
   };
 
   User.associate = (models) => {
