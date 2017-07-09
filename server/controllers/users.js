@@ -156,3 +156,39 @@ module.exports.deleteUser = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
+module.exports.findUserDocument = (req, res) => {
+  return Document
+    .findAll({
+      where: {
+        userId: req.params.userId,
+      }
+    })
+    .then((documents) => {
+      console.log(documents);
+      if (documents.length === 0) {
+        return res.status(404).send({
+          message: 'No document Found',
+        });
+      }
+      return res.status(200).send(documents);
+    })
+    .catch(error => res.status(400).send(error));
+};
+
+module.exports.searchUser = (req, res) => {
+  return User
+    .find({
+      where: {
+        name: req.query.q
+      }
+    })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: 'User Not Found',
+        });
+      }
+      return res.status(200).send(user);
+    })
+    .catch(error => res.status(400).send(error));
+};
