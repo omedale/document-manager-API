@@ -10,4 +10,7 @@ module.exports = (app, passport) => {
   app.post('/users/auth/login', usersController.signIn);
   app.get('/users/test', usersController.test);
   app.get('/users', usersController.listUsers);
+  app.put('/users/:userId', usersController.updateUser);
+  app.get('/users/:userId', usersController.findUser);
+  app.delete('/users/:userId', usersController.deleteUser);
 };
