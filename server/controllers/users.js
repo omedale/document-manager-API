@@ -2,13 +2,13 @@ const User = require('../models').User;
 const Document = require('../models').Document;
 
 module.exports.signUp = (req, res) => {
-  User.findAll({
+  User.find({
     where: {
       email: req.body.email
     }
   })
     .then((response) => {
-      if (response.length === 0) {
+      if (!response) {
         const user = new User();
         return User
           .create({
@@ -37,26 +37,26 @@ module.exports.signUp = (req, res) => {
 };
 
 module.exports.signIn = (req, res) => {
-  User.findAll({
+  User.find({
     where: {
       email: req.body.email
     }
   })
     .then((response) => {
       const user = new User();
-      if (response.length === 0) {
+      if (!response.dataValues) {
         return res.json({
           message: 'Not an existing user, Please sign up'
         });
       } else {
-        if (user.validatePassword(req.body.password, response[0].dataValues.password) === false) {
+        if (user.validatePassword(req.body.password, response.dataValues.password) === false) {
           return res.json({
             message: 'Invalid Password'
           });
         }
       }
-      req.logIn(response[0].dataValues, () => {
-        const token = user.generateJWT(response[0].dataValues.id, response[0].dataValues.email, response[0].dataValues.name);
+      req.logIn(response.dataValues, () => {
+        const token = user.generateJWT(response.dataValues.id, response.dataValues.email, response.dataValues.name);
         localStorage.setItem('JSONWT', token);
         // return the token as JSON
         return res.status(200).json({ message: 'successful-login', token });
@@ -81,4 +81,78 @@ module.exports.test = (req, res) => {
   return res.json({
     message: 'Jesus'
   });
+};
+
+module.exports.updateUser = (req, res) => {
+  if (req.body.email) {
+    return User.find({
+      where: {
+        email: req.body.email
+      }
+    })
+    .then((response) => {
+      if (response) {
+        return res.json({
+          message: 'Email Already Exist'
+        });
+      } else {
+        return User
+        .findById(req.params.userId, {
+          include: [{
+            model: Document,
+            as: 'myDocuments',
+          }],
+        })
+        .then((user) => {
+          if (!user) {
+            return res.status(404).send({
+              message: 'User Not Found',
+            });
+          }
+          return user
+            .update(req.body, { fields: Object.keys(req.body) })
+            .then(() => res.status(200).send(user))
+            .catch(error => res.status(400).send(error));
+        })
+        .catch(error => res.status(400).send(error));
+      }
+    })
+    .catch(error => res.status(400).send(error));
+  }
+};
+
+module.exports.findUser = (req, res) => {
+  return User
+    .findById(req.params.userId, {
+      include: [{
+        model: Document,
+        as: 'myDocuments',
+      }],
+    })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: 'User Not Found',
+        });
+      }
+      return res.status(200).send(user);
+    })
+    .catch(error => res.status(400).send(error));
+};
+
+module.exports.deleteUser = (req, res) => {
+  return User
+    .findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(400).send({
+          message: 'User Not Found',
+        });
+      }
+      return user
+        .destroy()
+        .then(() => res.status(200).send({ message: 'User deleted successfully.' }))
+        .catch(error => res.status(400).send(error));
+    })
+    .catch(error => res.status(400).send(error));
 };

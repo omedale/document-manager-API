@@ -14,7 +14,7 @@ exports.verifyToken = (req, res, next) => {
     jwt.verify(token, secret, (error, decoded) => {
       if (error) {
         return res.json({
-          message: 'Token not valid'
+          message: 'Token not valid Please login'
         });
       }
       // request user detail for other routes
