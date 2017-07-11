@@ -1,4 +1,5 @@
 const usersController = require('./controllers/users');
+const documentController = require('./controllers/documents');
 
 module.exports = (app, passport) => {
   app.get('/api', (req, res) => res.status(200).send({
@@ -13,4 +14,15 @@ module.exports = (app, passport) => {
   app.put('/users/:userId', usersController.updateUser);
   app.get('/users/:userId', usersController.findUser);
   app.delete('/users/:userId', usersController.deleteUser);
+  app.get('/users/:userId/documents', usersController.findUserDocument);
+  app.get('/search/users/', usersController.searchUser);
+
+  app.post(
+    '/documents', documentController.createDocument);
+  app.put(
+    '/documents/:documentId', documentController.updateDocument);
+  app.get('/documents', documentController.listDocuments);
+  app.get('/documents/:documentId', documentController.findDocument);
+  app.delete('/documents/:documentId', documentController.deleteDocument);
+  app.get('/search/documents/', documentController.searchDocument);
 };
