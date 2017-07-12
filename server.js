@@ -29,4 +29,7 @@ app.get('*', (req, res) => res.status(200).send({
 
 const server = http.createServer(app);
 server.listen(port);
+
+module.exports = app;
+
 console.log('We are using port', port);

@@ -97,3 +97,21 @@ module.exports.searchDocument = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
+
+module.exports.getPublicDocument = (req, res) => {
+  return Document
+    .findAll({
+      where: {
+        access: req.params.access
+      }
+    })
+    .then((document) => {
+      if (!document) {
+        return res.status(404).send({
+          message: 'No Document Found',
+        });
+      }
+      return res.status(200).send(document);
+    })
+    .catch(error => res.status(400).send(error));
+};
