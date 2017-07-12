@@ -16,6 +16,7 @@ module.exports = (app, passport) => {
   app.delete('/users/:userId', usersController.deleteUser);
   app.get('/users/:userId/documents', usersController.findUserDocument);
   app.get('/search/users/', usersController.searchUser);
+  app.get('/users/page/:pageNo', usersController.getUserPage);
 
   app.post(
     '/documents', documentController.createDocument);
