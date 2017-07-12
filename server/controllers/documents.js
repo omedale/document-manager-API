@@ -115,3 +115,38 @@ module.exports.getPublicDocument = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
+
+module.exports.getDocumentPage = (req, res) => {
+  const newPageInfo = req.params.pageNo.split('-').map((val) => {
+    return val;
+  });
+  if (!newPageInfo[1]) {
+    return res.json({
+      message: 'No Page number'
+    });
+  }
+  if (!Number.isInteger(Number(newPageInfo[1]))) {
+    return res.json({
+      message: 'Invalid request'
+    });
+  }
+  const page = Number(newPageInfo[1]);
+  let offset = 0;
+  const limit = 10;
+  if (page !== 1) {
+    offset = (page - 1) * 10;
+  }
+
+  return Document.findAll({
+    offset, limit
+  })
+  .then((docs) => {
+    if (docs.length === 0) {
+      return res.status(404).send({
+        message: 'No Document Found',
+      });
+    }
+    return res.status(200).send(docs);
+  })
+  .catch(error => res.status(400).send(error));
+};
