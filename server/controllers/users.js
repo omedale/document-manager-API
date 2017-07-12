@@ -77,12 +77,6 @@ module.exports.listUsers = (req, res) => {
     .catch(error => res.status(400).send(error));
 };
 
-module.exports.test = (req, res) => {
-  return res.json({
-    message: 'Jesus'
-  });
-};
-
 module.exports.updateUser = (req, res) => {
   if (req.body.email) {
     return User.find({
@@ -191,3 +185,44 @@ module.exports.searchUser = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
+
+module.exports.getUserPage = (req, res) => {
+  const newPageInfo = req.params.pageNo.split('-').map((val) => {
+    return val;
+  });
+  if (!newPageInfo[1]) {
+    return res.json({
+      message: 'No Page number'
+    });
+  }
+  if (!Number.isInteger(Number(newPageInfo[1]))) {
+    return res.json({
+      message: 'Invalid request'
+    });
+  }
+  const page = Number(newPageInfo[1]);
+  let offset = 0;
+  const limit = 10;
+  if (page !== 1) {
+    offset = (page - 1) * 10;
+  }
+  return User.findAll({
+    offset, limit
+  })
+  .then((user) => {
+    if (user.length === 0) {
+      return res.status(404).send({
+        message: 'No User Found',
+      });
+    }
+    return res.status(200).send(user);
+  })
+  .catch(error => res.status(400).send(error));
+};
+
+module.exports.test = (req, res) => {
+  return res.json({
+    message: 'Jesus'
+  });
+};
+
