@@ -25,4 +25,5 @@ module.exports = (app, passport) => {
   app.get('/documents/:documentId', documentController.findDocument);
   app.delete('/documents/:documentId', documentController.deleteDocument);
   app.get('/search/documents/', documentController.searchDocument);
+  app.get('/documents/public/:access', documentController.getPublicDocument);
 };

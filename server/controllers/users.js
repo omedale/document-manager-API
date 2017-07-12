@@ -164,7 +164,6 @@ module.exports.findUserDocument = (req, res) => {
       }
     })
     .then((documents) => {
-      console.log(documents);
       if (documents.length === 0) {
         return res.status(404).send({
           message: 'No document Found',
