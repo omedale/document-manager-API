@@ -35,4 +35,5 @@ module.exports = (app, passport) => {
   app.get('/roles', roleController.listRoles);
   app.put(
     '/roles/:roleId', roleController.updateRole);
+  app.delete('/roles/:roleId', roleController.deleteRole);
 };
