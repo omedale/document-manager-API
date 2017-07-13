@@ -14,16 +14,23 @@ module.exports.signUp = (req, res) => {
           .create({
             name: req.body.name,
             email: req.body.email,
+            role: req.body.role,
             password: user.generateHash(req.body.password),
             phoneno: req.body.phoneno,
             usertype: 'user',
           })
           .then((registeredUser) => {
             req.logIn(registeredUser, () => {
-              const token = user.generateJWT(registeredUser.id, registeredUser.email, registeredUser.name);
+              const token = user
+              .generateJWT(registeredUser.id,
+                registeredUser.email,
+                registeredUser.name);
               localStorage.setItem('JSONWT', token);
               return res.status(200)
-                .json({ message: 'successful-reg-login', token, registeredUser });
+                .json({
+                  message: 'successful-reg-login',
+                  token,
+                  registeredUser });
             });
           })
           .catch(error => res.status(400).send(error));
@@ -49,14 +56,16 @@ module.exports.signIn = (req, res) => {
           message: 'Not an existing user, Please sign up'
         });
       } else {
-        if (user.validatePassword(req.body.password, response.dataValues.password) === false) {
+        if (user.validatePassword(req.body.password,
+          response.dataValues.password) === false) {
           return res.json({
             message: 'Invalid Password'
           });
         }
       }
       req.logIn(response.dataValues, () => {
-        const token = user.generateJWT(response.dataValues.id, response.dataValues.email, response.dataValues.name);
+        const token = user.generateJWT(response.dataValues.id,
+          response.dataValues.email, response.dataValues.name);
         localStorage.setItem('JSONWT', token);
         // return the token as JSON
         return res.status(200).json({ message: 'successful-login', token });
@@ -145,7 +154,8 @@ module.exports.deleteUser = (req, res) => {
       }
       return user
         .destroy()
-        .then(() => res.status(200).send({ message: 'User deleted successfully.' }))
+        .then(() => res.status(200)
+        .send({ message: 'User deleted successfully.' }))
         .catch(error => res.status(400).send(error));
     })
     .catch(error => res.status(400).send(error));

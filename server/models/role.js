@@ -3,7 +3,7 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Role = sequelize.define('Role', {
-    access: {
+    role: {
       type: DataTypes.STRING,
       allowNull: false,
     }

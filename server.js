@@ -18,8 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 if (typeof localStorage === 'undefined' || localStorage === null) {
   localStorage = new LocalStorage('./scratch');
 }
-// verifies all routes that starts with users
+// verifies all routes that starts with users and documents
 app.use('/users', auth.verifyToken);
+app.use('/documents', auth.verifyToken);
 
 require('./server/router')(app, passport);
 
