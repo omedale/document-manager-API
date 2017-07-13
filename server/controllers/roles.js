@@ -23,3 +23,11 @@ module.exports.createRole = (req, res) => {
   })
   .catch(error => res.status(400).send(error));
 };
+
+module.exports.listRoles = (req, res) => {
+  return Role
+    .findAll()
+    .then(role => res.status(200).send(role))
+    .catch(error => res.status(400).send(error));
+};
+
