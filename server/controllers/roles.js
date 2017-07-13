@@ -53,3 +53,21 @@ module.exports.updateRole = (req, res) => {
     .catch(error => res.status(400).send(error));
 };
 
+module.exports.deleteRole = (req, res) => {
+  return Role
+    .findById(req.params.roleId)
+    .then((role) => {
+      if (!role) {
+        return res.status(400).send({
+          message: 'Role Not Found',
+        });
+      }
+      return role
+        .destroy()
+        .then(() => res.status(200)
+        .send({ message: 'Role deleted successfully.' }))
+        .catch(error => res.status(400).send(error));
+    })
+    .catch(error => res.status(400).send(error));
+};
+
