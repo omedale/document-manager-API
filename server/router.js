@@ -33,4 +33,6 @@ module.exports = (app, passport) => {
   app.post(
     '/roles', roleController.createRole);
   app.get('/roles', roleController.listRoles);
+  app.put(
+    '/roles/:roleId', roleController.updateRole);
 };

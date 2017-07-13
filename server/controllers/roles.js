@@ -31,3 +31,25 @@ module.exports.listRoles = (req, res) => {
     .catch(error => res.status(400).send(error));
 };
 
+module.exports.updateRole = (req, res) => {
+  return Role
+    .find({
+      where: {
+        id: req.params.roleId,
+      },
+    })
+    .then((role) => {
+      if (!role) {
+        return res.status(404).send({
+          message: 'Role Not Found',
+        });
+      }
+
+      return role
+        .update(req.body, { fields: Object.keys(req.body) })
+        .then(updatedRole => res.status(200).send(updatedRole))
+        .catch(error => res.status(400).send(error));
+    })
+    .catch(error => res.status(400).send(error));
+};
+
