@@ -1,5 +1,6 @@
 const usersController = require('./controllers/users');
 const documentController = require('./controllers/documents');
+const roleController = require('./controllers/roles');
 
 module.exports = (app, passport) => {
   app.get('/api', (req, res) => res.status(200).send({
@@ -28,4 +29,7 @@ module.exports = (app, passport) => {
   app.get('/search/documents/', documentController.searchDocument);
   app.get('/documents/public/:access', documentController.getPublicDocument);
   app.get('/documents/page/:pageNo', documentController.getDocumentPage);
+
+  app.post(
+    '/roles', roleController.createRole);
 };
