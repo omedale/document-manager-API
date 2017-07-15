@@ -1,7 +1,7 @@
 
 
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     role: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       email,
       name,
       exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    }, 'omedale');
+    }, process.env.JWT_SECRET);
   };
 
   User.associate = (models) => {
