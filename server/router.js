@@ -1,6 +1,6 @@
-const usersController = require('./controllers/users');
-const documentController = require('./controllers/documents');
-const roleController = require('./controllers/roles');
+import usersController from './controllers/users';
+import documentController from './controllers/documents';
+import roleController from './controllers/roles';
 
 module.exports = (app, passport) => {
   app.get('/api', (req, res) => res.status(200).send({

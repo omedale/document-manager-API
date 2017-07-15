@@ -6,10 +6,26 @@ module.exports.test = (req, res) => {
   });
 };
 
+/**
+   * This creates documents
+   * @method createDocument
+   * @param {string} req
+   * @param {string} res
+   * @return {json} - returns error or newly created document
+   */
 module.exports.createDocument = (req, res) => {
+  req.checkBody('title', 'Title is required').notEmpty().isAlpha();
+  req.checkBody('userId', 'User id is required').isInt().isAlpha();
+  req.checkBody('access', 'Access is required').isAlpha().notEmpty();
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.json({
+      message: 'Invalid Input, please provide appropriate input for all field'
+    });
+  }
   return Document
       .create({
-        title: req.body.title,
+        title: (req.body.title).toLowerCase(),
         document: req.body.document,
         owner: req.body.owner,
         userId: req.body.userId,
@@ -20,6 +36,11 @@ module.exports.createDocument = (req, res) => {
 };
 
 module.exports.updateDocument = (req, res) => {
+  if (!Number.isInteger(Number(req.params.documentId))) {
+    return res.json({
+      message: 'Invalid document ID'
+    });
+  }
   return Document
     .find({
       where: {
@@ -63,6 +84,11 @@ module.exports.findDocument = (req, res) => {
 };
 
 module.exports.deleteDocument = (req, res) => {
+  if (!Number.isInteger(Number(req.params.documentId))) {
+    return res.json({
+      message: 'Invalid document ID'
+    });
+  }
   return Document
     .findById(req.params.documentId)
     .then((document) => {
@@ -84,7 +110,7 @@ module.exports.searchDocument = (req, res) => {
   return Document
     .find({
       where: {
-        title: req.query.q
+        title: (req.query.q).toLowerCase()
       }
     })
     .then((document) => {

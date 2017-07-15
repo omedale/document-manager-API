@@ -1,7 +1,27 @@
+import { LocalStorage } from 'node-localstorage';
+
 const User = require('../models').User;
 const Document = require('../models').Document;
 
+const localStorage = LocalStorage('./scratch');
+
+/**
+   * To sign up users
+   * @method signUp
+   * @param {string} req
+   * @param {string} res
+   * @return {json} - returns error or registrstion successfull
+   */
 module.exports.signUp = (req, res) => {
+  req.checkBody('email', 'Invalid email').notEmpty().isEmail();
+  req.checkBody('name', 'Invalid name').notEmpty().isAlpha();
+  req.checkBody('role', 'Invalid role').isAlpha();
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.json({
+      message: 'Invalid Input, please provide appropriate input for all field'
+    });
+  }
   User.find({
     where: {
       email: req.body.email
@@ -12,7 +32,7 @@ module.exports.signUp = (req, res) => {
         const user = new User();
         return User
           .create({
-            name: req.body.name,
+            name: (req.body.name).toLowerCase(),
             email: req.body.email,
             role: req.body.role,
             password: user.generateHash(req.body.password),
@@ -40,10 +60,17 @@ module.exports.signUp = (req, res) => {
         });
       }
     })
-    .catch(error => res.status(400).send(error));
+    .catch(error => res.status(400).send({ error }));
 };
 
 module.exports.signIn = (req, res) => {
+  req.checkBody('email', 'Invalid email').notEmpty().isEmail();
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.json({
+      message: 'Invalid Input, please provide appropriate input for all field'
+    });
+  }
   User.find({
     where: {
       email: req.body.email
@@ -51,7 +78,7 @@ module.exports.signIn = (req, res) => {
   })
     .then((response) => {
       const user = new User();
-      if (!response.dataValues) {
+      if (response === null) {
         return res.json({
           message: 'Not an existing user, Please sign up'
         });
@@ -88,6 +115,13 @@ module.exports.listUsers = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   if (req.body.email) {
+    req.checkBody('email', 'Invalid email').notEmpty().isEmail();
+    const errors = req.validationErrors();
+    if (errors) {
+      return res.json({
+        message: 'Invalid Input, please provide appropriate input for all field'
+      });
+    }
     return User.find({
       where: {
         email: req.body.email
@@ -125,6 +159,11 @@ module.exports.updateUser = (req, res) => {
 };
 
 module.exports.findUser = (req, res) => {
+  if (!Number.isInteger(Number(req.params.userId))) {
+    return res.json({
+      message: 'Invalid User ID'
+    });
+  }
   return User
     .findById(req.params.userId, {
       include: [{
@@ -144,6 +183,11 @@ module.exports.findUser = (req, res) => {
 };
 
 module.exports.deleteUser = (req, res) => {
+  if (!Number.isInteger(Number(req.params.userId))) {
+    return res.json({
+      message: 'Invalid User ID'
+    });
+  }
   return User
     .findById(req.params.userId)
     .then((user) => {
@@ -161,6 +205,11 @@ module.exports.deleteUser = (req, res) => {
     .catch(error => res.status(400).send(error));
 };
 module.exports.findUserDocument = (req, res) => {
+  if (!Number.isInteger(Number(req.params.userId))) {
+    return res.json({
+      message: 'Invalid User ID'
+    });
+  }
   return Document
     .findAll({
       where: {
@@ -182,7 +231,7 @@ module.exports.searchUser = (req, res) => {
   return User
     .find({
       where: {
-        name: req.query.q
+        name: (req.query.q).toLowerCase()
       }
     })
     .then((user) => {

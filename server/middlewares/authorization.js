@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
+import LocalStorage from 'node-localstorage';
+import jwt from 'jsonwebtoken';
 
-const secret = 'omedale';
-
+const localStorage = LocalStorage('./scratch');
 // To verify a user token
 exports.verifyToken = (req, res, next) => {
   // checking for token
@@ -11,7 +11,7 @@ exports.verifyToken = (req, res, next) => {
   // decoding the token
   if (token) {
     // verifies secret and checks
-    jwt.verify(token, secret, (error, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
       if (error) {
         return res.json({
           message: 'Token not valid Please login'
