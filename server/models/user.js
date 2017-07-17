@@ -45,11 +45,13 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.compareSync(password, savedPassword);
   };
 
-  User.prototype.generateJWT = (id, email, name) => {
+  User.prototype.generateJWT = (id, email, name, usertype, role) => {
     return jwt.sign({
       id,
       email,
       name,
+      usertype,
+      role,
       exp: Math.floor(Date.now() / 1000) + (60 * 60),
     }, process.env.JWT_SECRET);
   };

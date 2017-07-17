@@ -18,7 +18,7 @@ module.exports.signUp = (req, res) => {
   req.checkBody('role', 'Invalid role').isAlpha();
   const errors = req.validationErrors();
   if (errors) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid Input, please provide appropriate input for all field'
     });
   }
@@ -42,20 +42,23 @@ module.exports.signUp = (req, res) => {
           .then((registeredUser) => {
             req.logIn(registeredUser, () => {
               const token = user
-              .generateJWT(registeredUser.id,
+                .generateJWT(registeredUser.id,
                 registeredUser.email,
-                registeredUser.name);
+                registeredUser.name,
+                'user',
+                registeredUser.role);
               localStorage.setItem('JSONWT', token);
               return res.status(200)
-                .json({
+                .send({
                   message: 'successful-reg-login',
                   token,
-                  registeredUser });
+                  registeredUser
+                });
             });
           })
           .catch(error => res.status(400).send(error));
       } else {
-        return res.json({
+        return res.status(400).send({
           message: 'Existing user cannot sign up again. Please sign in'
         });
       }
@@ -67,7 +70,7 @@ module.exports.signIn = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   const errors = req.validationErrors();
   if (errors) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid Input, please provide appropriate input for all field'
     });
   }
@@ -79,46 +82,65 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
-        return res.json({
+        return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
       } else {
         if (user.validatePassword(req.body.password,
           response.dataValues.password) === false) {
-          return res.json({
+          return res.status(400).send({
             message: 'Invalid Password'
           });
         }
       }
       req.logIn(response.dataValues, () => {
         const token = user.generateJWT(response.dataValues.id,
-          response.dataValues.email, response.dataValues.name);
+          response.dataValues.email,
+          response.dataValues.name, response.dataValues.usertype,
+          response.dataValues.role);
         localStorage.setItem('JSONWT', token);
         // return the token as JSON
-        return res.status(200).json({ message: 'successful-login', token });
+        return res.status(200).send({ message: 'successful-login', token });
       });
     })
     .catch(error => res.status(400).send(error));
 };
 
 module.exports.listUsers = (req, res) => {
-  return User
-    .findAll({
-      include: [{
-        model: Document,
-        as: 'myDocuments',
-      }],
-    })
-    .then(user => res.status(200).send(user))
-    .catch(error => res.status(400).send(error));
+  if (req.decoded.usertype === 'admin') {
+    return User
+      .findAll({
+        include: [{
+          model: Document,
+          as: 'myDocuments',
+        }],
+      })
+      .then(user => res.status(200).send(user))
+      .catch(error => res.status(400).send(error));
+  } else {
+    return User
+      .findAll()
+      .then(user => res.status(200).send(user))
+      .catch(error => res.status(400).send(error));
+  }
 };
 
 module.exports.updateUser = (req, res) => {
+  if (!Number.isInteger(Number(req.params.userId))) {
+    return res.status(400).send({
+      message: 'Invalid User ID'
+    });
+  }
+  if (req.decoded.id !== Number(req.params.userId)) {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
   if (req.body.email) {
     req.checkBody('email', 'Invalid email').notEmpty().isEmail();
     const errors = req.validationErrors();
     if (errors) {
-      return res.json({
+      return res.status(400).send({
         message: 'Invalid Input, please provide appropriate input for all field'
       });
     }
@@ -127,40 +149,60 @@ module.exports.updateUser = (req, res) => {
         email: req.body.email
       }
     })
-    .then((response) => {
-      if (response) {
-        return res.json({
-          message: 'Email Already Exist'
-        });
-      } else {
-        return User
-        .findById(req.params.userId, {
-          include: [{
-            model: Document,
-            as: 'myDocuments',
-          }],
-        })
-        .then((user) => {
-          if (!user) {
-            return res.status(404).send({
-              message: 'User Not Found',
-            });
-          }
-          return user
-            .update(req.body, { fields: Object.keys(req.body) })
-            .then(() => res.status(200).send(user))
+      .then((response) => {
+        if (response) {
+          return res.status(400).send({
+            message: 'Email Already Exist'
+          });
+        } else {
+          return User
+            .findById(req.params.userId, {
+              include: [{
+                model: Document,
+                as: 'myDocuments',
+              }],
+            })
+            .then((user) => {
+              if (!user) {
+                return res.status(404).send({
+                  message: 'User Not Found',
+                });
+              }
+              return user
+                .update(req.body, { fields: Object.keys(req.body) })
+                .then(() => res.status(200).send(user))
+                .catch(error => res.status(400).send(error));
+            })
             .catch(error => res.status(400).send(error));
-        })
-        .catch(error => res.status(400).send(error));
-      }
-    })
-    .catch(error => res.status(400).send(error));
+        }
+      })
+      .catch(error => res.status(400).send(error));
+  } else {
+    return User
+      .findById(req.params.userId, {
+        include: [{
+          model: Document,
+          as: 'myDocuments',
+        }],
+      })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send({
+            message: 'User Not Found',
+          });
+        }
+        return user
+          .update(req.body, { fields: Object.keys(req.body) })
+          .then(() => res.status(200).send(user))
+          .catch(error => res.status(400).send(error));
+      })
+      .catch(error => res.status(400).send(error));
   }
 };
 
 module.exports.findUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid User ID'
     });
   }
@@ -184,50 +226,70 @@ module.exports.findUser = (req, res) => {
 
 module.exports.deleteUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
-    return res.json({
+    return res.send({
       message: 'Invalid User ID'
     });
   }
-  return User
-    .findById(req.params.userId)
-    .then((user) => {
-      if (!user) {
-        return res.status(400).send({
-          message: 'User Not Found',
-        });
-      }
-      return user
-        .destroy()
-        .then(() => res.status(200)
-        .send({ message: 'User deleted successfully.' }))
-        .catch(error => res.status(400).send(error));
-    })
-    .catch(error => res.status(400).send(error));
+  if (req.decoded.id === Number(req.params.userId)
+    || req.decoded.usertype === 'admin') {
+    return User
+      .findById(req.params.userId)
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send({
+            message: 'User Not Found',
+          });
+        }
+        return user
+          .destroy()
+          .then(() => res.status(200)
+            .send({ message: 'User deleted successfully.' }))
+          .catch(error => res.status(400).send(error));
+      })
+      .catch(error => res.status(400).send(error));
+  } else {
+    return res.status(404).send({
+      message: 'Access Denied',
+    });
+  }
 };
+
 module.exports.findUserDocument = (req, res) => {
-  if (!Number.isInteger(Number(req.params.userId))) {
-    return res.json({
-      message: 'Invalid User ID'
+  if (req.decoded.id === Number(req.params.userId)
+    || req.decoded.usertype === 'admin') {
+    if (!Number.isInteger(Number(req.params.userId))) {
+      return res.status(400).send({
+        message: 'Invalid User ID'
+      });
+    }
+    return Document
+      .findAll({
+        where: {
+          userId: req.params.userId,
+        }
+      })
+      .then((documents) => {
+        if (documents.length === 0) {
+          return res.status(404).send({
+            message: 'No document Found',
+          });
+        }
+        return res.status(200).send(documents);
+      })
+      .catch(error => res.status(400).send(error));
+  } else {
+    return res.status(400).send({
+      message: 'Access Denied'
     });
   }
-  return Document
-    .findAll({
-      where: {
-        userId: req.params.userId,
-      }
-    })
-    .then((documents) => {
-      if (documents.length === 0) {
-        return res.status(404).send({
-          message: 'No document Found',
-        });
-      }
-      return res.status(200).send(documents);
-    })
-    .catch(error => res.status(400).send(error));
 };
 
 module.exports.searchUser = (req, res) => {
+  if (!req.query.q) {
+    return res.send({
+      message: 'No key word supplied'
+    });
+  }
   return User
     .find({
       where: {
@@ -250,12 +312,12 @@ module.exports.getUserPage = (req, res) => {
     return val;
   });
   if (!newPageInfo[1]) {
-    return res.json({
+    return res.status(400).send({
       message: 'No Page number'
     });
   }
   if (!Number.isInteger(Number(newPageInfo[1]))) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid request'
     });
   }
@@ -268,19 +330,19 @@ module.exports.getUserPage = (req, res) => {
   return User.findAll({
     offset, limit
   })
-  .then((user) => {
-    if (user.length === 0) {
-      return res.status(404).send({
-        message: 'No User Found',
-      });
-    }
-    return res.status(200).send(user);
-  })
-  .catch(error => res.status(400).send(error));
+    .then((user) => {
+      if (user.length === 0) {
+        return res.status(404).send({
+          message: 'No User Found',
+        });
+      }
+      return res.status(200).send(user);
+    })
+    .catch(error => res.status(400).send(error));
 };
 
 module.exports.test = (req, res) => {
-  return res.json({
+  return res.status(400).send({
     message: 'Jesus'
   });
 };
