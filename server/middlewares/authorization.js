@@ -1,5 +1,5 @@
-import LocalStorage from 'node-localstorage';
 import jwt from 'jsonwebtoken';
+import { LocalStorage } from 'node-localstorage';
 
 const localStorage = LocalStorage('./scratch');
 // To verify a user token
@@ -13,7 +13,7 @@ exports.verifyToken = (req, res, next) => {
     // verifies secret and checks
     jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
       if (error) {
-        return res.json({
+        return res.status(400).json({
           message: 'Token not valid Please login'
         });
       }
@@ -22,7 +22,7 @@ exports.verifyToken = (req, res, next) => {
       next();
     });
   } else {
-    return res.json({
+    return res.status(401).json({
       message: 'Empty Token'
     });
   }

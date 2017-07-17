@@ -14,8 +14,8 @@ module.exports.test = (req, res) => {
    * @return {json} - returns error or newly created document
    */
 module.exports.createDocument = (req, res) => {
-  req.checkBody('title', 'Title is required').notEmpty().isAlpha();
-  req.checkBody('userId', 'User id is required').isInt().isAlpha();
+  req.checkBody('title', 'Title is required').notEmpty();
+  req.checkBody('userId', 'User id is required').isInt();
   req.checkBody('access', 'Access is required').isAlpha().notEmpty();
   const errors = req.validationErrors();
   if (errors) {
@@ -107,6 +107,11 @@ module.exports.deleteDocument = (req, res) => {
 };
 
 module.exports.searchDocument = (req, res) => {
+  if (!req.query.q) {
+    return res.send({
+      message: 'No key word supplied'
+    });
+  }
   return Document
     .find({
       where: {
