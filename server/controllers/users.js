@@ -34,10 +34,9 @@ module.exports.signUp = (req, res) => {
           .create({
             name: (req.body.name).toLowerCase(),
             email: req.body.email,
-            role: req.body.role,
+            role: 'user',
             password: user.generateHash(req.body.password),
             phoneno: req.body.phoneno,
-            usertype: 'user',
           })
           .then((registeredUser) => {
             req.logIn(registeredUser, () => {
@@ -45,7 +44,6 @@ module.exports.signUp = (req, res) => {
                 .generateJWT(registeredUser.id,
                 registeredUser.email,
                 registeredUser.name,
-                'user',
                 registeredUser.role);
               localStorage.setItem('JSONWT', token);
               return res.status(200)
@@ -96,7 +94,7 @@ module.exports.signIn = (req, res) => {
       req.logIn(response.dataValues, () => {
         const token = user.generateJWT(response.dataValues.id,
           response.dataValues.email,
-          response.dataValues.name, response.dataValues.usertype,
+          response.dataValues.name,
           response.dataValues.role);
         localStorage.setItem('JSONWT', token);
         // return the token as JSON
@@ -107,7 +105,7 @@ module.exports.signIn = (req, res) => {
 };
 
 module.exports.listUsers = (req, res) => {
-  if (req.decoded.usertype === 'admin') {
+  if (req.decoded.role === 'admin') {
     return User
       .findAll({
         include: [{
@@ -231,7 +229,7 @@ module.exports.deleteUser = (req, res) => {
     });
   }
   if (req.decoded.id === Number(req.params.userId)
-    || req.decoded.usertype === 'admin') {
+    || req.decoded.role === 'admin') {
     return User
       .findById(req.params.userId)
       .then((user) => {
@@ -256,7 +254,7 @@ module.exports.deleteUser = (req, res) => {
 
 module.exports.findUserDocument = (req, res) => {
   if (req.decoded.id === Number(req.params.userId)
-    || req.decoded.usertype === 'admin') {
+    || req.decoded.role === 'admin') {
     if (!Number.isInteger(Number(req.params.userId))) {
       return res.status(400).send({
         message: 'Invalid User ID'

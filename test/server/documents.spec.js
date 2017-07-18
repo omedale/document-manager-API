@@ -1,5 +1,3 @@
-
-const test = require('tape');
 const request = require('supertest');
 require('babel-register');
 const app = require('../../server/server');

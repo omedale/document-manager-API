@@ -14,8 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     access: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM,
       allowNull: true,
+      values: ['public', 'private']
     },
     userId: {
       type: DataTypes.INTEGER,
