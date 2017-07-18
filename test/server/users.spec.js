@@ -1,11 +1,10 @@
 
-const test = require('tape');
 const request = require('supertest');
 require('babel-register');
 const app = require('../../server/server');
 
 describe('In User controller: ', () => {
-  beforeEach(() => {
+  before(() => {
     request(app)
       .post('/users/auth/login')
       .send({
