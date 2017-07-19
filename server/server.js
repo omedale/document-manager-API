@@ -20,8 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
 
 // verifies all routes that starts with users and documents
-app.use('/users', auth.verifyToken);
-app.use('/documents', auth.verifyToken);
+app.use('/api', auth.verifyToken);
 require('./../build/router')(app, passport);
 // production
 // require('./../dist/router')(app, passport);

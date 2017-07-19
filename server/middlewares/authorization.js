@@ -5,7 +5,7 @@ const localStorage = LocalStorage('./scratch');
 // To verify a user token
 exports.verifyToken = (req, res, next) => {
   // checking for token
-  if (req.url.startsWith('/auth')) return next();
+  if (req.url.startsWith('/v1/users/auth')) return next();
 
   const token = localStorage.getItem('JSONWT');
   // decoding the token
