@@ -7,7 +7,6 @@
     "start": "npm run build && gulp",
     "build": "gulp dev",
     "dev": "npm run build && gulp",
-    "pretest": "NODE_ENV=test npm run dev",
     "test": "npm run build && gulp test"
   },
   "repository": {
