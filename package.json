@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
-    "start": "babel-node -- server/server.js",
+    "start": "node build/server.js",
     "build": "gulp dev",
     "dev": "npm run build && gulp",
     "pretest": "NODE_ENV=test npm run dev",
