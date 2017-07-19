@@ -6,35 +6,35 @@ const app = require('../../server/server');
 describe('In User controller: ', () => {
   before(() => {
     request(app)
-      .post('/users/auth/login')
+      .post('/api/v1/users/auth/login')
       .send({
         password: 'ayo',
-        email: 'presi@gmail.com'
+        email: 'admin@gmail.com'
       });
   });
   it('method listUsers should list all users and respond with status 200',
   (done) => {
     request(app)
-      .get('/users')
+      .get('/api/v1/users')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200, done);
   });
   it('method signIn should login user and respond with status 200', (done) => {
     request(app)
-      .post('/users/auth/login')
+      .post('/api/v1/users/auth/login')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .send({
         password: 'ayo',
-        email: 'presi@gmail.com'
+        email: 'admin@gmail.com'
       })
       .expect(200, done);
   });
   it('method findUser should get user with id=4 and respond with status 200',
   (done) => {
     request(app)
-      .get('/users/4')
+      .get('/api/v1/users/4')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200, done);
@@ -42,7 +42,7 @@ describe('In User controller: ', () => {
   it('method findUserDocument should get documents where userId=4 and respond with status 200',
   (done) => {
     request(app)
-      .get('/users/4/documents')
+      .get('/api/v1/users/4/documents')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200, done);
@@ -50,7 +50,7 @@ describe('In User controller: ', () => {
   it('method searchUser should search for user with name=ayomakun and respond with status 200',
   (done) => {
     request(app)
-      .get('/search/users/?q=ayomakun')
+      .get('/api/v1/search/users/?q=medale')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200, done);
@@ -58,7 +58,7 @@ describe('In User controller: ', () => {
   it('method getUserPage should return first 10 users and respond with status 200',
   (done) => {
     request(app)
-      .get('/users/page/page-1')
+      .get('/api/v1/users/page/page-1')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200, done);
@@ -66,7 +66,7 @@ describe('In User controller: ', () => {
   it('method updateUser should update phone number of user with id=4 and respond with status 200',
   (done) => {
     request(app)
-      .put('/users/9')
+      .put('/api/v1/users/4')
       .send({
         phoneo: '7033390748'
       })

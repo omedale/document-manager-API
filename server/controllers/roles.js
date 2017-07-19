@@ -13,7 +13,7 @@ module.exports.createRole = (req, res) => {
     }
   })
   .then((response) => {
-    if (response) { 
+    if (response) {
       return res.json({
         message: 'Role Already Exist'
       });
