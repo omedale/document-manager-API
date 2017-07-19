@@ -8,10 +8,7 @@ gulp.task('nodemon', () => {
     script: 'build/server.js',
     ext: 'js',
     ignore: ['README.md', 'node_modules/**', '.DS_Store'],
-    watch: ['server'],
-    env: {
-      PORT: 8080,
-    }
+    watch: ['server']
   });
 });
 

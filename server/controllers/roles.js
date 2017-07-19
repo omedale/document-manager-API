@@ -2,6 +2,11 @@
 const Role = require('../models').Role;
 
 module.exports.createRole = (req, res) => {
+  if (req.decoded.role !== 'admin') {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
   return Role.find({
     where: {
       role: req.body.role
@@ -32,6 +37,11 @@ module.exports.listRoles = (req, res) => {
 };
 
 module.exports.updateRole = (req, res) => {
+  if (req.decoded.role !== 'admin') {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
   return Role
     .find({
       where: {
@@ -46,7 +56,7 @@ module.exports.updateRole = (req, res) => {
       }
 
       return role
-        .update(req.body, { fields: Object.keys(req.body) })
+        .update({ role: req.body.role })
         .then(updatedRole => res.status(200).send(updatedRole))
         .catch(error => res.status(400).send(error));
     })
@@ -54,6 +64,11 @@ module.exports.updateRole = (req, res) => {
 };
 
 module.exports.deleteRole = (req, res) => {
+  if (req.decoded.role !== 'admin') {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
   return Role
     .findById(req.params.roleId)
     .then((role) => {

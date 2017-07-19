@@ -2,6 +2,7 @@ import { LocalStorage } from 'node-localstorage';
 
 const User = require('../models').User;
 const Document = require('../models').Document;
+const Role = require('../models').Role;
 
 const localStorage = LocalStorage('./scratch');
 
@@ -15,7 +16,6 @@ const localStorage = LocalStorage('./scratch');
 module.exports.signUp = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   req.checkBody('name', 'Invalid name').notEmpty().isAlpha();
-  req.checkBody('role', 'Invalid role').isAlpha();
   const errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -34,7 +34,7 @@ module.exports.signUp = (req, res) => {
           .create({
             name: (req.body.name).toLowerCase(),
             email: req.body.email,
-            role: 'user',
+            role: 'fellow',
             password: user.generateHash(req.body.password),
             phoneno: req.body.phoneno,
           })
@@ -111,15 +111,64 @@ module.exports.listUsers = (req, res) => {
         include: [{
           model: Document,
           as: 'myDocuments',
+          attributes: ['title', 'document', 'owner', 'createdAt']
         }],
+        attributes: ['name', 'email', 'phoneno', 'createdAt']
       })
       .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   } else {
     return User
-      .findAll()
+      .findAll({ attributes: ['name', 'email', 'phoneno', 'createdAt'] })
       .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
+  }
+};
+module.exports.updateUserRole = (req, res) => {
+  if (req.decoded.role === 'admin') {
+    if (!Number.isInteger(Number(req.params.userId))) {
+      return res.status(400).send({
+        message: 'Invalid User ID'
+      });
+    }
+
+    Role
+      .findAll()
+      .then((response) => {
+        if (response !== null) {
+          let roleExist = false;
+          response.forEach((array) => {
+            if (array.role === req.body.role) {
+              roleExist = true;
+            }
+          });
+          if (!roleExist) {
+            return res.json({
+              message: 'Invalid Role'
+            });
+          } else {
+            return User
+              .findById(req.params.userId)
+              .then((user) => {
+                if (!user) {
+                  return res.status(404).send({
+                    message: 'User Not Found',
+                  });
+                }
+                return user
+                  .update({ role: req.body.role })
+                  .then(() => res.status(200).send(user))
+                  .catch(error => res.status(400).send(error));
+              })
+              .catch(error => res.status(400).send(error));
+          }
+        }
+      })
+      .catch(error => res.status(400).send(error));
+  } else {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
   }
 };
 
@@ -153,13 +202,14 @@ module.exports.updateUser = (req, res) => {
             message: 'Email Already Exist'
           });
         } else {
+          if (req.body.name) {
+            req.body.name = (req.body.name).toLowerCase();
+          }
+          if (req.body.role) {
+            req.body.role = req.decoded.role;
+          }
           return User
-            .findById(req.params.userId, {
-              include: [{
-                model: Document,
-                as: 'myDocuments',
-              }],
-            })
+            .findById(req.params.userId)
             .then((user) => {
               if (!user) {
                 return res.status(404).send({
@@ -177,17 +227,18 @@ module.exports.updateUser = (req, res) => {
       .catch(error => res.status(400).send(error));
   } else {
     return User
-      .findById(req.params.userId, {
-        include: [{
-          model: Document,
-          as: 'myDocuments',
-        }],
-      })
+      .findById(req.params.userId)
       .then((user) => {
         if (!user) {
           return res.status(404).send({
             message: 'User Not Found',
           });
+        }
+        if (req.body.name) {
+          req.body.name = (req.body.name).toLowerCase();
+        }
+        if (req.body.role) {
+          req.body.role = req.decoded.role;
         }
         return user
           .update(req.body, { fields: Object.keys(req.body) })
@@ -205,11 +256,9 @@ module.exports.findUser = (req, res) => {
     });
   }
   return User
-    .findById(req.params.userId, {
-      include: [{
-        model: Document,
-        as: 'myDocuments',
-      }],
+    .find({
+      id: req.params.userId,
+      attributes: ['name', 'email', 'phoneno', 'createdAt'],
     })
     .then((user) => {
       if (!user) {
@@ -264,7 +313,8 @@ module.exports.findUserDocument = (req, res) => {
       .findAll({
         where: {
           userId: req.params.userId,
-        }
+        },
+        attributes: ['title', 'document', 'owner', 'createdAt']
       })
       .then((documents) => {
         if (documents.length === 0) {
@@ -289,13 +339,13 @@ module.exports.searchUser = (req, res) => {
     });
   }
   return User
-    .find({
+    .findAll({
       where: {
         name: (req.query.q).toLowerCase()
       }
     })
     .then((user) => {
-      if (!user) {
+      if (user.length === 0) {
         return res.status(404).send({
           message: 'User Not Found',
         });
@@ -326,7 +376,9 @@ module.exports.getUserPage = (req, res) => {
     offset = (page - 1) * 10;
   }
   return User.findAll({
-    offset, limit
+    offset,
+    limit,
+    attributes: ['name', 'email', 'phoneno', 'createdAt']
   })
     .then((user) => {
       if (user.length === 0) {
