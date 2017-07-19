@@ -98,7 +98,11 @@ module.exports.signIn = (req, res) => {
           response.dataValues.role);
         localStorage.setItem('JSONWT', token);
         // return the token as JSON
-        return res.status(200).send({ message: 'successful-login', token });
+        return res.status(200).send({
+          message: 'successful-login',
+          token,
+          userId: response.dataValues.id,
+          name: response.dataValues.name });
       });
     })
     .catch(error => res.status(400).send(error));
@@ -111,15 +115,15 @@ module.exports.listUsers = (req, res) => {
         include: [{
           model: Document,
           as: 'myDocuments',
-          attributes: ['title', 'document', 'owner', 'createdAt']
+          attributes: ['id', 'title', 'document', 'owner', 'createdAt']
         }],
-        attributes: ['name', 'email', 'phoneno', 'createdAt']
+        attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
       })
       .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   } else {
     return User
-      .findAll({ attributes: ['name', 'email', 'phoneno', 'createdAt'] })
+      .findAll({ attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'] })
       .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   }
@@ -257,8 +261,10 @@ module.exports.findUser = (req, res) => {
   }
   return User
     .find({
-      id: req.params.userId,
-      attributes: ['name', 'email', 'phoneno', 'createdAt'],
+      where: {
+        id: req.params.userId,
+      },
+      attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'],
     })
     .then((user) => {
       if (!user) {
@@ -314,7 +320,7 @@ module.exports.findUserDocument = (req, res) => {
         where: {
           userId: req.params.userId,
         },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then((documents) => {
         if (documents.length === 0) {
@@ -378,7 +384,7 @@ module.exports.getUserPage = (req, res) => {
   return User.findAll({
     offset,
     limit,
-    attributes: ['name', 'email', 'phoneno', 'createdAt']
+    attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
   })
     .then((user) => {
       if (user.length === 0) {

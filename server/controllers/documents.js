@@ -83,7 +83,7 @@ module.exports.listDocuments = (req, res) => {
   if (req.decoded.role === 'admin') {
     return Document
       .findAll({
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then(documents => res.status(200).send(documents))
       .catch(error => res.status(400).send(error));
@@ -91,7 +91,7 @@ module.exports.listDocuments = (req, res) => {
     return Document
       .findAll({
         where: { access: [req.decoded.role, 'public'] },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then(documents => res.status(200).send(documents))
       .catch(error => res.status(400).send(error));
@@ -108,7 +108,7 @@ module.exports.findDocument = (req, res) => {
     return Document
       .find({
         where: { id: req.params.documentId },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (!document) {
@@ -126,7 +126,7 @@ module.exports.findDocument = (req, res) => {
           id: req.params.documentId,
           access: [req.decoded.role, 'public']
         },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (!document) {
@@ -180,7 +180,7 @@ module.exports.searchDocument = (req, res) => {
         where: {
           title: (req.query.q).toLowerCase()
         },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (document.length === 0) {
@@ -199,7 +199,7 @@ module.exports.searchDocument = (req, res) => {
           title: (req.query.q).toLowerCase(),
           access: [req.decoded.role, 'private', 'public'],
         },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (document.length === 0) {
@@ -238,7 +238,7 @@ module.exports.getDocumentPage = (req, res) => {
     return Document.findAll({
       offset,
       limit,
-      attributes: ['title', 'document', 'owner', 'createdAt']
+      attributes: ['id', 'title', 'document', 'owner', 'createdAt']
     })
       .then((docs) => {
         if (docs.length === 0) {
@@ -256,7 +256,7 @@ module.exports.getDocumentPage = (req, res) => {
       where: {
         access: [req.decoded.role, 'public']
       },
-      attributes: ['title', 'document', 'owner', 'createdAt']
+      attributes: ['id', 'title', 'document', 'owner', 'createdAt']
     })
       .then((docs) => {
         if (docs.length === 0) {

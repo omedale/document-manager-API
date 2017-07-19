@@ -10,7 +10,7 @@ import auth from './../build/middlewares/authorization';
 
 
 dotenv.config();
-const port = parseInt(process.env.PORT, 10) || 8080;
+const port = process.env.PORT || 8080;
 const app = express();
 app.set('port', port);
 
@@ -22,8 +22,6 @@ app.use(expressValidator());
 // verifies all routes that starts with users and documents
 app.use('/api', auth.verifyToken);
 require('./../build/router')(app, passport);
-// production
-// require('./../dist/router')(app, passport);
 
 app.get('*', (req, res) => res.status(400).send({
   message: 'Invalid URL',
