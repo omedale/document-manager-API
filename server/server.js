@@ -22,9 +22,8 @@ app.use('/api', auth.verifyToken);
 // reqires route file
 require('./../build/router')(app, passport);
 
-app.get('*', (req, res) => res.status(400).send({
-  message: 'Invalid URL',
-}));
+app.get('*', (req, res) => res.status(400)
+.send('Welcome to DocME Application'));
 
 const server = http.createServer(app);
 server.listen(port);
