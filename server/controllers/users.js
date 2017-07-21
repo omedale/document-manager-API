@@ -101,6 +101,14 @@ module.exports.signIn = (req, res) => {
         }
       }
       console.log('-beforepasspoert--tes2');
+      const token = jwt.sign({
+          id: response.dataValues.id,
+          email: response.dataValues.email,
+          name: response.dataValues.name,
+          role: response.dataValues.role,
+        }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        console.log('-aftertoken--tes2...');
+
       req.logIn(response.dataValues, () => {
         const token = jwt.sign({
           id: response.dataValues.id,
