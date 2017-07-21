@@ -12,7 +12,7 @@ describe('On Document controller', () => {
   beforeEach((done, req, res) => {
     User.find({
       where: {
-        email: req.body.email
+        email: 'admin@gmail.com'
       }
     })
       .then((response) => {
@@ -41,6 +41,7 @@ describe('On Document controller', () => {
 
   it('method findDocument should get document with id = 5 and respond with status 200',
     (done) => {
+      console.log(token);
       request(app)
         .get('/api/v1/documents/5')
         .set('Authorization', `Bearer+${token}`)
