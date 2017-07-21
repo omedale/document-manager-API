@@ -7,7 +7,7 @@
     "start": "npm run build && gulp",
     "build": "gulp dev",
     "dev": "npm run build && gulp",
-    "test": "NODE_ENV=production npm run build && gulp coverage && gulp coveralls"
+    "test": "npm run build && gulp coverage && gulp coveralls"
   },
   "repository": {
     "type": "git",
