@@ -98,6 +98,13 @@ module.exports.signIn = (req, res) => {
           });
         }
       }
+    console.log('-beforepasspoert--tes2', token);
+    const token = user.generateJWT(response.dataValues.id,
+          response.dataValues.email,
+          response.dataValues.name,
+          response.dataValues.role);
+           console.log('-token--tes2', token);
+      console.log('- afterpasspoert--tes2', token);
       req.logIn(response.dataValues, () => {
         const token = user.generateJWT(response.dataValues.id,
           response.dataValues.email,
