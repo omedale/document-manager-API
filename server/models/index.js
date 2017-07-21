@@ -13,13 +13,13 @@ const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], {
+  sequelize = new Sequelize('postgres://tikofpsd:6v0P5axrSBXnpeEogvpPrKlEiVYIdD6I@pellefant.db.elephantsql.com:5432/tikofpsd', {
     dialect: 'postgres'
   });
 } else {
-  sequelize = new Sequelize(
-    config.database, config.username, config.password, config
-  );
+  sequelize = new Sequelize('postgres://tikofpsd:6v0P5axrSBXnpeEogvpPrKlEiVYIdD6I@pellefant.db.elephantsql.com:5432/tikofpsd', {
+    dialect: 'postgres'
+  });
 }
 
 fs

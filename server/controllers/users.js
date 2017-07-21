@@ -1,21 +1,19 @@
-import { LocalStorage } from 'node-localstorage';
+
 
 const User = require('../models').User;
 const Document = require('../models').Document;
 const Role = require('../models').Role;
 
-const localStorage = LocalStorage('./scratch');
-
 /**
-   * To sign up users
-   * @method signUp
-   * @param {string} req
-   * @param {string} res
-   * @return {json} - returns error or registrstion successfull
+   * signUp: To creating accounts for users
+   * @function signUp
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
    */
 module.exports.signUp = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
-  req.checkBody('name', 'Invalid name').notEmpty().isAlpha();
+  req.checkBody('name', 'Invalid name').notEmpty();
   const errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -45,7 +43,6 @@ module.exports.signUp = (req, res) => {
                 registeredUser.email,
                 registeredUser.name,
                 registeredUser.role);
-              localStorage.setItem('JSONWT', token);
               return res.status(200)
                 .send({
                   message: 'successful-reg-login',
@@ -64,6 +61,13 @@ module.exports.signUp = (req, res) => {
     .catch(error => res.status(400).send({ error }));
 };
 
+/**
+   * signIn: Enables users to login to their accounts
+   * @function signIn
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.signIn = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   const errors = req.validationErrors();
@@ -96,14 +100,25 @@ module.exports.signIn = (req, res) => {
           response.dataValues.email,
           response.dataValues.name,
           response.dataValues.role);
-        localStorage.setItem('JSONWT', token);
         // return the token as JSON
-        return res.status(200).send({ message: 'successful-login', token });
+        return res.status(200).send({
+          message: 'successful-login',
+          token,
+          userId: response.dataValues.id,
+          name: response.dataValues.name });
       });
     })
     .catch(error => res.status(400).send(error));
 };
 
+/**
+   * listUsers: Enables users to get list of registered users
+   *  It includes user's documents for admin users
+   * @function listUsers
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.listUsers = (req, res) => {
   if (req.decoded.role === 'admin') {
     return User
@@ -111,19 +126,26 @@ module.exports.listUsers = (req, res) => {
         include: [{
           model: Document,
           as: 'myDocuments',
-          attributes: ['title', 'document', 'owner', 'createdAt']
+          attributes: ['id', 'title', 'document', 'owner', 'createdAt']
         }],
-        attributes: ['name', 'email', 'phoneno', 'createdAt']
+        attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
       })
       .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   } else {
     return User
-      .findAll({ attributes: ['name', 'email', 'phoneno', 'createdAt'] })
+      .findAll({ attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'] })
       .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   }
 };
+/**
+   * updateUserRole: Enables admin users to update users role
+   * @function updateUserRole
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.updateUserRole = (req, res) => {
   if (req.decoded.role === 'admin') {
     if (!Number.isInteger(Number(req.params.userId))) {
@@ -143,7 +165,7 @@ module.exports.updateUserRole = (req, res) => {
             }
           });
           if (!roleExist) {
-            return res.json({
+            return res.status(400).json({
               message: 'Invalid Role'
             });
           } else {
@@ -171,7 +193,14 @@ module.exports.updateUserRole = (req, res) => {
     });
   }
 };
-
+/**
+   * updateUser: Enables users to update their information
+   *  where email must be unique
+   * @function updateUser
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.updateUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
@@ -212,7 +241,7 @@ module.exports.updateUser = (req, res) => {
             .findById(req.params.userId)
             .then((user) => {
               if (!user) {
-                return res.status(404).send({
+                return res.status(400).send({
                   message: 'User Not Found',
                 });
               }
@@ -248,7 +277,13 @@ module.exports.updateUser = (req, res) => {
       .catch(error => res.status(400).send(error));
   }
 };
-
+/**
+   * findUser: Enables users to find other registered users
+   * @function findUser
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.findUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
@@ -257,8 +292,10 @@ module.exports.findUser = (req, res) => {
   }
   return User
     .find({
-      id: req.params.userId,
-      attributes: ['name', 'email', 'phoneno', 'createdAt'],
+      where: {
+        id: req.params.userId,
+      },
+      attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'],
     })
     .then((user) => {
       if (!user) {
@@ -271,9 +308,16 @@ module.exports.findUser = (req, res) => {
     .catch(error => res.status(400).send(error));
 };
 
+/**
+   * deleteUser: Enables users and admin users to delete account by ID
+   * @function deleteUser
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.deleteUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
-    return res.send({
+    return res.status(400).send({
       message: 'Invalid User ID'
     });
   }
@@ -295,12 +339,18 @@ module.exports.deleteUser = (req, res) => {
       })
       .catch(error => res.status(400).send(error));
   } else {
-    return res.status(404).send({
+    return res.status(400).send({
       message: 'Access Denied',
     });
   }
 };
-
+/**
+   * findUserDocument: Enables users get documents that belongs to the user
+   * @function findUserDocument
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.findUserDocument = (req, res) => {
   if (req.decoded.id === Number(req.params.userId)
     || req.decoded.role === 'admin') {
@@ -314,7 +364,7 @@ module.exports.findUserDocument = (req, res) => {
         where: {
           userId: req.params.userId,
         },
-        attributes: ['title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
       })
       .then((documents) => {
         if (documents.length === 0) {
@@ -331,7 +381,13 @@ module.exports.findUserDocument = (req, res) => {
     });
   }
 };
-
+/**
+   * searchUser: Enables users to search for other registered users
+   * @function searchUser
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.searchUser = (req, res) => {
   if (!req.query.q) {
     return res.send({
@@ -354,7 +410,13 @@ module.exports.searchUser = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
-
+/**
+   * getUserPage: Enables users to get list of registered users by page
+   * @function getUserPage
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.getUserPage = (req, res) => {
   const newPageInfo = req.params.pageNo.split('-').map((val) => {
     return val;
@@ -378,7 +440,7 @@ module.exports.getUserPage = (req, res) => {
   return User.findAll({
     offset,
     limit,
-    attributes: ['name', 'email', 'phoneno', 'createdAt']
+    attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
   })
     .then((user) => {
       if (user.length === 0) {
@@ -390,10 +452,3 @@ module.exports.getUserPage = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
-
-module.exports.test = (req, res) => {
-  return res.status(400).send({
-    message: 'Jesus'
-  });
-};
-

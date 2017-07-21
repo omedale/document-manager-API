@@ -1,6 +1,11 @@
 const LocalStrategy = require('passport-local').Strategy,
   User = require('./models/user').User;
 
+/**
+   * Defines Local passport strategy
+   * @param {object} passport
+   * @return {object} - returns authentication status and object
+   */
 module.exports = (passport) => {
   passport.use(new LocalStrategy({
     usernameField: 'email',

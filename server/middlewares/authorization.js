@@ -1,13 +1,19 @@
 import jwt from 'jsonwebtoken';
-import { LocalStorage } from 'node-localstorage';
 
-const localStorage = LocalStorage('./scratch');
-// To verify a user token
+/**
+   * verifyToken: This verifies all routes that starts with /api
+   *  It checks if there is token and check if the token is valid
+   *  if the token is valid then it decodes it and send to the next routes
+   * @function verifyToken
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @return {object} - returns response status and json data
+   */
 exports.verifyToken = (req, res, next) => {
   // checking for token
   if (req.url.startsWith('/v1/users/auth')) return next();
-
-  const token = localStorage.getItem('JSONWT');
+  const token = (req.headers.authorization).split('+')[1];
   // decoding the token
   if (token) {
     // verifies secret and checks

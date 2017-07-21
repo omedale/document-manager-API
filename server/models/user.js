@@ -3,6 +3,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+/**
+   * Defines users model
+   * @param {object} sequelize
+   * @param {object} DataTypes
+   * @return {object} - returns instance of the model
+   */
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: {
