@@ -1,4 +1,5 @@
 
+import jwt from 'jsonwebtoken';
 
 const User = require('../models').User;
 const Document = require('../models').Document;
@@ -73,7 +74,7 @@ module.exports.signIn = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   const errors = req.validationErrors();
   if (errors) {
-     console.log('errrr');
+    console.log('errrr');
     return res.status(400).send({
       message: 'Invalid Input, please provide appropriate input for all field'
     });
@@ -86,38 +87,35 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
-         console.log('err2');
+        console.log('err2');
         return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
       } else {
         if (user.validatePassword(req.body.password,
           response.dataValues.password) === false) {
-            console.log('-passpoert--tes2---errr');
+          console.log('-passpoert--tes2---errr');
           return res.status(400).send({
             message: 'Invalid Password'
           });
         }
       }
-    console.log('-beforepasspoert--tes2', token);
-    const token = user.generateJWT(response.dataValues.id,
-          response.dataValues.email,
-          response.dataValues.name,
-          response.dataValues.role);
-           console.log('-token--tes2', token);
-      console.log('- afterpasspoert--tes2', token);
+      console.log('-beforepasspoert--tes2');
       req.logIn(response.dataValues, () => {
-        const token = user.generateJWT(response.dataValues.id,
-          response.dataValues.email,
-          response.dataValues.name,
-          response.dataValues.role);
-           console.log('-token--tes2', token);
+        const token = jwt.sign({
+          id: response.dataValues.id,
+          email: response.dataValues.email,
+          name: response.dataValues.name,
+          role: response.dataValues.role,
+        }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        console.log('-token--tes2...');
         // return the token as JSON
         return res.status(200).send({
           message: 'successful-login',
           token,
           userId: response.dataValues.id,
-          name: response.dataValues.name });
+          name: response.dataValues.name
+        });
       });
     })
     .catch(error => res.status(400).send('login error'));
