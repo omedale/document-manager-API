@@ -1,7 +1,7 @@
 const request = require('supertest');
 const assert = require('chai').assert;
 require('babel-register');
-const app = require('../../build/server');
+const app = require('../../server/server');
 
 let userID;
 let userName;
