@@ -93,6 +93,7 @@ module.exports.signIn = (req, res) => {
       } else {
         if (user.validatePassword(req.body.password,
           response.dataValues.password) === false) {
+            console.log('-passpoert--tes2---errr');
           return res.status(400).send({
             message: 'Invalid Password'
           });
