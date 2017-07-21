@@ -22,8 +22,10 @@ describe('In User controller when user = admin: ', () => {
           token = res.body.token;
           userID = res.body.userId;
           userName = res.body.name;
-          done();
+        } else {
+          assert.ifError({ message: 'Connection Error' });
         }
+        done();
       });
   });
   // listUsers

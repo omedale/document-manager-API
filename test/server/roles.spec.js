@@ -21,6 +21,8 @@ describe('On Role controller', () => {
           token = res.body.token;
           userID = res.body.userId;
           userName = res.body.name;
+        } else {
+          assert.ifError({ message: 'Connection Error' });
         }
         done();
       });

@@ -22,7 +22,7 @@ describe('On Document controller', () => {
           userID = res.body.userId;
           userName = res.body.name;
         } else {
-          assert.ifError('error in connection');
+          assert.ifError({ message: 'Connection Error' });
         }
         done();
       });
