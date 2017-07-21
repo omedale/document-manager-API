@@ -69,7 +69,7 @@ module.exports.signUp = (req, res) => {
    * @return {object}  returns response status and json data
    */
 module.exports.signIn = (req, res) => {
-  console.log(req.body);
+  console.log('test2', req.body);
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   const errors = req.validationErrors();
   if (errors) {
@@ -103,6 +103,7 @@ module.exports.signIn = (req, res) => {
           response.dataValues.email,
           response.dataValues.name,
           response.dataValues.role);
+           console.log('-token--tes2', token);
         // return the token as JSON
         return res.status(200).send({
           message: 'successful-login',
@@ -111,7 +112,7 @@ module.exports.signIn = (req, res) => {
           name: response.dataValues.name });
       });
     })
-    .catch(error => res.status(400).send(error));
+    .catch(error => res.status(400).send('login error'));
 };
 
 /**
