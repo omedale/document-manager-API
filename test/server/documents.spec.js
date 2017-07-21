@@ -1,3 +1,4 @@
+const User = require('../../build/models').User;
 const request = require('supertest');
 const assert = require('chai').assert;
 require('babel-register');
@@ -8,24 +9,33 @@ let userName;
 let token;
 
 describe('On Document controller', () => {
-  beforeEach((done) => {
-    request(app)
-      .post('/api/v1/users/auth/login')
-      .send({
-        password: 'ayo',
-        email: 'admin@gmail.com'
-      })
-      .expect(200)
-      .end((err, res) => {
-        console.log(res.body);
-        if (!err) {
-          token = res.body.token;
-          userID = res.body.userId;
-          userName = res.body.name;
+  beforeEach((done, req, res) => {
+    User.find({
+      where: {
+        email: req.body.email
+      }
+    })
+      .then((response) => {
+        const user = new User();
+        if (response === null) {
+          console.log('err2');
+          return res.status(400).send({
+            message: 'Not an existing user, Please sign up'
+          });
         } else {
-          assert.ifError('Connection Error');
+          if (user.validatePassword('ayo',
+            response.dataValues.password) === false) {
+            return res.status(400).send({
+              message: 'Invalid Password'
+            });
+          }
         }
-        done();
+        console.log(':freee---');
+        const token = user.generateJWT(response.dataValues.id,
+          response.dataValues.email,
+          response.dataValues.name,
+          response.dataValues.role);
+          console.log(':freee');
       });
   });
 
