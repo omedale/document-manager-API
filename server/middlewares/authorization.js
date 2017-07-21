@@ -13,12 +13,14 @@ import jwt from 'jsonwebtoken';
 exports.verifyToken = (req, res, next) => {
   // checking for token
   if (req.url.startsWith('/v1/users/auth')) return next();
-  if (!req.headers.authorization) {
-    return res.status(400).json({
-      message: 'Please Set Token in the Header'
-    });
-  }
+  // if (!req.headers.authorization) {
+  //   return res.status(400).json({
+  //     message: 'Please Set Token in the Header'
+  //   });
+  // }
+   console.log('---authtest', req.body);
   const token = (req.headers.authorization).split('+')[1];
+   console.log('---testend', req.body);
   // decoding the token
   if (token) {
     // verifies secret and checks
@@ -28,11 +30,13 @@ exports.verifyToken = (req, res, next) => {
           message: 'Token not valid Please login'
         });
       }
+       console.log('---decode', decoded);
       // request user detail for other routes
       req.decoded = decoded;
       next();
     });
   } else {
+     console.log('---empty', res.body);
     return res.status(401).json({
       message: 'Empty Token'
     });
