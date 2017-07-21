@@ -21,6 +21,8 @@ describe('On Document controller', () => {
           token = res.body.token;
           userID = res.body.userId;
           userName = res.body.name;
+        } else {
+          assert.ifError('error in connection');
         }
         done();
       });
