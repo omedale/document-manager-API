@@ -23,7 +23,7 @@ describe('In User controller when user = admin: ', () => {
           userID = res.body.userId;
           userName = res.body.name;
         } else {
-          assert.ifError({ message: 'Connection Error' });
+          assert.ifError('Connection Error');
         }
         done();
       });

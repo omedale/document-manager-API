@@ -22,7 +22,7 @@ describe('On Role controller', () => {
           userID = res.body.userId;
           userName = res.body.name;
         } else {
-          assert.ifError({ message: 'Connection Error' });
+          assert.ifError('Connection Error');
         }
         done();
       });

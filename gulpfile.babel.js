@@ -6,6 +6,13 @@ import istanbul from 'gulp-istanbul';
 import injectModules from 'gulp-inject-modules';
 import exit from 'gulp-exit';
 import coveralls from 'gulp-coveralls';
+import yaml from 'gulp-yaml';
+
+gulp.task('yamltojson', () => {
+  gulp.src('./api/swagger/swagger.yaml')
+    .pipe(yaml({ schema: 'DEFAULT_SAFE_SCHEMA' }))
+    .pipe(gulp.dest('./public/'));
+});
 
 gulp.task('nodemon', () => {
   nodemon({
@@ -26,6 +33,7 @@ gulp.task('dev', () => {
 
 gulp.task('default', ['dev', 'nodemon'], () => {
   gulp.watch('server/**/*.js', ['dev']);
+  gulp.watch('./api/swagger/swagger.yaml', ['yamltojson']);
 });
 
 const jasmineNodeOpts = {

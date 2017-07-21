@@ -69,9 +69,11 @@ module.exports.signUp = (req, res) => {
    * @return {object}  returns response status and json data
    */
 module.exports.signIn = (req, res) => {
+  console.log(req.body);
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   const errors = req.validationErrors();
   if (errors) {
+     console.log('errrr');
     return res.status(400).send({
       message: 'Invalid Input, please provide appropriate input for all field'
     });
@@ -84,6 +86,7 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
+         console.log('err2');
         return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
@@ -108,7 +111,7 @@ module.exports.signIn = (req, res) => {
           name: response.dataValues.name });
       });
     })
-    .catch(error => res.status(400).send({ message: 'Connection Error' }));
+    .catch(error => res.status(400).send(error));
 };
 
 /**

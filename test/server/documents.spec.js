@@ -17,12 +17,13 @@ describe('On Document controller', () => {
       })
       .expect(200)
       .end((err, res) => {
+        console.log(res.body);
         if (!err) {
           token = res.body.token;
           userID = res.body.userId;
           userName = res.body.name;
         } else {
-          assert.ifError({ message: 'Connection Error' });
+          assert.ifError('Connection Error');
         }
         done();
       });

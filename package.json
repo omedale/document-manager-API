@@ -45,6 +45,7 @@
     "gulp-nodemon": "^2.2.1",
     "gulp-plumber": "^1.1.0",
     "gulp-util": "^3.0.8",
+    "gulp-yaml": "^1.0.1",
     "http": "0.0.0",
     "isparta": "^4.0.0",
     "jsonwebtoken": "^7.4.1",
@@ -58,8 +59,8 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.2.1",
     "should": "^11.2.1",
-    "through2": "^2.0.3",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "through2": "^2.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -75,6 +76,7 @@
     "nodemon": "^1.11.0",
     "npm": "^5.1.0",
     "superagent": "^3.5.2",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "swagger-ui": "^3.0.19"
   }
 }
