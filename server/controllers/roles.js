@@ -1,6 +1,13 @@
 
 const Role = require('../models').Role;
 
+/**
+   * createRole: Enables admin users to create roles
+   * @function createRole
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object} returns response status and json data
+   */
 module.exports.createRole = (req, res) => {
   if (req.decoded.role !== 'admin') {
     return res.status(400).send({
@@ -28,14 +35,26 @@ module.exports.createRole = (req, res) => {
   })
   .catch(error => res.status(400).send(error));
 };
-
+/**
+   * listRoles: Enables registered users to get available roles
+   * @function listRoles
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.listRoles = (req, res) => {
   return Role
     .findAll()
     .then(role => res.status(200).send(role))
     .catch(error => res.status(400).send(error));
 };
-
+/**
+   * updateRole: Enables admin users to update roles by ID
+   * @function updateRole
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.updateRole = (req, res) => {
   if (req.decoded.role !== 'admin') {
     return res.status(400).send({
@@ -62,7 +81,13 @@ module.exports.updateRole = (req, res) => {
     })
     .catch(error => res.status(400).send(error));
 };
-
+/**
+   * deleteRole: Enables admin users to delete roles by ID
+   * @function deleteRole
+   * @param {object} req request
+   * @param {object} res response
+   * @return {object}  returns response status and json data
+   */
 module.exports.deleteRole = (req, res) => {
   if (req.decoded.role !== 'admin') {
     return res.status(400).send({

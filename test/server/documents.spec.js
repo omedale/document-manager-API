@@ -1,10 +1,11 @@
 const request = require('supertest');
 const assert = require('chai').assert;
 require('babel-register');
-const app = require('../../server/server');
+const app = require('../../build/server');
 
 let userID;
 let userName;
+let token;
 
 describe('On Document controller', () => {
   beforeEach((done) => {
@@ -17,6 +18,7 @@ describe('On Document controller', () => {
       .expect(200)
       .end((err, res) => {
         if (!err) {
+          token = res.body.token;
           userID = res.body.userId;
           userName = res.body.name;
         }
@@ -24,16 +26,17 @@ describe('On Document controller', () => {
       });
   });
 
-  it('method findDocument should get document with id = 12 and respond with status 200',
+  it('method findDocument should get document with id = 5 and respond with status 200',
     (done) => {
       request(app)
-        .get('/api/v1/documents/12')
+        .get('/api/v1/documents/5')
+        .set('Authorization', `Bearer+${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert(res.body.id === 12, 'Document is found');
+            assert(res.body.id === 5, 'Document is found');
           } else {
             const error = new Error('Unable to find document');
             assert.ifError(error);
@@ -42,10 +45,11 @@ describe('On Document controller', () => {
         });
     });
 
-  it('method updateDocument should update title of document where id = 19 and respond with status 200',
+  it('method updateDocument should update title of document where id = 7 and respond with status 200',
     (done) => {
       request(app)
-        .put('/api/v1/documents/19')
+        .put('/api/v1/documents/7')
+        .set('Authorization', `Bearer+${token}`)
         .send({
           title: 'good test'
         })
@@ -65,6 +69,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/documents')
+        .set('Authorization', `Bearer+${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -81,7 +86,8 @@ describe('On Document controller', () => {
   it('method searchDocument should search for document where title=mydoc and respond with status 200',
     (done) => {
       request(app)
-        .get('/api/v1/search/documents/?q=mydoc')
+        .get('/api/v1/search/documents/?q=doc5')
+        .set('Authorization', `Bearer+${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -100,6 +106,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page-1')
+        .set('Authorization', `Bearer+${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)

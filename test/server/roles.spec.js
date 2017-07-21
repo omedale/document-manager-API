@@ -1,14 +1,13 @@
 import request from 'supertest';
-import app from '../../server/server';
-import './../mock/helper';
+import app from '../../build/server';
 
 const assert = require('chai').assert;
 require('babel-register');
 
 let userID;
 let userName;
-
-describe('On Document controller', () => {
+let token;
+describe('On Role controller', () => {
   beforeEach((done) => {
     request(app)
       .post('/api/v1/users/auth/login')
@@ -19,6 +18,7 @@ describe('On Document controller', () => {
       .expect(200)
       .end((err, res) => {
         if (!err) {
+          token = res.body.token;
           userID = res.body.userId;
           userName = res.body.name;
         }
@@ -26,10 +26,11 @@ describe('On Document controller', () => {
       });
   });
 
-  it('method updateRoles should update role of Roles where id = 7 and respond with status 200',
+  it('method updateRoles should update role of Roles where id = 5 and respond with status 200',
     (done) => {
       request(app)
-        .put('/api/v1/roles/7')
+        .put('/api/v1/roles/5')
+        .set('Authorization', `Bearer+${token}`)
         .send({
           role: 'testing'
         })
@@ -49,6 +50,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/roles')
+        .set('Authorization', `Bearer+${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)

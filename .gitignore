@@ -12,3 +12,4 @@ src/.DS_Store
 scratch/
 dist/
 build/
+coverage/
