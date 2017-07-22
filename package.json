@@ -7,7 +7,7 @@
     "start": "npm run build && gulp",
     "build": "gulp dev",
     "dev": "npm run build && gulp",
-    "test": "NODE_env=production npm run build && gulp coverage && gulp coveralls"
+    "test": "NODE_env=production npm run build && gulp coverage && gulp coveralls && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
