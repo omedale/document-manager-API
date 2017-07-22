@@ -1,4 +1,4 @@
-
+import jwt from 'jsonwebtoken';
 
 const User = require('../models').User;
 const Document = require('../models').Document;
@@ -37,17 +37,16 @@ module.exports.signUp = (req, res) => {
             phoneno: req.body.phoneno,
           })
           .then((registeredUser) => {
-            const token = user
-              .generateJWT(registeredUser.id,
-              registeredUser.email,
-              registeredUser.name,
-              registeredUser.role);
-            return res.status(200)
-              .send({
+            const token =  jwt.sign({
+              id: registeredUser.id,
+              email: registeredUser.email,
+              name: registeredUser.name,
+              role: registeredUser.role,
+          }, process.env.JWT_SECRET, { expiresIn: '24h' });
+            return res.status(200).send({
                 message: 'successful-reg-login',
                 token,
-                registeredUser
-              });
+                registeredUser});
           })
           .catch(error => res.status(400).send(error));
       } else {
@@ -94,11 +93,12 @@ module.exports.signIn = (req, res) => {
           });
         }
       }
-
-      const token = user.generateJWT(response.dataValues.id,
-        response.dataValues.email,
-        response.dataValues.name,
-        response.dataValues.role);
+          const token =  jwt.sign({
+              id: response.dataValues.id,
+              email: response.dataValues.email,
+              name: response.dataValues.name,
+              role: response.dataValues.role,
+          }, process.env.JWT_SECRET, { expiresIn: '24h' });
       // return the token as JSON
       return res.status(200).send({
         message: 'successful-login',

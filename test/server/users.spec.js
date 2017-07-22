@@ -413,7 +413,7 @@ describe('In User controller when user = admin: ', () => {
             if (!err) {
               assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
             } else {
-              const error = new Error('Success');
+              const error = new Error('Valid user ID');
               assert.ifError(error);
             }
             done();
@@ -435,7 +435,7 @@ describe('In User controller when user = admin: ', () => {
                 'Invalid Input, please provide appropriate input for all field',
                 'Invalid Input, please provide appropriate input for all field');
             } else {
-              const error = new Error('Success');
+              const error = new Error('Valid Input');
               assert.ifError(error);
             }
             done();
@@ -458,7 +458,7 @@ describe('In User controller when user = admin: ', () => {
                 'Access Denied',
                 'Access Denied');
             } else {
-              const error = new Error('Success');
+              const error = new Error('Access Granted');
               assert.ifError(error);
             }
             done();
@@ -480,7 +480,7 @@ describe('In User controller when user = admin: ', () => {
                 'Email Already Exist',
                 'Email Already Exist');
             } else {
-              const error = new Error('Success');
+              const error = new Error('No User with email');
               assert.ifError(error);
             }
             done();
@@ -522,17 +522,17 @@ describe('In User controller when user = admin: ', () => {
             if (!err) {
               assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
             } else {
-              const error = new Error('success');
+              const error = new Error('Valid User ID to Update Role');
               assert.ifError(error);
             }
             done();
           });
       });
 
-    it('method updateUserRole, it should not update user role where id=9 and respond with status 400',
+    it('method updateUserRole, it should not update user role where id=100 and respond with status 400',
       (done) => {
         request(app)
-          .put('/api/v1/users/role/9')
+          .put('/api/v1/users/role/100')
           .set('Authorization', `${token}`)
           .send({
             role: 'success'
@@ -542,7 +542,7 @@ describe('In User controller when user = admin: ', () => {
             if (!err) {
               assert(res.body.message === 'User Not Found', 'User Not Found');
             } else {
-              const error = new Error('success');
+              const error = new Error('Found User to Update role');
               assert.ifError(error);
             }
             done();
@@ -562,7 +562,7 @@ describe('In User controller when user = admin: ', () => {
             if (!err) {
               assert(res.body.message === 'Invalid Role', 'Invalid Role');
             } else {
-              const error = new Error('success');
+              const error = new Error('Valid role');
               assert.ifError(error);
             }
             done();
