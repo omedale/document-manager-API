@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 const User = require('../../build/models').User;
 const request = require('supertest');
 const assert = require('chai').assert;
@@ -9,13 +11,15 @@ let userName;
 let token;
 
 describe('On Document controller', () => {
+  console.log('pppppp');
   beforeEach((done, req, res) => {
-    User.find({
+    return User.find({
       where: {
         email: 'admin@gmail.com'
       }
     })
       .then((response) => {
+        console.log(response);
         const user = new User();
         if (response === null) {
           console.log('err2');
@@ -30,18 +34,18 @@ describe('On Document controller', () => {
             });
           }
         }
-        console.log(':freee---');
-        const token = user.generateJWT(response.dataValues.id,
-          response.dataValues.email,
-          response.dataValues.name,
-          response.dataValues.role);
-          console.log(':freee');
+        token = jwt.sign({
+          id: response.dataValues.id,
+          email: response.dataValues.email,
+          name: response.dataValues.name,
+          role: response.dataValues.role,
+        }, process.env.JWT_SECRET, { expiresIn: '24h' });
+          console.log(token);
+          console.log('----');
       });
   });
-
   it('method findDocument should get document with id = 5 and respond with status 200',
     (done) => {
-      console.log(token);
       request(app)
         .get('/api/v1/documents/5')
         .set('Authorization', `Bearer+${token}`)
@@ -58,12 +62,17 @@ describe('On Document controller', () => {
           done();
         });
     });
+});
 
+describe('On Document controller', () => {
   it('method updateDocument should update title of document where id = 7 and respond with status 200',
     (done) => {
+      console.log(token);
       request(app)
         .put('/api/v1/documents/7')
         .set('Authorization', `Bearer+${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
         .send({
           title: 'good test'
         })
@@ -173,3 +182,4 @@ describe('On Document controller', () => {
   //       });
   //   });
 });
+

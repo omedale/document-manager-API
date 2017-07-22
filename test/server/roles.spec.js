@@ -1,33 +1,47 @@
 import request from 'supertest';
 import app from '../../build/server';
+import jwt from 'jsonwebtoken';
 
+const User = require('../../build/models').User;
 const assert = require('chai').assert;
 require('babel-register');
 
 let userID;
 let userName;
 let token;
-describe('On Role controller', () => {
-  beforeEach((done) => {
-    request(app)
-      .post('/api/v1/users/auth/login')
-      .send({
-        password: 'ayo',
+
+
+describe('sign in', () => {
+  console.log('pppppp');
+  beforeEach((done, req, res) => {
+    User.find({
+      where: {
         email: 'admin@gmail.com'
-      })
-      .expect(200)
-      .end((err, res) => {
-        if (!err) {
-          token = res.body.token;
-          userID = res.body.userId;
-          userName = res.body.name;
+      }
+    })
+      .then((response) => {
+        const user = new User();
+        if (response === null) {
+          console.log('err2');
+          return res.status(400).send({
+            message: 'Not an existing user, Please sign up'
+          });
         } else {
-          assert.ifError('Connection Error');
+          if (user.validatePassword('ayo',
+            response.dataValues.password) === false) {
+            return res.status(400).send({
+              message: 'Invalid Password'
+            });
+          }
         }
-        done();
+        token = jwt.sign({
+          id: response.dataValues.id,
+          email: response.dataValues.email,
+          name: response.dataValues.name,
+          role: response.dataValues.role,
+        }, process.env.JWT_SECRET, { expiresIn: '24h' });
       });
   });
-
   it('method updateRoles should update role of Roles where id = 5 and respond with status 200',
     (done) => {
       request(app)
@@ -47,7 +61,9 @@ describe('On Role controller', () => {
           done();
         });
     });
-    
+});
+describe('On Role controller', () => {
+
   it('method listRoles should list all roles and respond with status 200',
     (done) => {
       request(app)
