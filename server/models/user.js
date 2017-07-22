@@ -53,8 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       email,
       name,
       role,
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    }, process.env.JWT_SECRET);
+    }, process.env.JWT_SECRET, { expiresIn: '24h' });
   };
 
   User.associate = (models) => {

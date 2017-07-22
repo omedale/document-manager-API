@@ -1,31 +1,55 @@
+import jwt from 'jsonwebtoken';
+
+const User = require('../../build/models').User;
 const request = require('supertest');
 const assert = require('chai').assert;
 require('babel-register');
-const app = require('../../server/server');
+const app = require('../../build/server');
 
 let userID;
 let userName;
 let token;
 
 describe('On Document controller', () => {
-  beforeEach((done) => {
-    request(app)
-      .post('/api/v1/users/auth/login')
-      .send({
-        password: 'ayo',
+  beforeEach((done, req, res) => {
+    return User.find({
+      where: {
         email: 'admin@gmail.com'
-      })
-      .expect(200)
-      .end((err, res) => {
-        if (!err) {
-          token = res.body.token;
-          userID = res.body.userId;
-          userName = res.body.name;
+      }
+    })
+      .then((response) => {
+        const user = new User();
+        if (response === null) {
+          return res.status(400).send({
+            message: 'Not an existing user, Please sign up'
+          });
+        } else {
+          if (user.validatePassword('ayo',
+            response.dataValues.password) === false) {
+            return res.status(400).send({
+              message: 'Invalid Password'
+            });
+          }
         }
-        done();
+        token = jwt.sign({
+          id: response.dataValues.id,
+          email: response.dataValues.email,
+          name: response.dataValues.name,
+          role: response.dataValues.role,
+        }, process.env.JWT_SECRET, { expiresIn: '24h' });
       });
   });
+  it('it should set token', () => {
+    if (token) {
+      assert.isDefined(token, 'token is defined');
+    } else {
+      const error = new Error('token not defind');
+      assert.ifError(error);
+    }
+  }, 10000);
+});
 
+describe('On Document controller', () => {
   it('method findDocument should get document with id = 5 and respond with status 200',
     (done) => {
       request(app)
@@ -44,12 +68,14 @@ describe('On Document controller', () => {
           done();
         });
     });
-
   it('method updateDocument should update title of document where id = 7 and respond with status 200',
     (done) => {
+      console.log(token);
       request(app)
         .put('/api/v1/documents/7')
         .set('Authorization', `Bearer+${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
         .send({
           title: 'good test'
         })
@@ -159,3 +185,4 @@ describe('On Document controller', () => {
   //       });
   //   });
 });
+

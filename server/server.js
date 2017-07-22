@@ -2,6 +2,7 @@ import express from 'express';
 import expressValidator from 'express-validator';
 import bodyParser from 'body-parser';
 import http from 'http';
+import path from 'path';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import auth from './../build/middlewares/authorization';
@@ -22,9 +23,10 @@ app.use('/api', auth.verifyToken);
 // reqires route file
 require('./../build/router')(app, passport);
 
-app.get('*', (req, res) => res.status(400).send({
-  message: 'Invalid URL',
-}));
+app.use(express.static(path.resolve(__dirname, './../public')));
+app.get('*', (request, response) => {
+  response.sendFile(path.resolve(__dirname, './../public', 'index.html'));
+});
 
 const server = http.createServer(app);
 server.listen(port);

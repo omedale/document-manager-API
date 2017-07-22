@@ -58,7 +58,7 @@ module.exports.signUp = (req, res) => {
         });
       }
     })
-    .catch(error => res.status(400).send({ error }));
+    .catch(error => res.status(400).send({ message: 'Connection Error' }));
 };
 
 /**
@@ -84,6 +84,7 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
+         console.log('err2');
         return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
@@ -131,12 +132,12 @@ module.exports.listUsers = (req, res) => {
         attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
       })
       .then(user => res.status(200).send(user))
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return User
       .findAll({ attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'] })
       .then(user => res.status(200).send(user))
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   }
 };
 /**
@@ -182,11 +183,11 @@ module.exports.updateUserRole = (req, res) => {
                   .then(() => res.status(200).send(user))
                   .catch(error => res.status(400).send(error));
               })
-              .catch(error => res.status(400).send(error));
+              .catch(error => res.status(400).send({ message: 'Connection Error' }));
           }
         }
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return res.status(400).send({
       message: 'Access Denied'
@@ -248,12 +249,12 @@ module.exports.updateUser = (req, res) => {
               return user
                 .update(req.body, { fields: Object.keys(req.body) })
                 .then(() => res.status(200).send(user))
-                .catch(error => res.status(400).send(error));
+                .catch(error => res.status(400).send({ message: 'Connection Error' }));
             })
-            .catch(error => res.status(400).send(error));
+            .catch(error => res.status(400).send({ message: 'Connection Error' }));
         }
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return User
       .findById(req.params.userId)
@@ -272,9 +273,9 @@ module.exports.updateUser = (req, res) => {
         return user
           .update(req.body, { fields: Object.keys(req.body) })
           .then(() => res.status(200).send(user))
-          .catch(error => res.status(400).send(error));
+          .catch(error => res.status(400).send({ message: 'Connection Error' }));
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   }
 };
 /**
@@ -305,7 +306,7 @@ module.exports.findUser = (req, res) => {
       }
       return res.status(200).send(user);
     })
-    .catch(error => res.status(400).send(error));
+    .catch(error => res.status(400).send({ message: 'Connection Error' }));
 };
 
 /**
@@ -335,9 +336,9 @@ module.exports.deleteUser = (req, res) => {
           .destroy()
           .then(() => res.status(200)
             .send({ message: 'User deleted successfully.' }))
-          .catch(error => res.status(400).send(error));
+          .catch(error => res.status(400).send({ message: 'Connection Error' }));
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return res.status(400).send({
       message: 'Access Denied',
@@ -374,7 +375,7 @@ module.exports.findUserDocument = (req, res) => {
         }
         return res.status(200).send(documents);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return res.status(400).send({
       message: 'Access Denied'
@@ -408,7 +409,7 @@ module.exports.searchUser = (req, res) => {
       }
       return res.status(200).send(user);
     })
-    .catch(error => res.status(400).send(error));
+    .catch(error => res.status(400).send({ message: 'Connection Error' }));
 };
 /**
    * getUserPage: Enables users to get list of registered users by page
@@ -450,5 +451,5 @@ module.exports.getUserPage = (req, res) => {
       }
       return res.status(200).send(user);
     })
-    .catch(error => res.status(400).send(error));
+    .catch(error => res.status(400).send({ message: 'Connection Error' }));
 };
