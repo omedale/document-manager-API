@@ -46,7 +46,7 @@ describe('On Document controller', () => {
       const error = new Error('token not defind');
       assert.ifError(error);
     }
-  });
+  }, 10000);
 });
 
 describe('On Document controller', () => {

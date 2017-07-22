@@ -48,7 +48,7 @@ describe('sign in', () => {
       assert.ifError(error);
     }
   });
-});
+}, 10000);
 describe('On Role controller', () => {
   it('method updateRoles should update role of Roles where id = 5 and respond with status 200',
     (done) => {
