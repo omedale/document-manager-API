@@ -12,7 +12,6 @@ let token;
 
 
 describe('sign in', () => {
-  console.log('pppppp');
   beforeEach((done, req, res) => {
     User.find({
       where: {
@@ -22,7 +21,6 @@ describe('sign in', () => {
       .then((response) => {
         const user = new User();
         if (response === null) {
-          console.log('err2');
           return res.status(400).send({
             message: 'Not an existing user, Please sign up'
           });
@@ -42,6 +40,16 @@ describe('sign in', () => {
         }, process.env.JWT_SECRET, { expiresIn: '24h' });
       });
   });
+  it('it should set token', () => {
+    if (token) {
+      assert.isDefined(token, 'token is defined');
+    } else {
+      const error = new Error('token not defind');
+      assert.ifError(error);
+    }
+  });
+});
+describe('On Role controller', () => {
   it('method updateRoles should update role of Roles where id = 5 and respond with status 200',
     (done) => {
       request(app)
@@ -61,8 +69,6 @@ describe('sign in', () => {
           done();
         });
     });
-});
-describe('On Role controller', () => {
 
   it('method listRoles should list all roles and respond with status 200',
     (done) => {

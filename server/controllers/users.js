@@ -69,11 +69,9 @@ module.exports.signUp = (req, res) => {
    * @return {object}  returns response status and json data
    */
 module.exports.signIn = (req, res) => {
-  console.log(req.body);
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   const errors = req.validationErrors();
   if (errors) {
-     console.log('errrr');
     return res.status(400).send({
       message: 'Invalid Input, please provide appropriate input for all field'
     });

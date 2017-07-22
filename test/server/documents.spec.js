@@ -11,7 +11,6 @@ let userName;
 let token;
 
 describe('On Document controller', () => {
-  console.log('pppppp');
   beforeEach((done, req, res) => {
     return User.find({
       where: {
@@ -19,10 +18,8 @@ describe('On Document controller', () => {
       }
     })
       .then((response) => {
-        console.log(response);
         const user = new User();
         if (response === null) {
-          console.log('err2');
           return res.status(400).send({
             message: 'Not an existing user, Please sign up'
           });
@@ -40,10 +37,19 @@ describe('On Document controller', () => {
           name: response.dataValues.name,
           role: response.dataValues.role,
         }, process.env.JWT_SECRET, { expiresIn: '24h' });
-          console.log(token);
-          console.log('----');
       });
   });
+  it('it should set token', () => {
+    if (token) {
+      assert.isDefined(token, 'token is defined');
+    } else {
+      const error = new Error('token not defind');
+      assert.ifError(error);
+    }
+  });
+});
+
+describe('On Document controller', () => {
   it('method findDocument should get document with id = 5 and respond with status 200',
     (done) => {
       request(app)
@@ -62,9 +68,6 @@ describe('On Document controller', () => {
           done();
         });
     });
-});
-
-describe('On Document controller', () => {
   it('method updateDocument should update title of document where id = 7 and respond with status 200',
     (done) => {
       console.log(token);
