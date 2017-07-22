@@ -37,19 +37,17 @@ module.exports.signUp = (req, res) => {
             phoneno: req.body.phoneno,
           })
           .then((registeredUser) => {
-            req.logIn(registeredUser, () => {
-              const token = user
-                .generateJWT(registeredUser.id,
-                registeredUser.email,
-                registeredUser.name,
-                registeredUser.role);
-              return res.status(200)
-                .send({
-                  message: 'successful-reg-login',
-                  token,
-                  registeredUser
-                });
-            });
+            const token = user
+              .generateJWT(registeredUser.id,
+              registeredUser.email,
+              registeredUser.name,
+              registeredUser.role);
+            return res.status(200)
+              .send({
+                message: 'successful-reg-login',
+                token,
+                registeredUser
+              });
           })
           .catch(error => res.status(400).send(error));
       } else {
@@ -84,7 +82,7 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
-         console.log('err2');
+        console.log('err2');
         return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
@@ -96,17 +94,17 @@ module.exports.signIn = (req, res) => {
           });
         }
       }
-      req.logIn(response.dataValues, () => {
-        const token = user.generateJWT(response.dataValues.id,
-          response.dataValues.email,
-          response.dataValues.name,
-          response.dataValues.role);
-        // return the token as JSON
-        return res.status(200).send({
-          message: 'successful-login',
-          token,
-          userId: response.dataValues.id,
-          name: response.dataValues.name });
+
+      const token = user.generateJWT(response.dataValues.id,
+        response.dataValues.email,
+        response.dataValues.name,
+        response.dataValues.role);
+      // return the token as JSON
+      return res.status(200).send({
+        message: 'successful-login',
+        token,
+        userId: response.dataValues.id,
+        name: response.dataValues.name
       });
     })
     .catch(error => res.status(400).send(error));
