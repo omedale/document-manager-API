@@ -54,7 +54,7 @@ describe('On Role controller', () => {
     (done) => {
       request(app)
         .put('/api/v1/roles/5')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .send({
           role: 'testing'
         })
@@ -74,7 +74,7 @@ describe('On Role controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/roles')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)

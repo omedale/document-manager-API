@@ -18,7 +18,7 @@ exports.verifyToken = (req, res, next) => {
       message: 'Please Set Token in the Header'
     });
   }
-  const token = (req.headers.authorization).split('+')[1];
+  const token = req.headers.authorization;
   // decoding the token
   if (token) {
     // verifies secret and checks

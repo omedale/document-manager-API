@@ -34,7 +34,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .get('/api/v1/users')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -55,7 +55,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .send({
@@ -78,7 +78,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .send({
@@ -102,7 +102,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .send({
@@ -125,7 +125,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .send({
@@ -152,7 +152,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .post('/api/v1/users/auth/register')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .send({
@@ -178,7 +178,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .post('/api/v1/users/auth/register')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .send({
@@ -202,7 +202,7 @@ describe('In User controller when user = admin: ', () => {
     //   (done) => {
     //     request(app)
     //       .post('/api/v1/users/auth/register')
-    //       .set('Authorization', `Bearer+${token}`)
+    //       .set('Authorization', `${token}`)
     //       .set('Accept', 'application/json')
     //       .expect('Content-Type', /json/)
     //       .send({
@@ -230,7 +230,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .get('/api/v1/users/1')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -248,7 +248,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .get('/api/v1/users/-')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(400)
@@ -266,7 +266,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .get('/api/v1/users/90')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(404)
@@ -288,7 +288,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .delete('/api/v1/users/-')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(400)
@@ -306,7 +306,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .delete('/api/v1/users/90')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(404)
@@ -326,7 +326,7 @@ describe('In User controller when user = admin: ', () => {
     (done) => {
       request(app)
         .get('/api/v1/users/4/documents')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -344,7 +344,7 @@ describe('In User controller when user = admin: ', () => {
     (done) => {
       request(app)
         .get('/api/v1/search/users/?q=fellow')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -362,7 +362,7 @@ describe('In User controller when user = admin: ', () => {
     (done) => {
       request(app)
         .get('/api/v1/users/page/page-1')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -382,7 +382,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/2')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             phoneno: '7033390748',
             name: 'Testing master',
@@ -404,7 +404,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/-')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             phoneno: '7033390748'
           })
@@ -423,7 +423,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/2')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             phoneno: '7033390748',
             email: 'omedalemail.com'
@@ -446,7 +446,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/25')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             phoneno: '7033390748',
             email: 'omedale@gmail.com'
@@ -468,7 +468,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/2')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             phoneno: '7033390748',
             email: 'omedale@gmail.com'
@@ -493,7 +493,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/role/4')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             role: 'success'
           })
@@ -513,7 +513,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/role/-')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             role: 'success'
           })
@@ -533,7 +533,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/role/9')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             role: 'success'
           })
@@ -553,7 +553,7 @@ describe('In User controller when user = admin: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/role/4')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             role: 'nothing'
           })
@@ -595,7 +595,7 @@ describe('In User controller when user = fellow: ', () => {
       (done) => {
         request(app)
           .get('/api/v1/users')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
@@ -616,7 +616,7 @@ describe('In User controller when user = fellow: ', () => {
       (done) => {
         request(app)
           .put('/api/v1/users/role/4')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .send({
             role: 'success'
           })
@@ -639,7 +639,7 @@ describe('In User controller when user = fellow: ', () => {
       (done) => {
         request(app)
           .delete('/api/v1/users/90')
-          .set('Authorization', `Bearer+${token}`)
+          .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(400)

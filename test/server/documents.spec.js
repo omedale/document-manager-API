@@ -54,7 +54,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/documents/5')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -73,7 +73,7 @@ describe('On Document controller', () => {
       console.log(token);
       request(app)
         .put('/api/v1/documents/7')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .send({
@@ -95,7 +95,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/documents')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -113,7 +113,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/search/documents/?q=doc5')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -132,7 +132,7 @@ describe('On Document controller', () => {
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page-1')
-        .set('Authorization', `Bearer+${token}`)
+        .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
