@@ -13,6 +13,7 @@ const Role = require('../models').Role;
 module.exports.signUp = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   req.checkBody('name', 'Invalid name').notEmpty();
+  req.checkBody('password', 'Invalid password').notEmpty();
   const errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -35,7 +36,7 @@ module.exports.signUp = (req, res) => {
             password: user.generateHash(req.body.password),
             phoneno: req.body.phoneno,
           })
-           .then((registeredUser) => {
+          .then((registeredUser) => {
             req.logIn(registeredUser, () => {
               const token = user
                 .generateJWT(registeredUser.id,
@@ -44,9 +45,10 @@ module.exports.signUp = (req, res) => {
                 registeredUser.role);
               return res.status(200)
                 .send({
-                  message: 'successful-reg-login',
+                  message: 'Registration Successfull and Logged In',
                   token,
-                  registeredUser
+                  email: registeredUser.email,
+                  name: registeredUser.name
                 });
             });
           })
@@ -57,7 +59,7 @@ module.exports.signUp = (req, res) => {
         });
       }
     })
-    .catch(error => res.status(400).send({ message: 'Connection Error' }));
+    .catch(() => res.status(400).send({ message: 'Connection Error' }));
 };
 
 /**
@@ -69,6 +71,7 @@ module.exports.signUp = (req, res) => {
    */
 module.exports.signIn = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
+  req.checkBody('password', 'Invalid password').notEmpty();
   const errors = req.validationErrors();
   if (errors) {
     return res.status(400).send({
@@ -101,10 +104,11 @@ module.exports.signIn = (req, res) => {
           response.dataValues.role);
         // return the token as JSON
         return res.status(200).send({
-          message: 'successful-login',
+          message: 'Login Successful',
           token,
-          userId: response.dataValues.id,
-          name: response.dataValues.name });
+          email: response.dataValues.email,
+          name: response.dataValues.name
+        });
       });
     })
     .catch(error => res.status(400).send(error));
@@ -122,20 +126,14 @@ module.exports.listUsers = (req, res) => {
   if (req.decoded.role === 'admin') {
     return User
       .findAll({
-        include: [{
-          model: Document,
-          as: 'myDocuments',
-          attributes: ['id', 'title', 'document', 'owner', 'createdAt']
-        }],
         attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
       })
       .then(user => res.status(200).send(user))
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
   } else {
-    return User
-      .findAll({ attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'] })
-      .then(user => res.status(200).send(user))
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
   }
 };
 /**
@@ -177,14 +175,18 @@ module.exports.updateUserRole = (req, res) => {
                 }
                 return user
                   .update({ role: req.body.role })
-                  .then(() => res.status(200).send(user))
+                  .then(() => res.status(200).send({
+                    email: user.email,
+                    role: user.role,
+                    message: 'Role Updated'
+                  }))
                   .catch(error => res.status(400).send(error));
               })
-              .catch(error => res.status(400).send({ message: 'Connection Error' }));
+              .catch(() => res.status(400).send({ message: 'Connection Error' }));
           }
         }
       })
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return res.status(400).send({
       message: 'Access Denied'
@@ -240,13 +242,19 @@ module.exports.updateUser = (req, res) => {
               }
               return user
                 .update(req.body, { fields: Object.keys(req.body) })
-                .then(() => res.status(200).send(user))
-                .catch(error => res.status(400).send({ message: 'Connection Error' }));
+                .then(() => res.status(200).send({
+                  message: 'Account Updated',
+                  email: user.email,
+                  phoneno: user.phoneno,
+                  name: user.name,
+                  role: user.role
+                }))
+                .catch(() => res.status(400).send({ message: 'Connection Error' }));
             })
-            .catch(error => res.status(400).send({ message: 'Connection Error' }));
+            .catch(() => res.status(400).send({ message: 'Connection Error' }));
         }
       })
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return User
       .findById(req.params.userId)
@@ -264,10 +272,16 @@ module.exports.updateUser = (req, res) => {
         }
         return user
           .update(req.body, { fields: Object.keys(req.body) })
-          .then(() => res.status(200).send(user))
-          .catch(error => res.status(400).send({ message: 'Connection Error' }));
+          .then(() => res.status(200).send({
+            message: 'Account Updated',
+            email: user.email,
+            phoneno: user.phoneno,
+            name: user.name,
+            role: user.role
+          }))
+          .catch(() => res.status(400).send({ message: 'Connection Error' }));
       })
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
   }
 };
 /**
@@ -283,22 +297,28 @@ module.exports.findUser = (req, res) => {
       message: 'Invalid User ID'
     });
   }
-  return User
-    .find({
-      where: {
-        id: req.params.userId,
-      },
-      attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'],
-    })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send({
-          message: 'User Not Found',
-        });
-      }
-      return res.status(200).send(user);
-    })
-    .catch(error => res.status(400).send({ message: 'Connection Error' }));
+  if (req.decoded.role === 'admin') {
+    return User
+      .find({
+        where: {
+          id: req.params.userId,
+        },
+        attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'],
+      })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send({
+            message: 'User Not Found',
+          });
+        }
+        return res.status(200).send(user);
+      })
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
+  } else {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
 };
 
 /**
@@ -328,9 +348,9 @@ module.exports.deleteUser = (req, res) => {
           .destroy()
           .then(() => res.status(200)
             .send({ message: 'User deleted successfully.' }))
-          .catch(error => res.status(400).send({ message: 'Connection Error' }));
+          .catch(() => res.status(400).send({ message: 'Connection Error' }));
       })
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return res.status(400).send({
       message: 'Access Denied',
@@ -345,6 +365,26 @@ module.exports.deleteUser = (req, res) => {
    * @return {object}  returns response status and json data
    */
 module.exports.findUserDocument = (req, res) => {
+  const newPageInfo = req.params.pageNo.split('-').map((val) => {
+    return val;
+  });
+  if (!newPageInfo[1]) {
+    return res.status(400).send({
+      message: 'No Page number'
+    });
+  }
+  if (!Number.isInteger(Number(newPageInfo[1]))) {
+    return res.status(400).send({
+      message: 'Invalid request'
+    });
+  }
+  const page = Number(newPageInfo[1]);
+  let offset = 0;
+  const limit = 10;
+
+  if (page !== 1) {
+    offset = (page - 1) * 10;
+  }
   if (req.decoded.id === Number(req.params.userId)
     || req.decoded.role === 'admin') {
     if (!Number.isInteger(Number(req.params.userId))) {
@@ -354,10 +394,12 @@ module.exports.findUserDocument = (req, res) => {
     }
     return Document
       .findAll({
+        offset,
+        limit,
         where: {
           userId: req.params.userId,
         },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
       })
       .then((documents) => {
         if (documents.length === 0) {
@@ -367,7 +409,7 @@ module.exports.findUserDocument = (req, res) => {
         }
         return res.status(200).send(documents);
       })
-      .catch(error => res.status(400).send({ message: 'Connection Error' }));
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
   } else {
     return res.status(400).send({
       message: 'Access Denied'
@@ -387,21 +429,27 @@ module.exports.searchUser = (req, res) => {
       message: 'No key word supplied'
     });
   }
-  return User
-    .findAll({
-      where: {
-        name: (req.query.q).toLowerCase()
-      }
-    })
-    .then((user) => {
-      if (user.length === 0) {
-        return res.status(404).send({
-          message: 'User Not Found',
-        });
-      }
-      return res.status(200).send(user);
-    })
-    .catch(error => res.status(400).send({ message: 'Connection Error' }));
+  if (req.decoded.role === 'admin') {
+    return User
+      .findAll({
+        where: {
+          name: (req.query.q).toLowerCase()
+        }
+      })
+      .then((user) => {
+        if (user.length === 0) {
+          return res.status(404).send({
+            message: 'User Not Found',
+          });
+        }
+        return res.status(200).send(user);
+      })
+      .catch(() => res.status(400).send({ message: 'Connection Error' }));
+  } else {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
 };
 /**
    * getUserPage: Enables users to get list of registered users by page
@@ -411,6 +459,11 @@ module.exports.searchUser = (req, res) => {
    * @return {object}  returns response status and json data
    */
 module.exports.getUserPage = (req, res) => {
+  if (req.decoded.role !== 'admin') {
+    return res.status(400).send({
+      message: 'Access Denied'
+    });
+  }
   const newPageInfo = req.params.pageNo.split('-').map((val) => {
     return val;
   });
@@ -443,5 +496,5 @@ module.exports.getUserPage = (req, res) => {
       }
       return res.status(200).send(user);
     })
-    .catch(error => res.status(400).send({ message: 'Connection Error' }));
+    .catch(() => res.status(400).send({ message: 'Connection Error' }));
 };
