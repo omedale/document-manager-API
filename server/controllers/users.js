@@ -1,5 +1,4 @@
 
-
 const User = require('../models').User;
 const Document = require('../models').Document;
 const Role = require('../models').Role;
@@ -36,7 +35,7 @@ module.exports.signUp = (req, res) => {
             password: user.generateHash(req.body.password),
             phoneno: req.body.phoneno,
           })
-          .then((registeredUser) => {
+           .then((registeredUser) => {
             req.logIn(registeredUser, () => {
               const token = user
                 .generateJWT(registeredUser.id,
@@ -84,7 +83,6 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
-         console.log('err2');
         return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
@@ -154,7 +152,6 @@ module.exports.updateUserRole = (req, res) => {
         message: 'Invalid User ID'
       });
     }
-
     Role
       .findAll()
       .then((response) => {
@@ -206,11 +203,6 @@ module.exports.updateUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
       message: 'Invalid User ID'
-    });
-  }
-  if (req.decoded.id !== Number(req.params.userId)) {
-    return res.status(400).send({
-      message: 'Access Denied'
     });
   }
   if (req.body.email) {
