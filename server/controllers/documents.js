@@ -12,7 +12,7 @@ module.exports.createDocument = (req, res) => {
   req.checkBody('title', 'Title is required').notEmpty();
   const errors = req.validationErrors();
   if (errors) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid Input, please provide appropriate input for all field'
     });
   }
@@ -34,9 +34,9 @@ module.exports.createDocument = (req, res) => {
             .then(document => res.status(201).send(document))
             .catch(error => res.status(400).send(error));
         } else {
-          return res.json({
+          return res.status(400).send({
             message:
-            `Invalid Document Access, you may save document with your role: '${req.decoded.role}' `
+            'Invalid Document Access, you may save document with your role'
           });
         }
       }
@@ -52,7 +52,7 @@ module.exports.createDocument = (req, res) => {
    */
 module.exports.updateDocument = (req, res) => {
   if (!Number.isInteger(Number(req.params.documentId))) {
-    return res.json({
+    return res.status(400).json({
       message: 'Invalid document ID'
     });
   }
@@ -168,7 +168,7 @@ module.exports.findDocument = (req, res) => {
    */
 module.exports.deleteDocument = (req, res) => {
   if (!Number.isInteger(Number(req.params.documentId))) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid document ID'
     });
   }
@@ -283,12 +283,12 @@ module.exports.getDocumentPage = (req, res) => {
     return val;
   });
   if (!newPageInfo[1]) {
-    return res.json({
+    return res.status(400).send({
       message: 'No Page number'
     });
   }
   if (!Number.isInteger(Number(newPageInfo[1]))) {
-    return res.json({
+    return res.status(400).send({
       message: 'Invalid request'
     });
   }

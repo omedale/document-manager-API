@@ -83,7 +83,6 @@ module.exports.signIn = (req, res) => {
     .then((response) => {
       const user = new User();
       if (response === null) {
-        console.log('err2');
         return res.status(400).send({
           message: 'Not an existing user, Please sign up'
         });
@@ -153,7 +152,6 @@ module.exports.updateUserRole = (req, res) => {
         message: 'Invalid User ID'
       });
     }
-
     Role
       .findAll()
       .then((response) => {
@@ -205,11 +203,6 @@ module.exports.updateUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
       message: 'Invalid User ID'
-    });
-  }
-  if (req.decoded.id !== Number(req.params.userId)) {
-    return res.status(400).send({
-      message: 'Access Denied'
     });
   }
   if (req.body.email) {

@@ -1,6 +1,5 @@
 import usersController from './controllers/users';
 import documentController from './controllers/documents';
-import roleController from './controllers/roles';
 
 module.exports = (app, passport) => {
   app.use(passport.initialize());
@@ -28,12 +27,4 @@ module.exports = (app, passport) => {
   app.get('/api/v1/search/documents/',
   documentController.searchDocument);
   app.get('/api/v1/documents/page/:pageNo', documentController.getDocumentPage);
-
-// Roles routes
-  app.post(
-    '/api/v1/roles', roleController.createRole);
-  app.get('/api/v1/roles', roleController.listRoles);
-  app.put(
-    '/api/v1/roles/:roleId', roleController.updateRole);
-  app.delete('/api/v1/roles/:roleId', roleController.deleteRole);
 };

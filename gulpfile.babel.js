@@ -37,7 +37,7 @@ gulp.task('default', ['dev', 'nodemon'], () => {
 });
 
 const jasmineNodeOpts = {
-  timeout: 100000,
+  timeout: 200000,
   includeStackTrace: false,
   color: true
 };
