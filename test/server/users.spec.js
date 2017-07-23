@@ -64,7 +64,7 @@ describe('In User controller when user = admin: ', () => {
           .end((err, res) => {
             if (!err) {
               assert(res.body.message ===
-                'successful-login', 'User Successfull Login');
+                'Login Successful', 'User Successfull Login');
             } else {
               const error = new Error('Unable to login');
               assert.ifError(error);
@@ -132,7 +132,6 @@ describe('In User controller when user = admin: ', () => {
           })
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
             if (!err) {
               assert(res.body.message ===
                 'Invalid Password', 'Invalid Password');
@@ -187,7 +186,6 @@ describe('In User controller when user = admin: ', () => {
           })
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
             if (!err) {
               assert(res.body.message ===
                 'Existing user cannot sign up again. Please sign in');
@@ -198,30 +196,6 @@ describe('In User controller when user = admin: ', () => {
             done();
           });
       });
-    // it('method signUp, it should respond with status 200',
-    //   (done) => {
-    //     request(app)
-    //       .post('/api/v1/users/auth/register')
-    //       .set('Authorization', `${token}`)
-    //       .set('Accept', 'application/json')
-    //       .expect('Content-Type', /json/)
-    //       .send({
-    //         password: 'ayo',
-    //         email: 'tester2@gmail.com',
-    //         name: 'tester2'
-    //       })
-    //       .expect(200)
-    //       .end((err, res) => {
-    //         if (!err) {
-    //           assert(res.body.message ===
-    //             'successful-reg-login. success');
-    //         } else {
-    //           const error = new Error('failed');
-    //           assert.ifError(error);
-    //         }
-    //         done();
-    //       });
-    //   });
   });
 
   // findUser
@@ -253,7 +227,6 @@ describe('In User controller when user = admin: ', () => {
           .expect('Content-Type', /json/)
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
             if (!err) {
               assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
             } else {
@@ -272,7 +245,6 @@ describe('In User controller when user = admin: ', () => {
           .expect('Content-Type', /json/)
           .expect(404)
           .end((err, res) => {
-            console.log(res.body);
             if (!err) {
               assert(res.body.message === 'User Not Found', 'User Not Found');
             } else {
@@ -314,7 +286,6 @@ describe('In User controller when user = admin: ', () => {
           .expect('Content-Type', /json/)
           .expect(404)
           .end((err, res) => {
-            console.log(res.body);
             if (!err) {
               assert(res.body.message === 'User Not Found', 'User Not Found');
             } else {
@@ -326,10 +297,12 @@ describe('In User controller when user = admin: ', () => {
       });
   });
 
-  it('method findUserDocument should get documents where userId=4 and respond with status 200',
+// findUserDocumentByPage
+  describe('PUT /api/v1/users/userId/documents/pageNo triggers: ', () => {
+    it('method findUserDocument should get documents where userId=4 and respond with status 200',
     (done) => {
       request(app)
-        .get('/api/v1/users/1/documents')
+        .get('/api/v1/users/1/documents/page-1')
         .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -344,6 +317,9 @@ describe('In User controller when user = admin: ', () => {
           done();
         });
     });
+
+  });
+
   it('method searchUser should search for user where name=ayomakun and respond with status 200',
     (done) => {
       request(app)
@@ -616,20 +592,20 @@ describe('In User controller when user = fellow: ', () => {
       });
   });
 
-  describe('GET api/v1/users trigegrs: ', () => {
-    it('method listUsers, it should list all users where users is not an admin and respond with status 200',
+  describe('GET api/v1/users triggers: ', () => {
+    it('method listUsers, it should not get list all users where users is not an admin and respond with status 400',
       (done) => {
         request(app)
           .get('/api/v1/users')
           .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
-          .expect(200)
+          .expect(400)
           .end((err, res) => {
             if (!err) {
-              assert.isDefined(res.body, 'Users is found');
+              assert(res.body.message === 'Access Denied', 'Access Denied');
             } else {
-              const error = new Error('user not found');
+              const error = new Error('Access Denied For non Admin ');
               assert.ifError(error);
             }
             done();
@@ -708,5 +684,64 @@ describe('In User controller when user = fellow: ', () => {
           });
       });
   });
+  describe('GET api/v1/users/3 triggers: ', () => {
+    it('method findUser, it should not get user where id= 3 and user = fellow and respond with status 400',
+      (done) => {
+        request(app)
+          .get('/api/v1/users/3')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Access Denied', 'Access Denied');
+            } else {
+              const error = new Error('Access Denied for non Admin');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
+  describe('GET api/v1/search/users triggers: ', () => {
+    it('method searchUser, it should not get user where key=fellow and user = fellow and respond with status 400',
+      (done) => {
+        request(app)
+          .get('/api/v1/search/users/?q=fellow')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Access Denied', 'Access Denied');
+            } else {
+              const error = new Error('Access Denied for non Admin');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
+  describe('GET /api/v1/users/page/page-1 triggers: ', () => {
+    it('method getUserByUser, it should not get user where pageId=page-1 and user = fellow and respond with status 400',
+      (done) => {
+        request(app)
+          .get('/api/v1/users/page/page-1')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Access Denied', 'Access Denied');
+            } else {
+              const error = new Error('Access Denied for non Admin');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
 });
-

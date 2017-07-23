@@ -88,7 +88,6 @@ describe('Set Document controller for test', () => {
       name: process.env.NAME,
       role: process.env.ADMINROLE,
     }, process.env.JWT_SECRET, { expiresIn: '24h' });
-    console.log(token);
 
     request(app)
       .post('/api/v1/users/auth/register')
@@ -151,7 +150,7 @@ describe('On Document controller', () => {
       .expect(201)
       .end((err, res) => {
         if (!err) {
-          assert(res.body.userId === 1, 'Document is Saved');
+          assert(res.body.message === 'Document Saved', 'Document is Saved');
         } else {
           const error = new Error('Unable to save document');
           assert.ifError(error);
@@ -190,15 +189,12 @@ describe('On Document controller', () => {
           if (!err) {
             assert(res.body.message === 'Document Not Found', 'Document is found');
           } else {
-            console.log(err);
             const error = new Error(err);
             assert.ifError(error);
           }
           done();
         });
     });
-
-
 
   it('method updateDocument should update title of document where id = 1 and respond with status 200',
     (done) => {
@@ -214,7 +210,7 @@ describe('On Document controller', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert(res.body.document === 'Andela is Fun', 'Document updated');
+            assert(res.body.message === 'Update Successful', 'Document updated');
           } else {
             const error = new Error('Update failed');
             assert.ifError(error);
@@ -395,8 +391,6 @@ describe('On Document controller', () => {
     });
 });
 
-
-
 describe('In Document controller ', () => {
 
   beforeEach((done) => {
@@ -526,7 +520,7 @@ describe('In Document controller ', () => {
         .expect(201)
         .end((err, res) => {
           if (!err) {
-            assert(res.body.userId === 2, 'Document is Saved');
+            assert(res.body.message === 'Document Saved', 'Document is Saved');
           } else {
             const error = new Error('Unable to save document');
             assert.ifError(error);
@@ -620,7 +614,6 @@ describe('In Document controller ', () => {
           if (!err) {
             assert(res.body.message === 'Invalid document ID', 'Invalid document ID');
           } else {
-            console.log(err);
             const error = new Error(err);
             assert.ifError(error);
           }
@@ -636,7 +629,6 @@ describe('In Document controller ', () => {
         .expect('Content-Type', /json/)
         .expect(404)
         .end((err, res) => {
-          console.log(res.body);
           if (!err) {
             assert(res.body.message === 'Document Not Found', 'Document Not Found');
           } else {

@@ -31,8 +31,10 @@ module.exports.createDocument = (req, res) => {
               userId: req.decoded.id,
               access: req.body.access
             })
-            .then(document => res.status(201).send(document))
-            .catch(error => res.status(400).send(error));
+            .then(() => res.status(201).send({
+              message: 'Document Saved'
+            }))
+            .catch(() => res.status(400).send('Connection Error'));
         } else {
           return res.status(400).send({
             message:
@@ -74,10 +76,12 @@ module.exports.updateDocument = (req, res) => {
       }
       return document
         .update(req.body, { fields: Object.keys(req.body) })
-        .then(updatedDocument => res.status(200).send(updatedDocument))
-        .catch(error => res.status(400).send(error));
+        .then(() => res.status(200).send({
+          message: 'Update Successful'
+        }))
+        .catch(() => res.status(400).send('Connection Error'));
     })
-    .catch(error => res.status(400).send(error));
+    .catch(() => res.status(400).send('Connection Error'));
 };
 /**
    * listDocuments: This allows registered users get saved documents,
@@ -92,18 +96,18 @@ module.exports.listDocuments = (req, res) => {
   if (req.decoded.role === 'admin') {
     return Document
       .findAll({
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'document', 'access', 'owner', 'createdAt']
       })
       .then(documents => res.status(200).send(documents))
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   } else {
     return Document
       .findAll({
         where: { access: [req.decoded.role, 'public'] },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
       })
       .then(documents => res.status(200).send(documents))
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   }
 };
 
@@ -126,7 +130,7 @@ module.exports.findDocument = (req, res) => {
     return Document
       .find({
         where: { id: req.params.documentId },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (!document) {
@@ -136,7 +140,7 @@ module.exports.findDocument = (req, res) => {
         }
         return res.status(200).send(document);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   } else {
     return Document
       .find({
@@ -144,7 +148,7 @@ module.exports.findDocument = (req, res) => {
           id: req.params.documentId,
           access: [req.decoded.role, 'public']
         },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (!document) {
@@ -154,7 +158,7 @@ module.exports.findDocument = (req, res) => {
         }
         return res.status(200).send(document);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   }
 };
 /**
@@ -189,9 +193,9 @@ module.exports.deleteDocument = (req, res) => {
           .destroy()
           .then(() => res.status(200)
             .send({ message: 'Document deleted successfully.' }))
-          .catch(error => res.status(400).send(error));
+          .catch(() => res.status(400).send('Connection Error'));
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   }
   return Document
     .find({
@@ -210,9 +214,9 @@ module.exports.deleteDocument = (req, res) => {
         .destroy()
         .then(() => res.status(200)
           .send({ message: 'Document deleted successfully.' }))
-        .catch(error => res.status(400).send(error));
+        .catch(() => res.status(400).send('Connection Error'));
     })
-    .catch(error => res.status(400).send(error));
+    .catch(() => res.status(400).send('Connection Error'));
 };
 /**
    * searchDocument: This allows registered users get documents by search key
@@ -236,7 +240,7 @@ module.exports.searchDocument = (req, res) => {
         where: {
           title: (req.query.q).toLowerCase()
         },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (document.length === 0) {
@@ -246,7 +250,7 @@ module.exports.searchDocument = (req, res) => {
         }
         return res.status(200).send(document);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   } else {
     return Document
       .findAll({
@@ -255,7 +259,7 @@ module.exports.searchDocument = (req, res) => {
           title: (req.query.q).toLowerCase(),
           access: [req.decoded.role, 'private', 'public'],
         },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
+        attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
       })
       .then((document) => {
         if (document.length === 0) {
@@ -265,7 +269,7 @@ module.exports.searchDocument = (req, res) => {
         }
         return res.status(200).send(document);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   }
 };
 /**
@@ -313,7 +317,7 @@ module.exports.getDocumentPage = (req, res) => {
         }
         return res.status(200).send(docs);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   } else {
     return Document.findAll({
       offset,
@@ -331,6 +335,6 @@ module.exports.getDocumentPage = (req, res) => {
         }
         return res.status(200).send(docs);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(() => res.status(400).send('Connection Error'));
   }
 };
