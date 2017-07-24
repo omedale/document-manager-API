@@ -240,6 +240,11 @@ module.exports.updateUser = (req, res) => {
                   message: 'User Not Found',
                 });
               }
+              if (req.decoded.id !== req.params.userId) {
+                return res.status(400).send({
+                  message: 'Access Denied'
+                });
+              }
               return user
                 .update(req.body, { fields: Object.keys(req.body) })
                 .then(() => res.status(200).send({
@@ -247,7 +252,8 @@ module.exports.updateUser = (req, res) => {
                   email: user.email,
                   phoneno: user.phoneno,
                   name: user.name,
-                  role: user.role
+                  role: user.role,
+                  id: user.id
                 }))
                 .catch(() => res.status(400).send({ message: 'Connection Error' }));
             })
@@ -270,6 +276,12 @@ module.exports.updateUser = (req, res) => {
         if (req.body.role) {
           req.body.role = req.decoded.role;
         }
+        console.log(req.decoded.id +'-----'+ req.params.userId);
+          if (req.decoded.id != req.params.userId) {
+                return res.status(400).send({
+                  message: 'Access Denied'
+                });
+              }
         return user
           .update(req.body, { fields: Object.keys(req.body) })
           .then(() => res.status(200).send({
@@ -277,7 +289,8 @@ module.exports.updateUser = (req, res) => {
             email: user.email,
             phoneno: user.phoneno,
             name: user.name,
-            role: user.role
+            role: user.role,
+            id: user.id
           }))
           .catch(() => res.status(400).send({ message: 'Connection Error' }));
       })
@@ -303,7 +316,7 @@ module.exports.findUser = (req, res) => {
         where: {
           id: req.params.userId,
         },
-        attributes: ['id', 'name', 'email', 'phoneno', 'createdAt'],
+        attributes: ['id', 'name', 'role', 'email', 'phoneno', 'createdAt'],
       })
       .then((user) => {
         if (!user) {
@@ -434,7 +447,8 @@ module.exports.searchUser = (req, res) => {
       .findAll({
         where: {
           name: (req.query.q).toLowerCase()
-        }
+        },
+        attributes: ['id', 'name', 'role', 'email', 'phoneno', 'createdAt'],
       })
       .then((user) => {
         if (user.length === 0) {
