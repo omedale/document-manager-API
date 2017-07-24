@@ -198,6 +198,138 @@ describe('In User controller when user = admin: ', () => {
       });
   });
 
+   // updateUsers
+  describe('PUT /api/v1/users/1 trigegrs: ', () => {
+    it('method updateUser should update phone number of user where id=2 and respond with status 200',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/1')
+          .set('Authorization', `${token}`)
+          .send({
+            phoneno: '7033390748',
+            name: 'Testing master',
+            role: 'admin'
+          })
+          .expect(200)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.phoneno === '7033390748', 'Users information updated');
+            } else {
+              const error = new Error('Update failed');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+          it('method updateUser should update phone number of user where id=2 and respond with status 200',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/2')
+          .set('Authorization', `${token}`)
+          .send({
+            phoneno: '7033390748',
+            name: 'Testing master',
+            role: 'admin'
+          })
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Access Denied', 'Access Denied');
+            } else {
+              const error = new Error('Access Denied');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+
+    it('method updateUser, it should not update where id = - and respond with status 400',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/-')
+          .set('Authorization', `${token}`)
+          .send({
+            phoneno: '7033390748'
+          })
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
+            } else {
+              const error = new Error('Valid user ID');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+    it('method updateUser, it should not update where id = 2 and email = omedalemail.com and respond with status 400',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/2')
+          .set('Authorization', `${token}`)
+          .send({
+            phoneno: '7033390748',
+            email: 'omedalemail.com'
+          })
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message ===
+                'Invalid Input, please provide appropriate input for all field',
+                'Invalid Input, please provide appropriate input for all field');
+            } else {
+              const error = new Error('Valid Input');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+    it('method updateUser, it should not update where id = 21and email = admin@gemail.com and respond with status 400',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/1')
+          .set('Authorization', `${token}`)
+          .send({
+            phoneno: '7033390748',
+            email: 'admin@gmail.com'
+          })
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message ===
+                'Email Already Exist',
+                'Email Already Exist');
+            } else {
+              const error = new Error('No User with email');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+    it('method updateUser, it should not update where id = 99 and email = kkk@gemail.com and respond with status 400',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/99')
+          .set('Authorization', `${token}`)
+          .send({
+            phoneno: '7033390748',
+            role: 'fellow',
+            name: 'femi'
+          })
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message ===
+                'User Not Found',
+                'User Not Found');
+            } else {
+              const error = new Error('No User found');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
   // findUser
   describe('GET /api/v1/users/1 trigegrs: ', () => {
     it('method findUser should get user with id=1 and respond with status 200',
@@ -504,142 +636,6 @@ describe('In User controller when user = fellow: ', () => {
           });
       });
   });
-  // updateUsers
-  describe('PUT /api/v1/users/2 trigegrs: ', () => {
-    it('method updateUser should update phone number of user where id=2 and respond with status 200',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/3')
-          .set('Authorization', `${token}`)
-          .send({
-            phoneno: '7033390748',
-            name: 'Testing master',
-            role: 'admin'
-          })
-          .expect(200)
-          .end((err, res) => {
-            if (!err) {
-              assert(res.body.phoneno === '7033390748', 'Users information updated');
-            } else {
-              const error = new Error('Update failed');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-    it('method updateUser should update phone number of user where id=2 and respond with status 200',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/2')
-          .set('Authorization', `${token}`)
-          .send({
-            email: 'jesus@gmail.com'
-          })
-          .expect(400)
-          .end((err, res) => {
-              console.log('.....5', res.body);
-            if (!err) {
-              assert(res.body.message === 'Access Denied', 'Access Denied');
-            } else {
-              const error = new Error('Update=failed');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-
-    it('method updateUser, it should not update where id = - and respond with status 400',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/-')
-          .set('Authorization', `${token}`)
-          .send({
-            phoneno: '7033390748'
-          })
-          .expect(400)
-          .end((err, res) => {
-              console.log('.....4', res.body);
-            if (!err) {
-              assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
-            } else {
-              const error = new Error('Valid user ID');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-    it('method updateUser, it should not update where id = 4 and email = omedalemail.com and respond with status 400',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/2')
-          .set('Authorization', `${token}`)
-          .send({
-            phoneno: '7033390748',
-            email: 'omedalemail.com'
-          })
-          .expect(400)
-          .end((err, res) => {
-              console.log('.....3', res.body);
-            if (!err) {
-              assert(res.body.message ===
-                'Invalid Input, please provide appropriate input for all field',
-                'Invalid Input, please provide appropriate input for all field');
-            } else {
-              const error = new Error('Valid Input');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-    it('method updateUser, it should not update where id = 2 and email = omedal@gemail.com and respond with status 400',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/1')
-          .set('Authorization', `${token}`)
-          .send({
-            phoneno: '7033390748',
-            email: 'admin@gmail.com'
-          })
-          .expect(400)
-          .end((err, res) => {
-              console.log('.....2', res.body);
-            if (!err) {
-              assert(res.body.message ===
-                'Email Already Exist',
-                'Email Already Exist');
-            } else {
-              const error = new Error('No User with email');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-    it('method updateUser, it should not update where id = 99 and email = omedal@gemail.com and respond with status 400',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/99')
-          .set('Authorization', `${token}`)
-          .send({
-            phoneno: '7033390748',
-            email: 'kkkk@gmail.com',
-            role: 'fellow',
-            name: 'femi'
-          })
-          .expect(400)
-          .end((err, res) => {
-            console.log('.....1', res.body);
-            if (!err) {
-              assert(res.body.message ===
-                'User Not Found',
-                'User Not Found');
-            } else {
-              const error = new Error('No User found');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
   // Delete user
   describe('DELETE: /api/v1/users/- triggers ', () => {
     it('method deleteUser, it should respond with User Not Found where id=90, role=fellow and respond with status 400',
@@ -662,31 +658,7 @@ describe('In User controller when user = fellow: ', () => {
           });
       });
   });
-  describe('PUT: /api/v1/users/99 triggers ', () => {
-    it('method updateUser, it should not update where id = 99 and respond with status 400',
-      (done) => {
-        request(app)
-          .put('/api/v1/users/99')
-          .set('Authorization', `${token}`)
-          .send({
-            phoneno: '7033390748',
-            role: 'fellow',
-            name: 'femi'
-          })
-          .expect(404)
-          .end((err, res) => {
-            if (!err) {
-              assert(res.body.message ===
-                'User Not Found',
-                'User Not Found');
-            } else {
-              const error = new Error('No User found');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
+
   describe('GET api/v1/users/3 triggers: ', () => {
     it('method findUser, it should not get user where id= 3 and user = fellow and respond with status 400',
       (done) => {

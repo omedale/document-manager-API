@@ -225,77 +225,36 @@ module.exports.updateUser = (req, res) => {
           return res.status(400).send({
             message: 'Email Already Exist'
           });
-        } else {
-          if (req.body.name) {
-            req.body.name = (req.body.name).toLowerCase();
-          }
-          if (req.body.role) {
-            req.body.role = req.decoded.role;
-          }
-          return User
-            .findById(req.params.userId)
-            .then((user) => {
-              if (!user) {
-                return res.status(400).send({
-                  message: 'User Not Found',
-                });
-              }
-              if (req.decoded.id !== req.params.userId) {
-                return res.status(400).send({
-                  message: 'Access Denied'
-                });
-              }
-              return user
-                .update(req.body, { fields: Object.keys(req.body) })
-                .then(() => res.status(200).send({
-                  message: 'Account Updated',
-                  email: user.email,
-                  phoneno: user.phoneno,
-                  name: user.name,
-                  role: user.role,
-                  id: user.id
-                }))
-                .catch(() => res.status(400).send({ message: 'Connection Error' }));
-            })
-            .catch(() => res.status(400).send({ message: 'Connection Error' }));
         }
-      })
-      .catch(() => res.status(400).send({ message: 'Connection Error' }));
-  } else {
-    return User
-      .findById(req.params.userId)
-      .then((user) => {
-        if (!user) {
-          return res.status(404).send({
-            message: 'User Not Found',
-          });
-        }
-        if (req.body.name) {
-          req.body.name = (req.body.name).toLowerCase();
-        }
-        if (req.body.role) {
-          req.body.role = req.decoded.role;
-        }
-        console.log(req.decoded.id +'-----'+ req.params.userId);
-          if (req.decoded.id != req.params.userId) {
-                return res.status(400).send({
-                  message: 'Access Denied'
-                });
-              }
-        return user
-          .update(req.body, { fields: Object.keys(req.body) })
-          .then(() => res.status(200).send({
-            message: 'Account Updated',
-            email: user.email,
-            phoneno: user.phoneno,
-            name: user.name,
-            role: user.role,
-            id: user.id
-          }))
-          .catch(() => res.status(400).send({ message: 'Connection Error' }));
       })
       .catch(() => res.status(400).send({ message: 'Connection Error' }));
   }
+  return User
+    .findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(400).send({
+          message: 'User Not Found',
+        });
+      }
+      if (Number(req.decoded.id) !== Number(req.params.userId)) {
+        return res.status(400).send({
+          message: 'Access Denied'
+        });
+      }
+      return user
+        .update(req.body, { fields: Object.keys(req.body) })
+        .then(() => res.status(200).send({
+          message: 'Account Updated',
+          email: user.email,
+          phoneno: user.phoneno,
+          name: user.name,
+          role: user.role,
+          id: user.id
+        }))
+        .catch(() => res.status(400).send({ message: 'Connection Error' }));
+    })
+    .catch(() => res.status(400).send({ message: 'Connection Error' }));
 };
 /**
    * findUser: Enables users to find other registered users
