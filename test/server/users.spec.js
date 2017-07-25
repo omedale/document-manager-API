@@ -8,7 +8,7 @@ let userID;
 let userName;
 let token;
 
-describe('In User controller when user = admin: ', () => {
+describe('In User controller when user is not an admin: ', () => {
   beforeEach((done) => {
     request(app)
       .post('/api/v1/users/auth/login')
@@ -198,7 +198,7 @@ describe('In User controller when user = admin: ', () => {
       });
   });
 
-   // updateUsers
+  // updateUsers
   describe('PUT /api/v1/users/1 trigegrs: ', () => {
     it('method updateUser should update phone number of user where id=2 and respond with status 200',
       (done) => {
@@ -221,7 +221,7 @@ describe('In User controller when user = admin: ', () => {
             done();
           });
       });
-          it('method updateUser should update phone number of user where id=2 and respond with status 200',
+    it('method updateUser should update phone number of user where id=2 and respond with status 200',
       (done) => {
         request(app)
           .put('/api/v1/users/2')
@@ -388,7 +388,7 @@ describe('In User controller when user = admin: ', () => {
       });
   });
 
-// Delete user
+  // Delete user
   describe('DELETE: /api/v1/users/- triggers ', () => {
     it('method delteUser, it should not delete user where id=- and respond with status 400',
       (done) => {
@@ -429,66 +429,69 @@ describe('In User controller when user = admin: ', () => {
       });
   });
 
-// findUserDocumentByPage
-  describe('PUT /api/v1/users/userId/documents/pageNo triggers: ', () => {
+  // findUserDocumentByPage
+  describe('GET /api/v1/users/userId/documents/:pageNo triggers: ', () => {
     it('method findUserDocument should get documents where userId=4 and respond with status 200',
-    (done) => {
-      request(app)
-        .get('/api/v1/users/1/documents/page-1')
-        .set('Authorization', `${token}`)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (!err) {
-            assert((res.body).length >= 0, 'Documents found');
-          } else {
-            const error = new Error('Cannot find document');
-            assert.ifError(error);
-          }
-          done();
-        });
-    });
-
+      (done) => {
+        request(app)
+          .get('/api/v1/users/1/documents/page-1')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end((err, res) => {
+            if (!err) {
+              assert((res.body).length >= 0, 'Documents found');
+            } else {
+              const error = new Error('Cannot find document');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
   });
-
-  it('method searchUser should search for user where name=ayomakun and respond with status 200',
-    (done) => {
-      request(app)
-        .get('/api/v1/search/users/?q=fellow')
-        .set('Authorization', `${token}`)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (!err) {
-            assert((res.body).length >= 0, 'Users found');
-          } else {
-            const error = new Error('Cannot find user');
-            assert.ifError(error);
-          }
-          done();
-        });
-    });
-  it('method getUserByPage should return first 10 users and respond with status 200',
-    (done) => {
-      request(app)
-        .get('/api/v1/users/page/page-1')
-        .set('Authorization', `${token}`)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          if (!err) {
-            assert((res.body).length >= 0, 'Users found');
-          } else {
-            const error = new Error('Cannot find user');
-            assert.ifError(error);
-          }
-          done();
-        });
-    });
-
+  // SeacrhUser
+  describe('GET /api/v1/search/users/?q={key} triggers: ', () => {
+    it('method searchUser should search for user where name=ayomakun and respond with status 200',
+      (done) => {
+        request(app)
+          .get('/api/v1/search/users/?q=fellow')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end((err, res) => {
+            if (!err) {
+              assert((res.body).length >= 0, 'Users found');
+            } else {
+              const error = new Error('Cannot find user');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
+  // GetUserByPage
+  describe('GET /api/v1/users/page/:pageNo triggers: ', () => {
+    it('method getUserByPage should return first 10 users and respond with status 200',
+      (done) => {
+        request(app)
+          .get('/api/v1/users/page/page-1')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end((err, res) => {
+            if (!err) {
+              assert((res.body).length >= 0, 'Users found');
+            } else {
+              const error = new Error('Cannot find user');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
   // UpdateUserRole
   describe('POST api/v1/users/role/4 trigegrs: ', () => {
     it('method updateUserRole should update user role where id=4 and respond with status 200',
@@ -574,7 +577,7 @@ describe('In User controller when user = admin: ', () => {
 });
 
 
-describe('In User controller when user = fellow: ', () => {
+describe('In User controller when user is not an admin ', () => {
   beforeEach((done) => {
     request(app)
       .post('/api/v1/users/auth/login')

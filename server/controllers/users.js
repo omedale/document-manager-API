@@ -182,7 +182,8 @@ module.exports.updateUserRole = (req, res) => {
                   }))
                   .catch(error => res.status(400).send(error));
               })
-              .catch(() => res.status(400).send({ message: 'Connection Error' }));
+              .catch(() => res.status(400)
+              .send({ message: 'Connection Error' }));
           }
         }
       })

@@ -219,7 +219,7 @@
         <ul class="search-results"></ul>
       <div id="toc" class="toc-list-h1">
           <li>
-            <a href="#welcome-to-docme-api-documentation" class="toc-h1 toc-link" data-title="WELCOME TO DocMe API DOCUMENTATION">WELCOME TO DocMe API DOCUMENTATION</a>
+            <a href="#docme-api-documentation" class="toc-h1 toc-link" data-title="DocMe API DOCUMENTATION">DocMe API DOCUMENTATION</a>
           </li>
           <li>
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
@@ -299,7 +299,7 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='welcome-to-docme-api-documentation'>WELCOME TO DocMe API DOCUMENTATION</h1><h1 id='introduction'>Introduction</h1>
+        <h1 id='docme-api-documentation'>DocMe API DOCUMENTATION</h1><h1 id='introduction'>Introduction</h1>
 <p>Welcome to the DocME API! Our APIs provide you all you need to develop a documement management system, you can create document, complete with roles and privileges. </p>
 
 <p>Each document defines access rights; the document defines which roles can access it. Also, each document specifies the date it was created. All users are categorize by roles and it is the responisbility of the admin to change role at any point in time.</p>
@@ -307,7 +307,7 @@
 <p>All APIs in DocMe are RESTful, you can be assure of consistent response for all request made.</p>
 <h1 id='authentication'>Authentication</h1>
 <blockquote>
-<p>To authorize, use this code:</p>
+<p>All routes were protected with JSON WEB TOKEN which is send to client after successful registration or login</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="kr">import</span> <span class="nx">jwt</span> <span class="nx">from</span> <span class="p">(</span><span class="s1">'jswonwebtoken'</span><span class="p">);</span>
 

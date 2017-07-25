@@ -3,86 +3,98 @@
 [![Code Climate](https://codeclimate.com/github/omedale/DOCME-CP2/badges/gpa.svg)](https://codeclimate.com/github/omedale/DOCME-CP2)
 
 # Introduction
-DocMe is full stack document management system which uses roles and privileges to categorize documents. To access any document you must have access right and you must have a particular role. The document are also arranged based on date created
+DocMe is full stack document management system which uses roles and privileges to categorize documents. To access any document you must have access right and you must have a particular role. The document are also arranged based on date created.
 
-## Features
+# Basic Features
 <ul>
 <li>Users can view documents based on access right</li>
 <li>Users can search for documents based on access right</li>
-<li>User can save document based on access right</li>
-<li>User can edit document based on access right</li>
-<li>Admin user has right to all functionality</li>
+<li>Users can create document and specify right</li>
+<li>User can edit document based on priviledges and access right</li>
+<li>User can delete document</li>
+<li>Admin User can search for documents</li>
+<li>Admin user get list users by page</li>
+<li>User get list documents by page</li>
 </ul>
 
-## Technology
+# Endpoints
 
-*  **[React](https://facebook.github.io/react/)** - A JavaScript library for building user interfaces
+## Users
+
+* Create User **[POST:  /api/v1/users/auth/register]()**
+* Login **[POST:  /api/v1/users/auth/login]()**
+* List Users **[GET:  /api/v1/users]()**
+* Edit User **[PUT:  /api/v1/users/:userId]()**
+* Find User **[GET:  /api/v1/users/:userId]()**
+* DELETE User **[DELETE:  /api/v1/users/:userId]()**
+* Find User Documents **[PUT:  /api/v1/users/:userId/documents/:pageNo]()**
+* Search Users **[GET:  /api/v1/search/users/?q={search key}]()**
+* List Users by page **[GET:  /api/v1/users/page/:pageNo]()**
+* Update User role **[PUT:  /api/v1/users/role/:userId]()**
+
+## Documents
+* Create Documents **[POST:  /api/v1/documents]()**
+* Edit Documents **[PUT:  /api/v1/documents/:documentId]()**
+* Delete Documents **[DELETE:  /api/v1/documents/:documentId]()**
+* List Documents **[GET:  /api/v1/documents]()**
+* Search Documents **[GET:  /api/v1/search/documents/?q={search key}]()**
+* Find Documents **[GET:  /api/v1/documents/:documentId]()**
+* List Documents by Page **[GET:  /api/v1/documents/page/:pageNo]()**
+
+### Note: 
+    $ pageNo must be in the following format page-1, page-2 ....
+
+# Technology
+
+*  **[bcrypt](https://www.npmjs.com/package/bcrypt)** - Used to hash user's password
+*  **[Chai](https://www.npmjs.com/package/chai)** - Chai is used together with jasmine to test this application
 *  **[Express](https://expressjs.com/)** - Express is Node.js web application framework
-*  **[Enzyme](https://www.npmjs.com/package/enzyme)** - Enzyme is used together with mocha, chai and expect.js to test this application
-*  **[axios](https://www.npmjs.com/package/axios)** - Used to make GET requests to external API's
-*  **[webpack](https://www.npmjs.com/package/react-router-dom)** - Used to bundle the app's js and scss files for usage in the browser
-*  **[sequelize](https://www.npmjs.com/package/sequelize)** - Enables authentication with Google
-*  **[flux](https://www.npmjs.com/package/flux)** - It enables the app to implement the flux architecture
-  *  **[jest](https://www.google.com.ng/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwj7kJqXk8rUAhXkLMAKHW2ICPwQFggkMAA&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjest&usg=AFQjCNG6mScpYVllIQqsYUFlECVccwfTwg&sig2=UGTyMGDHitKf0V22sgLKXA)** - Used with mocha for test coverage report
-*  **[express](https://www.npmjs.com/package/express)** - Used as the web server for this application
+*  **[Gulp](https://www.npmjs.com/package/gulp)** - Was used for task runner
+*  **[Gulp-bable](https://www.npmjs.com/package/gulp-babel)** - Transpile codes in ES6 to ES5
+*  **[gulp-istanbul](https://www.npmjs.com/package/gulp-istanbul)** - to generate coverage file
+*  **[Gulp-Jasmine](https://www.npmjs.com/package/gulp-jasmine)** - It enables us to test all the endpoints and controllers
+*  **[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)** - It was used user authriaztion and authentication
+*  **[sequelize](https://www.npmjs.com/package/sequelize)** - Used for ORMs database
 
 
-## Development Dependencies
-*  The following depencies are required by the app during developmment
-  *  **[eslint](https://www.npmjs.com/package/eslint)** - This is a javascript syntax highlighter used to highligh syntax error during the development of this app
-  *  **[jsdom](https://www.npmjs.com/package/jsdom)**, **[jsdom-global](https://www.npmjs.com/package/jsdom-global)**, **[mocha-jsdom](https://www.npmjs.com/package/mocha-jsdom)**, **[mock-local-storage](https://www.npmjs.com/package/mock-local-storage)** - Used to emulate web browser during application testing.
-   *  **[node-sass](https://www.npmjs.com/package/node-sass)**, **[sass-loader](https://www.npmjs.com/package/sass-loader)** - This enables the app to use sass (.scss) directly in scripts
-  *  **[sinon](https://www.npmjs.com/package/sinon)** - Used with mocha and enzyme for mocking React components during test.
-
-
-  ## Dependencies
+# Development Dependencies
 
 *  **[babel-cli](https://www.npmjs.com/package/babel-cli)** - It enables the app scripts to be tested with babel from the command line
+*  The following depencies are required by the app during developmment
+  *  **[eslint](https://www.npmjs.com/package/eslint)** - This is a javascript syntax highlighter used to highligh syntax error during the development of this app
+  * **[gulp-nodemon](https://www.npmjs.com/package/gulp-nodemon)** - to watch the files in the directory for any files change
+  * **[supertest](https://www.npmjs.com/package/supertest)** - to run endpoint test
+
+# Dependencies
 *  **[babel-core](https://www.npmjs.com/package/babel-core)** - It compiles es6 used in the app to es5
 *  **[babel-eslint](https://www.npmjs.com/package/babel-eslint)** - Used with ESlint to lint syntax errors
-*  **[babel-loader](https://www.npmjs.com/package/babel-loader)** - Used with Webpack to transpile javascript codes
-*  **[babel-plugin-react-html-attrs](https://www.npmjs.com/package/babel-plugin-react-html-attrs)** - It help convert JSX `class` attribute into `className` 
 *  **[Babel-register](https://www.npmjs.com/package/babel-register)** - This framework helps to compile from es6 to es5
-*  **[css-loader](https://www.npmjs.com/package/css-loader)** - The  css-loader is used with webpack and it interprets @import and url() like import/require()
 *  **[coveralls](https://www.npmjs.com/package/coveralls)** - Display test coverage
 *  **[dotenv](https://www.npmjs.com/package/dotenv)** - To protect secret ID
-*  **[json-loader](https://www.npmjs.com/package/json-loader)** - Enables the app to inport json files.
-*  **[json-loader](https://www.npmjs.com/package/json-loader)** - Enables the app to inport json files.
-* **[keymirror](https://www.npmjs.com/package/keymirror)** - used to create an object with values equal to its key names in constant files
 * **[nodemon](https://www.npmjs.com/package/nodemon)** - to watch the files in the directory for any files change
 * **[path](https://www.npmjs.com/package/nodemon)** - to get paths during production
-* **[prop-type](https://www.npmjs.com/package/prop-types)** - used to document the intended types of properties passed to components
-*  **[react-loading](https://www.npmjs.com/package/react-loading)** - used to add animation while app is loading
-*  **[react-router-dom](https://www.npmjs.com/package/react-router-dom)** - Used to perform app routing
-*  **[sass-loader](https://www.npmjs.com/package/sass-loader)** - Used for loading sass style
-
-## Front End Dependencies
-*  **[Font Awesome Icons](https://fontawesome.io/icons/)** - All font used were from Font Awesome library 
-
 
 
 # Installation
 
     - clone the project to new folder, copy and paste the commands below on your terminal
-    $ git clone https://github.com/omedale/d0-checkpoint1-newsapp.git
+    $ git clone https://github.com/omedale/DOCME-CP2.git
 
     -install dependencies
     $ npm install
 
     -start the project
-    $ npm run serve
+    $ npm start
 
 
 ## Tests
-*  The tests have been written using Jest and Enzyme.
+*  The tests have been written using Gulp-Jasmine and Chai.
 *  They are run using the **`coverage`** tool in order to generate test coverage reports.
 
      -To run test
 
          $ npm test
 
-## Limitations
-News saved to favorite can only be view on the browser used to save the news, user cannot view favorite news on another browser.
 
 ## License
 

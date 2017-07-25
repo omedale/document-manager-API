@@ -42,7 +42,7 @@ describe('Set Document controller for test', () => {
           })
             .then((err) => {
               if (!err) {
-                 Role.bulkCreate([{
+                Role.bulkCreate([{
                   role: 'admin'
                 },
                 {
@@ -57,7 +57,7 @@ describe('Set Document controller for test', () => {
                 {
                   role: 'tester'
                 }
-              ]).then((err) => {
+                ]).then((err) => {
                   if (!err) {
                     console.log('roles created');
                   }
@@ -133,7 +133,7 @@ describe('Set Document controller for test', () => {
   }, 10000);
 });
 
-describe('On Document controller', () => {
+describe('On Document controller when user is an admin', () => {
   beforeEach((done) => {
     request(app)
       .post('/api/v1/documents')
@@ -159,7 +159,7 @@ describe('On Document controller', () => {
       });
   });
 
-  it('method findDocument should get document with id = 1, when user is an admin and respond with status 200',
+  it('route GET: /api/v1/documents/1, should get document with id = 1, when user is an admin and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents/1')
@@ -177,7 +177,7 @@ describe('On Document controller', () => {
           done();
         });
     });
-  it('method findDocument, it should not get document where id = 90, user = admin and respond with status 400',
+  it('route GET: /api/v1/documents/90, should not get document where id = 90, user = admin and respond with status 400',
     (done) => {
       request(app)
         .get('/api/v1/documents/90')
@@ -196,7 +196,7 @@ describe('On Document controller', () => {
         });
     });
 
-  it('method updateDocument should update title of document where id = 1 and respond with status 200',
+  it('route PUT: /api/v1/documents/1, should update title of document where id = 1 and respond with status 200',
     (done) => {
       request(app)
         .put('/api/v1/documents/1')
@@ -219,7 +219,7 @@ describe('On Document controller', () => {
         });
     });
 
-  it('method updateDocument should update title of document where id = 9 and respond with status 404',
+  it('route PUT /api/v1/documents/9, should update title of document where id = 9 and respond with status 404',
     (done) => {
       request(app)
         .put('/api/v1/documents/9')
@@ -241,7 +241,7 @@ describe('On Document controller', () => {
         });
     });
 
-  it('method updateDocument, it should not update where id = - and respond with status 400',
+  it('route /api/v1/documents/-, should not update where id = - and respond with status 400',
     (done) => {
       request(app)
         .put('/api/v1/documents/-')
@@ -264,7 +264,7 @@ describe('On Document controller', () => {
     });
 
 
-  it('method listDocuments should list all documents and respond with status 200',
+  it('route GET /api/v1/documents, should list all documents and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents')
@@ -282,7 +282,7 @@ describe('On Document controller', () => {
           done();
         });
     });
-  it('method searchDocument should search for document where title=test title and respond with status 200',
+  it('route GET /api/v1/search/documents/?q=test title, should search for document where title=test title and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/search/documents/?q=test title')
@@ -301,7 +301,7 @@ describe('On Document controller', () => {
         });
     });
 
-  it('method getDocumentByPage should return first 10 documents and respond with status 200',
+  it('route GET: /api/v1/documents/page/page-1 should return first 10 documents and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page-1')
@@ -319,7 +319,7 @@ describe('On Document controller', () => {
           done();
         });
     });
-  it('method deleteDocument, it should delete document where id = 2, user = admin and respond with status 200',
+  it('route /api/v1/documents/2, should delete document where id = 2, user = admin and respond with status 200',
     (done) => {
       request(app)
         .delete('/api/v1/documents/2')
@@ -331,14 +331,13 @@ describe('On Document controller', () => {
           if (!err) {
             assert(res.body.message === 'Document deleted successfully.', 'Document deleted successfully.');
           } else {
-            console.log(err);
             const error = new Error(err);
             assert.ifError(error);
           }
           done();
         });
     });
-  it('method createDocument, it should not create document when title is empty and respond with status 400',
+  it('route POST: /api/v1/documents, should not create document when title is empty and respond with status 400',
     (done) => {
       request(app)
         .post('/api/v1/documents')
@@ -364,7 +363,7 @@ describe('On Document controller', () => {
         });
     });
 
-  it('method createDocument, it should not create document when role=badroleand respond with status 400',
+  it('route POST /api/v1/documents, should not create document when role=badroleand respond with status 400',
     (done) => {
       request(app)
         .post('/api/v1/documents')
@@ -391,7 +390,7 @@ describe('On Document controller', () => {
     });
 });
 
-describe('In Document controller ', () => {
+describe('In Document controller when user is not an admin', () => {
 
   beforeEach((done) => {
     request(app)
@@ -411,7 +410,7 @@ describe('In Document controller ', () => {
       });
 
   });
-  it('method getDocumentByPage should return no documents found when padeId = page-hg, role=fellow and respond with status 200',
+  it('route GET: /api/v1/documents/page/page-hg, should return no documents found when padeId = page-hg, role=fellow and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page-hg')
@@ -420,7 +419,6 @@ describe('In Document controller ', () => {
         .expect('Content-Type', /json/)
         .expect(400)
         .end((err, res) => {
-          console.log(res.body);
           if (!err) {
             assert(res.body.message === 'Invalid request', 'Invalid request');
           } else {
@@ -430,7 +428,7 @@ describe('In Document controller ', () => {
           done();
         });
     });
-  it('method getDocumentByPage should return no documents found when padeId = page, role=fellow and respond with status 200',
+  it('route GET: /api/v1/documents/page/page, should return no documents found when padeId = page, role=fellow and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page')
@@ -448,7 +446,7 @@ describe('In Document controller ', () => {
           done();
         });
     });
-  it('method findDocument should get document where id = 1, role = fellow and respond with status 200',
+  it('route GET: /api/v1/documents/1 should get document where id = 1, role = fellow and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents/1')
@@ -460,14 +458,13 @@ describe('In Document controller ', () => {
           if (!err) {
             assert(res.body.id === 1, 'Document is found');
           } else {
-            console.log(err);
             const error = new Error('Unable to find document');
             assert.ifError(error);
           }
           done();
         });
     });
-  it('method getDocumentByPage should return first 10 documents and respond with status 200',
+  it('route GET /api/v1/documents/page/page-1, should return first 10 documents and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page-1')
@@ -485,7 +482,7 @@ describe('In Document controller ', () => {
           done();
         });
     });
-  it('method getDocumentByPage should return no documents found when padeId = page-2, role = fellow and respond with status 404',
+  it('route GET /api/v1/documents/page/page-2, should return no documents found when padeId = page-2, role = fellow and respond with status 404',
     (done) => {
       request(app)
         .get('/api/v1/documents/page/page-2')
@@ -503,7 +500,7 @@ describe('In Document controller ', () => {
           done();
         });
     });
-  it('method findDocument, it should not get document where id = 90, role = fellow and respond with status 200',
+  it('route POST /api/v1/documents, it should not get document where id = 90, role = fellow and respond with status 200',
     (done) => {
       request(app)
         .post('/api/v1/documents')
@@ -538,7 +535,6 @@ describe('In Document controller ', () => {
           if (!err) {
             assert(res.body.message === 'Document Not Found', 'Document is found');
           } else {
-            console.log(err);
             const error = new Error(err);
             assert.ifError(error);
           }
@@ -546,7 +542,7 @@ describe('In Document controller ', () => {
         });
     });
 
-  it('method listDocuments, should list all documents where user is a role and respond with status 200',
+  it('route GET: /api/v1/documents, should list all documents where user is a role and respond with status 200',
     (done) => {
       request(app)
         .get('/api/v1/documents')
@@ -564,7 +560,7 @@ describe('In Document controller ', () => {
           done();
         });
     });
-  it('method deleteDocument, it should delete document where id = 12, role = fellow and respond with status 200',
+  it('route DELETE /api/v1/documents/12, should delete document where id = 12, role = fellow and respond with status 200',
     (done) => {
       request(app)
         .delete('/api/v1/documents/12')
@@ -576,14 +572,13 @@ describe('In Document controller ', () => {
           if (!err) {
             assert(res.body.message === 'Document deleted successfully.', 'Document deleted successfully.');
           } else {
-            console.log(err);
             const error = new Error(err);
             assert.ifError(error);
           }
           done();
         });
     });
-  it('method deleteDocument, it should not delete document where id = 40, role = fellow and respond with status 400',
+  it('route DELETE /api/v1/documents/40, should not delete document where id = 40, role = fellow and respond with status 400',
     (done) => {
       request(app)
         .delete('/api/v1/documents/40')
@@ -595,14 +590,13 @@ describe('In Document controller ', () => {
           if (!err) {
             assert(res.body.message === 'Document Not Found', 'Document Not Found');
           } else {
-            console.log(err);
             const error = new Error(err);
             assert.ifError(error);
           }
           done();
         });
     });
-  it('method deleteDocument, it should delete document where id = -, role = fellow and respond with status 400',
+  it('route DELETE /api/v1/documents/-, should delete document where id = -, role = fellow and respond with status 400',
     (done) => {
       request(app)
         .delete('/api/v1/documents/-')
@@ -620,7 +614,7 @@ describe('In Document controller ', () => {
           done();
         });
     });
-  it('method searchDocument, it should not get document where title=test title, role = fellow and respond with status 404',
+  it('route GET: /api/v1/search/documents/?q=test title, should not get document where title=test title, role = fellow and respond with status 404',
     (done) => {
       request(app)
         .get('/api/v1/search/documents/?q=test title')
