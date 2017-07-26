@@ -16,7 +16,6 @@ ratings:
   paths:
   - "**.es6"
   - "**.js"
-  - "**.jsx"
 exclude_paths:
 - node_modules/**/*
 - test/**/*
