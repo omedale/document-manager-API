@@ -2,12 +2,12 @@ const Document = require('../models').Document;
 const Role = require('../models').Role;
 
 /**
-   * createDocument: This allows registered users create documents
-   * @function createDocument
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * createDocument: This allows registered users create documents
+ * @function createDocument
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.createDocument = (req, res) => {
   req.checkBody('title', 'Title is required').notEmpty();
   const errors = req.validationErrors();
@@ -20,9 +20,9 @@ module.exports.createDocument = (req, res) => {
     .findAll()
     .then((response) => {
       if (response !== null) {
-        if (req.body.access === 'public'
-          || req.body.access === 'private'
-          || req.body.access === req.decoded.role) {
+        if (req.body.access === 'public' ||
+          req.body.access === 'private' ||
+          req.body.access === req.decoded.role) {
           return Document
             .create({
               title: (req.body.title).toLowerCase(),
@@ -37,8 +37,7 @@ module.exports.createDocument = (req, res) => {
             .catch(() => res.status(400).send('Connection Error'));
         } else {
           return res.status(400).send({
-            message:
-            'Invalid Document Access, you may save document with your role'
+            message: 'Invalid Document Access, you may save document with your role'
           });
         }
       }
@@ -46,12 +45,12 @@ module.exports.createDocument = (req, res) => {
     .catch(error => res.status(400).send(error));
 };
 /**
-   * updateDocument: This allows registered users update saved documents
-   * @function updateDocument
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * updateDocument: This allows registered users update saved documents
+ * @function updateDocument
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.updateDocument = (req, res) => {
   if (!Number.isInteger(Number(req.params.documentId))) {
     return res.status(400).json({
@@ -62,13 +61,17 @@ module.exports.updateDocument = (req, res) => {
     .find({
       where: {
         id: req.params.documentId,
-        userId: req.decoded.id
       },
     })
     .then((document) => {
       if (!document) {
         return res.status(404).send({
           message: 'Document Not Found',
+        });
+      }
+      if (Number(document.userId) !== Number(req.decoded.id)) {
+        return res.status(400).send({
+          message: 'Access denied',
         });
       }
       if (req.body.title) {
@@ -84,14 +87,14 @@ module.exports.updateDocument = (req, res) => {
     .catch(() => res.status(400).send('Connection Error'));
 };
 /**
-   * listDocuments: This allows registered users get saved documents,
-   * where role = "user's role" and public documents.
-   * It gets all available documents both privates and public for admin users
-   * @function listDocuments
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * listDocuments: This allows registered users get saved documents,
+ * where role = "user's role" and public documents.
+ * It gets all available documents both privates and public for admin users
+ * @function listDocuments
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.listDocuments = (req, res) => {
   if (req.decoded.role === 'admin') {
     return Document
@@ -112,14 +115,14 @@ module.exports.listDocuments = (req, res) => {
 };
 
 /**
-   * findDocument: This allows registered users get documents by ID
-   * where role = "user's role" and public documents,
-   * Its gets document either privates or public for admin user
-   * @function findDocument
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * findDocument: This allows registered users get documents by ID
+ * where role = "user's role" and public documents,
+ * Its gets document either privates or public for admin user
+ * @function findDocument
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.findDocument = (req, res) => {
   if (!Number.isInteger(Number(req.params.documentId))) {
     return res.json({
@@ -162,14 +165,14 @@ module.exports.findDocument = (req, res) => {
   }
 };
 /**
-   * deleteDocument:
-   * This allows registered users to delete thier documents by ID
-   * Admin users can also delete user's documents with by just ID
-   * @function deleteDocument
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * deleteDocument:
+ * This allows registered users to delete thier documents by ID
+ * Admin users can also delete user's documents with by just ID
+ * @function deleteDocument
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.deleteDocument = (req, res) => {
   if (!Number.isInteger(Number(req.params.documentId))) {
     return res.status(400).send({
@@ -219,15 +222,15 @@ module.exports.deleteDocument = (req, res) => {
     .catch(() => res.status(400).send('Connection Error'));
 };
 /**
-   * searchDocument: This allows registered users get documents by search key
-   * where role = "user's role" and userId = "user's ID"  and
-   * public & private document.
-   * Its gets document either privates or public for admin user
-   * @function searchDocument
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * searchDocument: This allows registered users get documents by search key
+ * where role = "user's role" and userId = "user's ID"  and
+ * public & private document.
+ * Its gets document either privates or public for admin user
+ * @function searchDocument
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.searchDocument = (req, res) => {
   if (!req.query.q) {
     return res.send({
@@ -273,15 +276,15 @@ module.exports.searchDocument = (req, res) => {
   }
 };
 /**
-   * getDocumentPage: This allows registered users get saved documents by page,
-   * where role = "user's role" and public documents.
-   * It gets all available documents both privates
-   * and public for admin users by page
-   * @function getDocumentPage
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
+ * getDocumentPage: This allows registered users get saved documents by page,
+ * where role = "user's role" and public documents.
+ * It gets all available documents both privates
+ * and public for admin users by page
+ * @function getDocumentPage
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object} - returns response status and json data
+ */
 module.exports.getDocumentPage = (req, res) => {
   const newPageInfo = req.params.pageNo.split('-').map((val) => {
     return val;

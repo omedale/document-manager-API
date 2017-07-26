@@ -219,10 +219,10 @@ describe('On Document controller when user is an admin', () => {
         });
     });
 
-  it('route PUT /api/v1/documents/9, should update title of document where id = 9 and respond with status 404',
+  it('route PUT /api/v1/documents/9, should not update title of document where id = 9 and respond with status 404',
     (done) => {
       request(app)
-        .put('/api/v1/documents/9')
+        .put('/api/v1/documents/90')
         .set('Authorization', `${token}`)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
@@ -241,7 +241,7 @@ describe('On Document controller when user is an admin', () => {
         });
     });
 
-  it('route /api/v1/documents/-, should not update where id = - and respond with status 400',
+  it('route PUT: /api/v1/documents/-, should not update where id = - and respond with status 400',
     (done) => {
       request(app)
         .put('/api/v1/documents/-')
@@ -536,6 +536,27 @@ describe('In Document controller when user is not an admin', () => {
             assert(res.body.message === 'Document Not Found', 'Document is found');
           } else {
             const error = new Error(err);
+            assert.ifError(error);
+          }
+          done();
+        });
+    });
+  it('route PUT /api/v1/documents/1, should not update title of document where id = 1 and respond with status 404',
+    (done) => {
+      request(app)
+        .put('/api/v1/documents/1')
+        .set('Authorization', `${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .send({
+          document: 'Andela is Fun'
+        })
+        .expect(400)
+        .end((err, res) => {
+          if (!err) {
+            assert(res.body.message === 'Access denied', 'Access denied');
+          } else {
+            const error = new Error('Access denied for fellow');
             assert.ifError(error);
           }
           done();

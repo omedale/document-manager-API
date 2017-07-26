@@ -19,4 +19,5 @@ ratings:
   - "**.jsx"
 exclude_paths:
 - node_modules/**/*
-- test/*
+- test/**/*
+- public/**/*
