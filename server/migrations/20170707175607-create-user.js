@@ -20,16 +20,16 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
-      phoneno: {
+      phone: {
         type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       }
     });
   },

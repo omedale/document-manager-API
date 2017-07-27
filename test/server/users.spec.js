@@ -1,8 +1,7 @@
 import request from 'supertest';
+import { assert } from 'chai';
+import 'babel-register';
 import app from '../../build/server';
-
-const assert = require('chai').assert;
-require('babel-register');
 
 let userID;
 let userName;
@@ -20,8 +19,8 @@ describe('In User controller when user is not an admin: ', () => {
       .end((err, res) => {
         if (!err) {
           token = res.body.token;
-          userID = res.body.userId;
-          userName = res.body.name;
+          userID = res.body.user.userId;
+          userName = res.body.user.name;
           done();
         }
       });
@@ -38,7 +37,26 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert.isDefined(res.body, 'Users is found');
+              assert.isDefined(res.body, 'User found');
+            } else {
+              const error = new Error('user not found');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+    it('method listUsers, it should list all where offset = - users where user=admin and respond with status 200',
+      (done) => {
+        request(app)
+          .get('/api/v1/users/?limit=10&offset=-')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Please Set Offset and Limit as Integer',
+              'Please Set Offset and Limit as Integer');
             } else {
               const error = new Error('user not found');
               assert.ifError(error);
@@ -156,7 +174,7 @@ describe('In User controller when user is not an admin: ', () => {
           .send({
             name: 'vgheri',
             password: 'test',
-            phoneno: 2,
+            phone: 2,
             email: ''
           })
           .expect(400)
@@ -188,7 +206,7 @@ describe('In User controller when user is not an admin: ', () => {
           .end((err, res) => {
             if (!err) {
               assert(res.body.message ===
-                'Existing user cannot sign up again. Please sign in');
+                'User Already Exist');
             } else {
               const error = new Error('Existing user error');
               assert.ifError(error);
@@ -206,14 +224,14 @@ describe('In User controller when user is not an admin: ', () => {
           .put('/api/v1/users/1')
           .set('Authorization', `${token}`)
           .send({
-            phoneno: '7033390748',
+            phone: '7033390748',
             name: 'Testing master',
             role: 'admin'
           })
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.phoneno === '7033390748', 'Users information updated');
+              assert(res.body.user.phone === '7033390748', 'Users information updated');
             } else {
               const error = new Error('Update failed');
               assert.ifError(error);
@@ -227,7 +245,7 @@ describe('In User controller when user is not an admin: ', () => {
           .put('/api/v1/users/2')
           .set('Authorization', `${token}`)
           .send({
-            phoneno: '7033390748',
+            phone: '7033390748',
             name: 'Testing master',
             role: 'admin'
           })
@@ -249,7 +267,7 @@ describe('In User controller when user is not an admin: ', () => {
           .put('/api/v1/users/-')
           .set('Authorization', `${token}`)
           .send({
-            phoneno: '7033390748'
+            phone: '7033390748'
           })
           .expect(400)
           .end((err, res) => {
@@ -268,7 +286,7 @@ describe('In User controller when user is not an admin: ', () => {
           .put('/api/v1/users/2')
           .set('Authorization', `${token}`)
           .send({
-            phoneno: '7033390748',
+            phone: '7033390748',
             email: 'omedalemail.com'
           })
           .expect(400)
@@ -290,7 +308,7 @@ describe('In User controller when user is not an admin: ', () => {
           .put('/api/v1/users/1')
           .set('Authorization', `${token}`)
           .send({
-            phoneno: '7033390748',
+            phone: '7033390748',
             email: 'admin@gmail.com'
           })
           .expect(400)
@@ -312,7 +330,7 @@ describe('In User controller when user is not an admin: ', () => {
           .put('/api/v1/users/99')
           .set('Authorization', `${token}`)
           .send({
-            phoneno: '7033390748',
+            phone: '7033390748',
             role: 'fellow',
             name: 'femi'
           })
@@ -342,7 +360,7 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.id === 1, 'User is found');
+              assert(res.body.user.id === 1, 'User is found');
             } else {
               const error = new Error('Unable to find users');
               assert.ifError(error);
@@ -430,18 +448,18 @@ describe('In User controller when user is not an admin: ', () => {
   });
 
   // findUserDocumentByPage
-  describe('GET /api/v1/users/userId/documents/:pageNo triggers: ', () => {
-    it('method findUserDocument should get documents where userId=4 and respond with status 200',
+  describe('GET /api/v1/users/userId/documents/ triggers: ', () => {
+    it('method findUserDocument should get documents where userId=1 and respond with status 200',
       (done) => {
         request(app)
-          .get('/api/v1/users/1/documents/page-1')
+          .get('/api/v1/users/1/documents/')
           .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert((res.body).length >= 0, 'Documents found');
+              assert((res.body.documents).length >= 0, 'Documents found');
             } else {
               const error = new Error('Cannot find document');
               assert.ifError(error);
@@ -505,7 +523,7 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.role === 'admin', 'Role updated');
+              assert(res.body.user.role === 'admin', 'Role updated');
             } else {
               const error = new Error('Update failed');
               assert.ifError(error);
@@ -589,8 +607,8 @@ describe('In User controller when user is not an admin ', () => {
       .end((err, res) => {
         if (!err) {
           token = res.body.token;
-          userID = res.body.userId;
-          userName = res.body.name;
+          userID = res.body.user.userId;
+          userName = res.body.user.name;
           done();
         }
       });
@@ -743,4 +761,44 @@ describe('In User controller when user is not an admin ', () => {
           });
       });
   });
+    // findUserDocumentByPage
+  describe('GET /api/v1/users/userId/documents/ triggers: ', () => {
+    it('method findUserDocument, should not get documents where userId=1 and respond with status 400',
+      (done) => {
+        request(app)
+          .get('/api/v1/users/1/documents/')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Access Denied', 'Access Denied');
+            } else {
+              const error = new Error('Cannot find document');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
+  it('method findUserDocument, should not get documents where userId=1, limit = - and respond with status 400',
+      (done) => {
+        request(app)
+          .get('/api/v1/users/1/documents/?limit=-')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Please Set Offset and Limit as Integer',
+              'Please Set Offset and Limit as Integer');
+            } else {
+              const error = new Error('Cannot find document');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
 });
