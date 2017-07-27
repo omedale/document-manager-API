@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken';
+import { assert } from 'chai';
+import request from 'supertest';
+import 'babel-register';
 
 const User = require('../../build/models').User;
 const Document = require('../../build/models').Document;
 const Role = require('../../build/models').Role;
-const request = require('supertest');
-const assert = require('chai').assert;
-require('babel-register');
+
 const app = require('../../build/server');
 
 let userID;
@@ -73,7 +74,7 @@ describe('Set Document controller for test', () => {
       name: process.env.NAME,
       password: user.generateHash(process.env.PASSWORD),
       email: process.env.ADMINEMAIL,
-      phoneno: '0908889000',
+      phone: '0908889000',
       role: process.env.ADMINROLE
     }).then((err) => {
       if (!err) {
@@ -134,6 +135,26 @@ describe('Set Document controller for test', () => {
 });
 
 describe('On Document controller when user is an admin', () => {
+  it('route GET: /api/v1/documents, should respond with No document Found and respond with status 200',
+    (done) => {
+      request(app)
+        .get('/api/v1/documents')
+        .set('Authorization', `${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(404)
+        .end((err, res) => {
+          if (!err) {
+            assert(res.body.message === 'No document Found', 'Documents is found');
+          } else {
+            const error = new Error('Documents not found');
+            assert.ifError(error);
+          }
+          done();
+        });
+    });
+});
+describe('On Document controller when user is an admin', () => {
   beforeEach((done) => {
     request(app)
       .post('/api/v1/documents')
@@ -169,7 +190,7 @@ describe('On Document controller when user is an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert(res.body.id === 1, 'Document is found');
+            assert(res.body.document.id === 1, 'Document is found');
           } else {
             const error = new Error('Unable to find document');
             assert.ifError(error);
@@ -274,7 +295,7 @@ describe('On Document controller when user is an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert((res.body).length >= 0, 'Documents is found');
+            assert((res.body.documents).length >= 0, 'Documents is found');
           } else {
             const error = new Error('Documents not found');
             assert.ifError(error);
@@ -319,7 +340,7 @@ describe('On Document controller when user is an admin', () => {
           done();
         });
     });
-  it('route /api/v1/documents/2, should delete document where id = 2, user = admin and respond with status 200',
+  it('route DELETE /api/v1/documents/2, should delete document where id = 2, user = admin and respond with status 200',
     (done) => {
       request(app)
         .delete('/api/v1/documents/2')
@@ -391,7 +412,6 @@ describe('On Document controller when user is an admin', () => {
 });
 
 describe('In Document controller when user is not an admin', () => {
-
   beforeEach((done) => {
     request(app)
       .post('/api/v1/users/auth/login')
@@ -403,8 +423,8 @@ describe('In Document controller when user is not an admin', () => {
       .end((err, res) => {
         if (!err) {
           token = res.body.token;
-          userID = res.body.userId;
-          userName = res.body.name;
+          userID = res.body.user.userId;
+          userName = res.body.user.name;
           done();
         }
       });
@@ -456,7 +476,7 @@ describe('In Document controller when user is not an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert(res.body.id === 1, 'Document is found');
+            assert(res.body.document.id === 1, 'Document is found');
           } else {
             const error = new Error('Unable to find document');
             assert.ifError(error);
@@ -573,7 +593,26 @@ describe('In Document controller when user is not an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert((res.body).length >= 0, 'Documents is found');
+            assert((res.body.documents).length >= 0, 'Documents is found');
+          } else {
+            const error = new Error('Documents not found');
+            assert.ifError(error);
+          }
+          done();
+        });
+    });
+  it('route GET: /api/v1/documents/?limit=-, should not list all documents where limit = - and user is a role and respond with status 200',
+    (done) => {
+      request(app)
+        .get('/api/v1/documents/?limit=-')
+        .set('Authorization', `${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .end((err, res) => {
+          if (!err) {
+            assert(res.body.message === 'Please Set Offset and Limit as Integer',
+            'Please Set Offset and Limit as Integer');
           } else {
             const error = new Error('Documents not found');
             assert.ifError(error);
@@ -610,6 +649,24 @@ describe('In Document controller when user is not an admin', () => {
         .end((err, res) => {
           if (!err) {
             assert(res.body.message === 'Document Not Found', 'Document Not Found');
+          } else {
+            const error = new Error(err);
+            assert.ifError(error);
+          }
+          done();
+        });
+    });
+  it('route DELETE /api/v1/documents/1, should not delete document where id = 1, role = fellow and respond with status 400',
+    (done) => {
+      request(app)
+        .delete('/api/v1/documents/1')
+        .set('Authorization', `${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .end((err, res) => {
+          if (!err) {
+            assert(res.body.message === 'Access Denied', 'Access Denied');
           } else {
             const error = new Error(err);
             assert.ifError(error);
