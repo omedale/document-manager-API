@@ -617,7 +617,7 @@ describe('In User controller when user is not an admin ', () => {
       });
   });
 
-  describe('POST api/v1/users/role/4 trigegrs: ', () => {
+  describe('PUT api/v1/users/role/4 trigegrs: ', () => {
     it('method updateUserRole should update user role where id=4 and respond with status 200',
       (done) => {
         request(app)
@@ -628,11 +628,32 @@ describe('In User controller when user is not an admin ', () => {
           })
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
             if (!err) {
               assert(res.body.message === 'Access Denied', 'Access Denied');
             } else {
               const error = new Error('failed');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+  });
+  describe('PUT api/v1/users/ trigegrs: ', () => {
+    it('method upDateUser,  should not update user where id=4 and respond with status 200',
+      (done) => {
+        request(app)
+          .put('/api/v1/users/2')
+          .set('Authorization', `${token}`)
+          .send({
+            role: 'success'
+          })
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Access Denied, Only Admin can Update Role',
+              'Access Denied, Only Admin can Update Role');
+            } else {
+              const error = new Error('Access Denied, Only Admin can Update Role');
               assert.ifError(error);
             }
             done();

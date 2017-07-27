@@ -1,15 +1,14 @@
-
 const User = require('../models').User;
 const Document = require('../models').Document;
 const Role = require('../models').Role;
 
 /**
-   * signUp: To creating accounts for users
-   * @function signUp
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * signUp: To creating accounts for users
+ * @function signUp
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.signUp = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   req.checkBody('name', 'Invalid name').notEmpty();
@@ -63,12 +62,12 @@ module.exports.signUp = (req, res) => {
 };
 
 /**
-   * signIn: Enables users to login to their accounts
-   * @function signIn
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * signIn: Enables users to login to their accounts
+ * @function signIn
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.signIn = (req, res) => {
   req.checkBody('email', 'Invalid email').notEmpty().isEmail();
   req.checkBody('password', 'Invalid password').notEmpty();
@@ -115,18 +114,18 @@ module.exports.signIn = (req, res) => {
 };
 
 /**
-   * listUsers: Enables users to get list of registered users
-   *  It includes user's documents for admin users
-   * @function listUsers
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * listUsers: Enables users to get list of registered users
+ *  It includes user's documents for admin users
+ * @function listUsers
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.listUsers = (req, res) => {
   if (req.decoded.role === 'admin') {
     return User
       .findAll({
-        attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
+        attributes: ['id', 'name', 'role', 'email', 'phoneno', 'createdAt']
       })
       .then(user => res.status(200).send(user))
       .catch(() => res.status(400).send({ message: 'Connection Error' }));
@@ -137,12 +136,12 @@ module.exports.listUsers = (req, res) => {
   }
 };
 /**
-   * updateUserRole: Enables admin users to update users role
-   * @function updateUserRole
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * updateUserRole: Enables admin users to update users role
+ * @function updateUserRole
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.updateUserRole = (req, res) => {
   if (req.decoded.role === 'admin') {
     if (!Number.isInteger(Number(req.params.userId))) {
@@ -183,7 +182,7 @@ module.exports.updateUserRole = (req, res) => {
                   .catch(error => res.status(400).send(error));
               })
               .catch(() => res.status(400)
-              .send({ message: 'Connection Error' }));
+                .send({ message: 'Connection Error' }));
           }
         }
       })
@@ -195,13 +194,13 @@ module.exports.updateUserRole = (req, res) => {
   }
 };
 /**
-   * updateUser: Enables users to update their information
-   *  where email must be unique
-   * @function updateUser
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * updateUser: Enables users to update their information
+ *  where email must be unique
+ * @function updateUser
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.updateUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
@@ -243,6 +242,13 @@ module.exports.updateUser = (req, res) => {
           message: 'Access Denied'
         });
       }
+      if (req.body.role) {
+        if (req.decoded.role !== 'admin') {
+          return res.status(400).send({
+            message: 'Access Denied, Only Admin can Update Role'
+          });
+        }
+      }
       return user
         .update(req.body, { fields: Object.keys(req.body) })
         .then(() => res.status(200).send({
@@ -258,12 +264,12 @@ module.exports.updateUser = (req, res) => {
     .catch(() => res.status(400).send({ message: 'Connection Error' }));
 };
 /**
-   * findUser: Enables users to find other registered users
-   * @function findUser
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * findUser: Enables users to find other registered users
+ * @function findUser
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.findUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
@@ -295,20 +301,20 @@ module.exports.findUser = (req, res) => {
 };
 
 /**
-   * deleteUser: Enables users and admin users to delete account by ID
-   * @function deleteUser
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * deleteUser: Enables users and admin users to delete account by ID
+ * @function deleteUser
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.deleteUser = (req, res) => {
   if (!Number.isInteger(Number(req.params.userId))) {
     return res.status(400).send({
       message: 'Invalid User ID'
     });
   }
-  if (req.decoded.id === Number(req.params.userId)
-    || req.decoded.role === 'admin') {
+  if (req.decoded.id === Number(req.params.userId) ||
+    req.decoded.role === 'admin') {
     return User
       .findById(req.params.userId)
       .then((user) => {
@@ -331,12 +337,12 @@ module.exports.deleteUser = (req, res) => {
   }
 };
 /**
-   * findUserDocument: Enables users get documents that belongs to the user
-   * @function findUserDocument
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * findUserDocument: Enables users get documents that belongs to the user
+ * @function findUserDocument
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.findUserDocument = (req, res) => {
   const newPageInfo = req.params.pageNo.split('-').map((val) => {
     return val;
@@ -358,8 +364,8 @@ module.exports.findUserDocument = (req, res) => {
   if (page !== 1) {
     offset = (page - 1) * 10;
   }
-  if (req.decoded.id === Number(req.params.userId)
-    || req.decoded.role === 'admin') {
+  if (req.decoded.id === Number(req.params.userId) ||
+    req.decoded.role === 'admin') {
     if (!Number.isInteger(Number(req.params.userId))) {
       return res.status(400).send({
         message: 'Invalid User ID'
@@ -390,12 +396,12 @@ module.exports.findUserDocument = (req, res) => {
   }
 };
 /**
-   * searchUser: Enables users to search for other registered users
-   * @function searchUser
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * searchUser: Enables users to search for other registered users
+ * @function searchUser
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.searchUser = (req, res) => {
   if (!req.query.q) {
     return res.send({
@@ -426,12 +432,12 @@ module.exports.searchUser = (req, res) => {
   }
 };
 /**
-   * getUserPage: Enables users to get list of registered users by page
-   * @function getUserPage
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
+ * getUserPage: Enables users to get list of registered users by page
+ * @function getUserPage
+ * @param {object} req request
+ * @param {object} res response
+ * @return {object}  returns response status and json data
+ */
 module.exports.getUserPage = (req, res) => {
   if (req.decoded.role !== 'admin') {
     return res.status(400).send({
@@ -460,7 +466,7 @@ module.exports.getUserPage = (req, res) => {
   return User.findAll({
     offset,
     limit,
-    attributes: ['id', 'name', 'email', 'phoneno', 'createdAt']
+    attributes: ['id', 'name', 'role', 'email', 'phoneno', 'createdAt']
   })
     .then((user) => {
       if (user.length === 0) {
