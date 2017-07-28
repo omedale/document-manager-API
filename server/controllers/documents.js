@@ -14,7 +14,8 @@ export default {
     const errors = req.validationErrors();
     if (errors) {
       return res.status(400).send({
-        message: 'Invalid Input, please provide appropriate input for all field',
+        message:
+        'Invalid Input, please provide appropriate input for all field',
         errors
       });
     }
@@ -46,7 +47,8 @@ export default {
               .catch(error => res.status(400).send(error));
           } else {
             return res.status(400).send({
-              message: 'Invalid Document Access, you may save document with your role'
+              message:
+              'Invalid Document Access, you may save document with your role'
             });
           }
         }
@@ -113,7 +115,8 @@ export default {
    */
   listDocuments: (req, res) => {
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+      if (!Number.isInteger(Number(req.query.limit))
+        || !Number.isInteger(Number(req.query.offset))) {
         return res.status(400).send({
           message: 'Please Set Offset and Limit as Integer'
         });
@@ -129,7 +132,8 @@ export default {
             .findAll({
               offset,
               limit,
-              attributes: ['id', 'title', 'document', 'access', 'owner', 'createdAt']
+              attributes:
+              ['id', 'title', 'document', 'access', 'owner', 'createdAt']
             })
             .then((documents) => {
               if (documents.length === 0) {
@@ -163,7 +167,8 @@ export default {
               offset: req.query.offset || 0,
               limit: req.query.limit || 10,
               where: { access: [req.decoded.role, 'public'] },
-              attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+              attributes:
+              ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
               if (documents.length === 0) {
@@ -207,7 +212,8 @@ export default {
       return Document
         .find({
           where: { id: req.params.documentId },
-          attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+          attributes:
+          ['id', 'title', 'access', 'document', 'owner', 'createdAt']
         })
         .then((document) => {
           if (!document) {
@@ -234,7 +240,8 @@ export default {
             id: req.params.documentId,
             access: [req.decoded.role, 'public']
           },
-          attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+          attributes:
+          ['id', 'title', 'access', 'document', 'owner', 'createdAt']
         })
         .then((document) => {
           if (!document) {
@@ -334,7 +341,8 @@ export default {
       });
     }
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+      if (!Number.isInteger(Number(req.query.limit))
+        || !Number.isInteger(Number(req.query.offset))) {
         return res.status(400).send({
           message: 'Please Set Offset and Limit as Integer'
         });
@@ -363,7 +371,8 @@ export default {
               where: {
                 title: (req.query.q).toLowerCase()
               },
-              attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+              attributes:
+              ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
               let pageCount = Math.round(totalCount / limit);
@@ -406,7 +415,8 @@ export default {
                 title: (req.query.q).toLowerCase(),
                 access: [req.decoded.role, 'private', 'public'],
               },
-              attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+              attributes:
+              ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
               let pageCount = Math.round(totalCount / limit);
