@@ -6,7 +6,7 @@ cache:
     - node_modules
 install: [ "npm install"]
 addons:
-  codeclimate:
+  code_climate:
     repo_token: 2be9a1893c637f16694cb4d49a45c2364e329b88d28c344fdf3d2131eb03c55f
   coveralls:
     coveralls: WrgLsEQwpYftM5473BOk09AzlXNCqafNh

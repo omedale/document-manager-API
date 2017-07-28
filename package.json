@@ -6,8 +6,9 @@
   "scripts": {
     "start": "npm run build && gulp",
     "build": "gulp dev",
+    "postinstall": "node node_modules/gulp/bin/gulp dev",
     "dev": "npm run build && gulp",
-    "test": "NODE_env=production npm run build && gulp coverage && gulp coveralls"
+    "test": "NODE_ENV=production npm run build && gulp coverage && gulp coveralls && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -22,11 +23,11 @@
   "dependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "babel-register": "^6.24.1",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "chai": "^4.1.0",
     "cookie-parser": "^1.4.3",
+    "dateformat": "^2.0.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "express-validator": "^3.2.1",
@@ -49,9 +50,7 @@
     "http": "0.0.0",
     "isparta": "^4.0.0",
     "jsonwebtoken": "^7.4.1",
-    "mock-local-storage": "^1.0.3",
     "morgan": "^1.8.2",
-    "node-localstorage": "^1.3.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
@@ -59,24 +58,22 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.2.1",
     "should": "^11.2.1",
-    "supertest": "^3.0.0",
-    "through2": "^2.0.3"
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.24.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.2",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "install": "^0.10.1",
-    "jest": "^20.0.4",
     "nodemon": "^1.11.0",
     "npm": "^5.1.0",
     "superagent": "^3.5.2",
-    "supertest": "^3.0.0",
-    "swagger-ui": "^3.0.19"
+    "supertest": "^3.0.0"
   }
 }

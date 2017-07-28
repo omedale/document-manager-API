@@ -7,11 +7,11 @@
     "dialect": "postgres"
   },
   "test": {
-    "use_env_variable": "TEST_DB_URL",
+    "use_env_variable": "PRODUCTION_DB_URL",
     "dialect": "postgres"
   },
   "production": {
-    "use_env_variable": "TEST_DB_URL",
+    "use_env_variable": "PRODUCTION_DB_URL",
     "dialect": "postgres"
   }
 }
