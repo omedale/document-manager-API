@@ -1,4 +1,3 @@
-import dateFormat from 'dateformat';
 
 const User = require('../models').User;
 const Document = require('../models').Document;
@@ -20,7 +19,8 @@ export default {
     const errors = req.validationErrors();
     if (errors) {
       return res.status(400).send({
-        message: 'Invalid Input, please provide appropriate input for all field',
+        message:
+        'Invalid Input, please provide appropriate input for all field',
         errors
       });
     }
@@ -83,7 +83,8 @@ export default {
     const errors = req.validationErrors();
     if (errors) {
       return res.status(400).send({
-        message: 'Invalid Input, please provide appropriate input for all field',
+        message:
+        'Invalid Input, please provide appropriate input for all field',
         errors
       });
     }
@@ -204,7 +205,8 @@ export default {
       const errors = req.validationErrors();
       if (errors) {
         return res.status(400).send({
-          message: 'Invalid Input, please provide appropriate input for all field'
+          message:
+          'Invalid Input, please provide appropriate input for all field'
         });
       }
       return User.find({
@@ -347,7 +349,8 @@ export default {
    */
   findUserDocument: (req, res) => {
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+      if (!Number.isInteger(Number(req.query.limit))
+        || !Number.isInteger(Number(req.query.offset))) {
         return res.status(400).send({
           message: 'Please Set Offset and Limit as Integer'
         });
@@ -376,7 +379,8 @@ export default {
               where: {
                 userId: req.params.userId,
               },
-              attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+              attributes:
+              ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
               if (documents.length === 0) {
@@ -419,7 +423,8 @@ export default {
       });
     }
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+      if (!Number.isInteger(Number(req.query.limit))
+        || !Number.isInteger(Number(req.query.offset))) {
         return res.status(400).send({
           message: 'Please Set Offset and Limit as Integer'
         });
@@ -534,7 +539,8 @@ export default {
       });
     }
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+      if (!Number.isInteger(Number(req.query.limit))
+        || !Number.isInteger(Number(req.query.offset))) {
         return res.status(400).send({
           message: 'Please Set Offset and Limit as Integer'
         });
