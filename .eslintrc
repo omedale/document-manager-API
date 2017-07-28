@@ -11,6 +11,7 @@
   },
     "rules": {
         "no-else-return": "off",
+        "no-unused-vars": "off",
         "arrow-body-style": "off",
         "no-lonely-if": "off",
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
