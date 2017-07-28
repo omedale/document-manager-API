@@ -333,40 +333,95 @@ export default {
         message: 'No key word supplied'
       });
     }
+    if (req.query.limit || req.query.offset) {
+      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+        return res.status(400).send({
+          message: 'Please Set Offset and Limit as Integer'
+        });
+      }
+    }
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 10;
     if (req.decoded.role === 'admin') {
-      return Document
+      Document
         .findAll({
           where: {
             title: (req.query.q).toLowerCase()
-          },
-          attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+          }
         })
-        .then((document) => {
-          if (document.length === 0) {
+        .then((allDocs) => {
+          const totalCount = allDocs.length;
+          if (allDocs.length === 0) {
             return res.status(404).send({
               message: 'Document Not Found',
             });
           }
-          return res.status(200).send(document);
+          return Document
+            .findAll({
+              offset: req.query.offset || 0,
+              limit: req.query.limit || 10,
+              where: {
+                title: (req.query.q).toLowerCase()
+              },
+              attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+            })
+            .then((documents) => {
+              let pageCount = Math.round(totalCount / limit);
+              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
+              const page = Math.round(offset / limit) + 1;
+              return res.status(200).send({
+                documents,
+                metaData: {
+                  page,
+                  pageCount,
+                  count: documents.length,
+                  totalCount,
+                }
+              });
+            });
         })
         .catch(error => res.status(400).send(error));
     } else {
-      return Document
+      Document
         .findAll({
           where: {
             userId: req.decoded.id,
             title: (req.query.q).toLowerCase(),
             access: [req.decoded.role, 'private', 'public'],
           },
-          attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
         })
-        .then((document) => {
-          if (document.length === 0) {
+        .then((allDocs) => {
+          const totalCount = allDocs.length;
+          if (allDocs.length === 0) {
             return res.status(404).send({
               message: 'Document Not Found',
             });
           }
-          return res.status(200).send(document);
+          return Document
+            .findAll({
+              offset: req.query.offset || 0,
+              limit: req.query.limit || 10,
+              where: {
+                userId: req.decoded.id,
+                title: (req.query.q).toLowerCase(),
+                access: [req.decoded.role, 'private', 'public'],
+              },
+              attributes: ['id', 'title', 'access', 'document', 'owner', 'createdAt']
+            })
+            .then((documents) => {
+              let pageCount = Math.round(totalCount / limit);
+              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
+              const page = Math.round(offset / limit) + 1;
+              return res.status(200).send({
+                documents,
+                metaData: {
+                  page,
+                  pageCount,
+                  count: documents.length,
+                  totalCount,
+                }
+              });
+            });
         })
         .catch(error => res.status(400).send(error));
     }

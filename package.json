@@ -58,8 +58,7 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.2.1",
     "should": "^11.2.1",
-    "supertest": "^3.0.0",
-    "through2": "^2.0.3"
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

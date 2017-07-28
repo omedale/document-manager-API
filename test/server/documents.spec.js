@@ -89,7 +89,6 @@ describe('Set Document controller for test', () => {
       name: process.env.NAME,
       role: process.env.ADMINROLE,
     }, process.env.JWT_SECRET, { expiresIn: '24h' });
-
     request(app)
       .post('/api/v1/users/auth/register')
       .send({
@@ -124,6 +123,7 @@ describe('Set Document controller for test', () => {
         done();
       });
   });
+
   it('it should set token', () => {
     if (token) {
       assert.isDefined(token, 'token is defined');
@@ -313,7 +313,7 @@ describe('On Document controller when user is an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            assert((res.body).length >= 0, 'Document found');
+            assert((res.body.documents).length >= 0, 'Document found');
           } else {
             const error = new Error('Cannot find document');
             assert.ifError(error);
@@ -428,7 +428,18 @@ describe('In Document controller when user is not an admin', () => {
           done();
         }
       });
-
+    Document.create({
+      title: 'fellow',
+      document: 'nothing',
+      access: 'private',
+      owner: 'fellow',
+      userId: 2
+    }).then((err) => {
+      if (!err) {
+        console.log('Docuemnt created');
+      }
+      done();
+    });
   });
   it('route GET: /api/v1/documents/page/page-hg, should return no documents found when padeId = page-hg, role=fellow and respond with status 200',
     (done) => {
@@ -692,7 +703,7 @@ describe('In Document controller when user is not an admin', () => {
           done();
         });
     });
-  it('route GET: /api/v1/search/documents/?q=test title, should not get document where title=test title, role = fellow and respond with status 404',
+  it('route GET: /api/v1/search/documents/?q=test title, should not get document where title=test title, role = fellow and respond with status   404',
     (done) => {
       request(app)
         .get('/api/v1/search/documents/?q=test title')
@@ -705,6 +716,43 @@ describe('In Document controller when user is not an admin', () => {
             assert(res.body.message === 'Document Not Found', 'Document Not Found');
           } else {
             const error = new Error(err);
+            assert.ifError(error);
+          }
+          done();
+        });
+    });
+  it('route GET: /api/v1/search/documents/?q=test title&limit=-, should not get document where title=test title, role = fellow and respond with status 404',
+    (done) => {
+      request(app)
+        .get('/api/v1/search/documents/?q=test title&limit=-')
+        .set('Authorization', `${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(400)
+        .end((err, res) => {
+          if (!err) {
+            assert(res.body.message === 'Please Set Offset and Limit as Integer',
+            'Please Set Offset and Limit as Integer');
+          } else {
+            const error = new Error(err);
+            assert.ifError(error);
+          }
+          done();
+        });
+    });
+   it('route GET /api/v1/search/documents/?q=test title, should search for document where title=test title and respond with status 200',
+    (done) => {
+      request(app)
+        .get('/api/v1/search/documents/?q=fellow')
+        .set('Authorization', `${token}`)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          if (!err) {
+            assert((res.body.documents).length >= 0, 'Document found');
+          } else {
+            const error = new Error('Cannot find document');
             assert.ifError(error);
           }
           done();

@@ -418,21 +418,51 @@ export default {
         message: 'No key word supplied'
       });
     }
+    if (req.query.limit || req.query.offset) {
+      if (!Number.isInteger(Number(req.query.limit)) || !Number.isInteger(Number(req.query.offset))) {
+        return res.status(400).send({
+          message: 'Please Set Offset and Limit as Integer'
+        });
+      }
+    }
     if (req.decoded.role === 'admin') {
-      return User
+      User
         .findAll({
           where: {
             name: (req.query.q).toLowerCase()
           },
-          attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt'],
         })
         .then((user) => {
+          const totalCount = user.length;
+          const offset = req.query.offset || 0;
+          const limit = req.query.limit || 10;
           if (user.length === 0) {
             return res.status(404).send({
               message: 'User Not Found',
             });
           }
-          return res.status(200).send(user);
+          return User.findAll({
+            offset,
+            limit,
+            where: {
+              name: (req.query.q).toLowerCase()
+            },
+            attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt']
+          })
+            .then((userslist) => {
+              let pageCount = Math.round(totalCount / limit);
+              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
+              const page = Math.round(offset / limit) + 1;
+              return res.status(200).send({
+                users: userslist,
+                metaData: {
+                  page,
+                  pageCount,
+                  count: userslist.length,
+                  totalCount,
+                }
+              });
+            });
         })
         .catch(error => res.status(400).send(error));
     } else {
