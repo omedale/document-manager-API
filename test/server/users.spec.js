@@ -3,6 +3,8 @@ import { assert } from 'chai';
 import 'babel-register';
 import app from '../../build/server';
 
+const Document = require('../../build/models').Document;
+
 let userID;
 let userName;
 let token;
@@ -480,9 +482,28 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert((res.body).length >= 0, 'Users found');
+              assert((res.body.users).length >= 0, 'Users found');
             } else {
               const error = new Error('Cannot find user');
+              assert.ifError(error);
+            }
+            done();
+          });
+      });
+    it('method searchUser should search for user where name=ayomakun and respond with status 200',
+      (done) => {
+        request(app)
+          .get('/api/v1/search/users/?q=fellow&limit=-')
+          .set('Authorization', `${token}`)
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end((err, res) => {
+            if (!err) {
+              assert(res.body.message === 'Please Set Offset and Limit as Integer',
+              'Please Set Offset and Limit as Integer');
+            } else {
+              const error = new Error('Please Set Offset and Limit as Integer');
               assert.ifError(error);
             }
             done();
