@@ -13,11 +13,11 @@ const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env.PRODUCTION_DB_URL, {
+  sequelize = new Sequelize(process.env.MY_DOC, {
     'dialect': 'postgres'
   });
 } else {
-  sequelize = new Sequelize(process.env.PRODUCTION_DB_URL, {
+  sequelize = new Sequelize(process.env.MY_DOC, {
     'dialect': 'postgres'
   });
 }

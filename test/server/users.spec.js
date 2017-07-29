@@ -28,8 +28,8 @@ describe('In User controller when user is not an admin: ', () => {
       });
   });
   // listUsers
-  describe('GET api/v1/users trigegrs: ', () => {
-    it('method listUsers, it should list all users where user=admin and respond with status 200',
+  describe('GET api/v1/users', () => {
+    it('should list all users where user=admin and respond with status 200',
       (done) => {
         request(app)
           .get('/api/v1/users')
@@ -47,7 +47,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method listUsers, it should list all where offset = - users where user=admin and respond with status 200',
+    it('should list all where offset = - users where user=admin',
       (done) => {
         request(app)
           .get('/api/v1/users/?limit=10&offset=-')
@@ -57,7 +57,8 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(400)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.message === 'Please Set Offset and Limit as Integer',
+              assert(res.body.message ===
+                'Please Set Offset and Limit as Integer',
               'Please Set Offset and Limit as Integer');
             } else {
               const error = new Error('user not found');
@@ -68,8 +69,8 @@ describe('In User controller when user is not an admin: ', () => {
       });
   });
   // signIn
-  describe('POST /api/v1/users/auth/login trigegrs: ', () => {
-    it('method signIn , it should login user and respond with status 200',
+  describe('POST /api/v1/users/auth/login', () => {
+    it('should login user and respond with status 200',
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
@@ -92,7 +93,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method signIn, it should respond with status 400 if email is empty',
+    it('should respond with status 400 if email is empty',
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
@@ -107,7 +108,8 @@ describe('In User controller when user is not an admin: ', () => {
           .end((err, res) => {
             if (!err) {
               assert(res.body.message ===
-                'Invalid Input, please provide appropriate input for all field', 'Login failed');
+                'Invalid Input, please provide appropriate input for all field',
+                'Login failed');
             } else {
               const error = new Error('Unable to login');
               assert.ifError(error);
@@ -116,7 +118,7 @@ describe('In User controller when user is not an admin: ', () => {
           });
       });
 
-    it('method signIn, it should respond with status 400 if email is not found',
+    it('should respond with status 400 if email is not found',
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
@@ -139,7 +141,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method signIn, it should respond with status 400 if password is not valid',
+    it('should respond with status 400 if password is not valid',
       (done) => {
         request(app)
           .post('/api/v1/users/auth/login')
@@ -165,8 +167,8 @@ describe('In User controller when user is not an admin: ', () => {
   });
 
   // register
-  describe('POST /api/v1/users/auth/register trigegrs: ', () => {
-    it('method signUp, it should respond with status 400 if email is empty',
+  describe('POST /api/v1/users/auth/register ', () => {
+    it('should respond with status 400 if email is empty',
       (done) => {
         request(app)
           .post('/api/v1/users/auth/register')
@@ -183,7 +185,8 @@ describe('In User controller when user is not an admin: ', () => {
           .end((err, res) => {
             if (!err) {
               assert(res.body.message ===
-                'Invalid Input, please provide appropriate input for all field', 'Login failed');
+                'Invalid Input, please provide appropriate input for all field',
+                'Login failed');
             } else {
               const error = new Error('Unable to login');
               assert.ifError(error);
@@ -219,8 +222,8 @@ describe('In User controller when user is not an admin: ', () => {
   });
 
   // updateUsers
-  describe('PUT /api/v1/users/1 trigegrs: ', () => {
-    it('method updateUser should update phone number of user where id=2 and respond with status 200',
+  describe('PUT /api/v1/users/1', () => {
+    it('should update phone number of user where id=2',
       (done) => {
         request(app)
           .put('/api/v1/users/1')
@@ -233,7 +236,8 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(200)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.user.phone === '7033390748', 'Users information updated');
+              assert(res.body.user.phone ===
+                '7033390748', 'Users information updated');
             } else {
               const error = new Error('Update failed');
               assert.ifError(error);
@@ -241,7 +245,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method updateUser should update phone number of user where id=2 and respond with status 200',
+    it('should update phone number of user where id=2',
       (done) => {
         request(app)
           .put('/api/v1/users/2')
@@ -263,7 +267,7 @@ describe('In User controller when user is not an admin: ', () => {
           });
       });
 
-    it('method updateUser, it should not update where id = - and respond with status 400',
+    it('should not update where id = - and respond with status 400',
       (done) => {
         request(app)
           .put('/api/v1/users/-')
@@ -282,7 +286,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method updateUser, it should not update where id = 2 and email = omedalemail.com and respond with status 400',
+    it('should not update where id = 2 and email = omedalemail.com',
       (done) => {
         request(app)
           .put('/api/v1/users/2')
@@ -304,7 +308,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method updateUser, it should not update where id = 21and email = admin@gemail.com and respond with status 400',
+    it('should not update where id = 21and email = admin@gemail.com',
       (done) => {
         request(app)
           .put('/api/v1/users/1')
@@ -326,7 +330,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method updateUser, it should not update where id = 99 and email = kkk@gemail.com and respond with status 400',
+    it('should not update where id = 99 and email = kkk@gemail.com',
       (done) => {
         request(app)
           .put('/api/v1/users/99')
@@ -351,8 +355,8 @@ describe('In User controller when user is not an admin: ', () => {
       });
   });
   // findUser
-  describe('GET /api/v1/users/1 trigegrs: ', () => {
-    it('method findUser should get user with id=1 and respond with status 200',
+  describe('GET /api/v1/users/1 ', () => {
+    it('should get user with id=1 and respond with status 200',
       (done) => {
         request(app)
           .get('/api/v1/users/1')
@@ -370,7 +374,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method findUser, it should not get user where id= - and respond with status 400',
+    it('should not get user where id= -',
       (done) => {
         request(app)
           .get('/api/v1/users/-')
@@ -380,7 +384,8 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(400)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
+              assert(res.body.message ===
+                'Invalid User ID', 'Invalid User ID');
             } else {
               const error = new Error('Invalid user error');
               assert.ifError(error);
@@ -388,7 +393,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method findUser, it should not get user where id= 90 and respond with status 400',
+    it('should not get user where id= 90 and respond with status 400',
       (done) => {
         request(app)
           .get('/api/v1/users/90')
@@ -409,8 +414,8 @@ describe('In User controller when user is not an admin: ', () => {
   });
 
   // Delete user
-  describe('DELETE: /api/v1/users/- triggers ', () => {
-    it('method delteUser, it should not delete user where id=- and respond with status 400',
+  describe('DELETE: /api/v1/users/-', () => {
+    it('should not delete user where id=- and respond with status 400',
       (done) => {
         request(app)
           .delete('/api/v1/users/-')
@@ -429,7 +434,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method deleteUser, it should respond with User Not Found where id=90, role=admin and respond with status 400',
+    it('should respond with User Not Found where id=90, role=admin',
       (done) => {
         request(app)
           .delete('/api/v1/users/90')
@@ -450,8 +455,8 @@ describe('In User controller when user is not an admin: ', () => {
   });
 
   // findUserDocumentByPage
-  describe('GET /api/v1/users/userId/documents/ triggers: ', () => {
-    it('method findUserDocument should get documents where userId=1 and respond with status 200',
+  describe('GET /api/v1/users/id/documents/', () => {
+    it('should get documents where id=1 and respond with status 200',
       (done) => {
         request(app)
           .get('/api/v1/users/1/documents/')
@@ -471,8 +476,8 @@ describe('In User controller when user is not an admin: ', () => {
       });
   });
   // SeacrhUser
-  describe('GET /api/v1/search/users/?q={key} triggers: ', () => {
-    it('method searchUser should search for user where name=ayomakun and respond with status 200',
+  describe('GET /api/v1/search/users/?q={key} ', () => {
+    it('should search for user where name=ayomakun and respond with status 200',
       (done) => {
         request(app)
           .get('/api/v1/search/users/?q=fellow')
@@ -490,7 +495,7 @@ describe('In User controller when user is not an admin: ', () => {
             done();
           });
       });
-    it('method searchUser should search for user where name=ayomakun and respond with status 200',
+    it('should search for user where name=ayomakun and limit = -',
       (done) => {
         request(app)
           .get('/api/v1/search/users/?q=fellow&limit=-')
@@ -500,7 +505,8 @@ describe('In User controller when user is not an admin: ', () => {
           .expect(400)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.message === 'Please Set Offset and Limit as Integer',
+              assert(res.body.message ===
+                'Please Set Offset and Limit as Integer',
               'Please Set Offset and Limit as Integer');
             } else {
               const error = new Error('Please Set Offset and Limit as Integer');
@@ -511,8 +517,8 @@ describe('In User controller when user is not an admin: ', () => {
       });
   });
   // GetUserByPage
-  describe('GET /api/v1/users/page/:pageNo triggers: ', () => {
-    it('method getUserByPage should return first 10 users and respond with status 200',
+  describe('GET /api/v1/users/page/:pageNo ', () => {
+    it('should return first 10 users and respond with status 200',
       (done) => {
         request(app)
           .get('/api/v1/users/page/page-1')
@@ -532,8 +538,8 @@ describe('In User controller when user is not an admin: ', () => {
       });
   });
   // UpdateUserRole
-  describe('POST api/v1/users/role/4 trigegrs: ', () => {
-    it('method updateUserRole should update user role where id=4 and respond with status 200',
+  describe('POST api/v1/users/role/4 ', () => {
+    it('should update user role where id=4 and respond with status 200',
       (done) => {
         request(app)
           .put('/api/v1/users/role/1')
@@ -553,7 +559,7 @@ describe('In User controller when user is not an admin: ', () => {
           });
       });
 
-    it('method updateUserRole, it should not update user role where id=- and respond with status 400',
+    it('should not update user role where id=- and respond with status 400',
       (done) => {
         request(app)
           .put('/api/v1/users/role/-')
@@ -573,7 +579,7 @@ describe('In User controller when user is not an admin: ', () => {
           });
       });
 
-    it('method updateUserRole, it should not update user role where id=100 and respond with status 400',
+    it('should not update user role where id=100 and respond with status 400',
       (done) => {
         request(app)
           .put('/api/v1/users/role/100')
@@ -593,7 +599,7 @@ describe('In User controller when user is not an admin: ', () => {
           });
       });
 
-    it('method updateUserRole, it should not update user role where id=1, role=nothing and respond with status 400',
+    it('should not update user role where id=1, role=nothing',
       (done) => {
         request(app)
           .put('/api/v1/users/role/4')
@@ -635,8 +641,8 @@ describe('In User controller when user is not an admin ', () => {
       });
   });
 
-  describe('GET api/v1/users triggers: ', () => {
-    it('method listUsers, it should not get list all users where users is not an admin and respond with status 400',
+  describe('GET api/v1/users ', () => {
+    it('should not get list all users where users is not an admin',
       (done) => {
         request(app)
           .get('/api/v1/users')
@@ -656,8 +662,8 @@ describe('In User controller when user is not an admin ', () => {
       });
   });
 
-  describe('PUT api/v1/users/role/4 trigegrs: ', () => {
-    it('method updateUserRole should update user role where id=4 and respond with status 200',
+  describe('PUT api/v1/users/role/4 ', () => {
+    it('should update user role where id=4 and respond with status 200',
       (done) => {
         request(app)
           .put('/api/v1/users/role/4')
@@ -677,8 +683,8 @@ describe('In User controller when user is not an admin ', () => {
           });
       });
   });
-  describe('PUT api/v1/users/ trigegrs: ', () => {
-    it('method upDateUser,  should not update user where id=4 and respond with status 200',
+  describe('PUT api/v1/users/ ', () => {
+    it('should not update user where id=4 and respond with status 200',
       (done) => {
         request(app)
           .put('/api/v1/users/2')
@@ -692,7 +698,8 @@ describe('In User controller when user is not an admin ', () => {
               assert(res.body.message === 'Access Denied, Only Admin can Update Role',
               'Access Denied, Only Admin can Update Role');
             } else {
-              const error = new Error('Access Denied, Only Admin can Update Role');
+              const error =
+              new Error('Access Denied, Only Admin can Update Role');
               assert.ifError(error);
             }
             done();
@@ -700,8 +707,8 @@ describe('In User controller when user is not an admin ', () => {
       });
   });
   // Delete user
-  describe('DELETE: /api/v1/users/- triggers ', () => {
-    it('method deleteUser, it should respond with User Not Found where id=90, role=fellow and respond with status 400',
+  describe('DELETE: /api/v1/users/- ', () => {
+    it('should respond with User Not Found where id=90, role=fellow ',
       (done) => {
         request(app)
           .delete('/api/v1/users/90')
@@ -722,8 +729,8 @@ describe('In User controller when user is not an admin ', () => {
       });
   });
 
-  describe('GET api/v1/users/3 triggers: ', () => {
-    it('method findUser, it should not get user where id= 3 and user = fellow and respond with status 400',
+  describe('GET api/v1/users/3  ', () => {
+    it('hould not get user where id= 3 and user = fellow ',
       (done) => {
         request(app)
           .get('/api/v1/users/3')
@@ -742,8 +749,8 @@ describe('In User controller when user is not an admin ', () => {
           });
       });
   });
-  describe('GET api/v1/search/users triggers: ', () => {
-    it('method searchUser, it should not get user where key=fellow and user = fellow and respond with status 400',
+  describe('GET api/v1/search/users', () => {
+    it('should not get user where key=fellow and user = fellow',
       (done) => {
         request(app)
           .get('/api/v1/search/users/?q=fellow')
@@ -762,8 +769,8 @@ describe('In User controller when user is not an admin ', () => {
           });
       });
   });
-  describe('GET /api/v1/users/page/page-1 triggers: ', () => {
-    it('method getUserByUser, it should not get user where pageId=page-1 and user = fellow and respond with status 400',
+  describe('GET /api/v1/users/page/page-1 ', () => {
+    it('should not get user where pageId=page-1 and user = fellow',
       (done) => {
         request(app)
           .get('/api/v1/users/page/page-1')
@@ -783,8 +790,8 @@ describe('In User controller when user is not an admin ', () => {
       });
   });
     // findUserDocumentByPage
-  describe('GET /api/v1/users/userId/documents/ triggers: ', () => {
-    it('method findUserDocument, should not get documents where userId=1 and respond with status 400',
+  describe('GET /api/v1/users/userId/documents/', () => {
+    it('should not get documents where userId=1 and respond with status 400',
       (done) => {
         request(app)
           .get('/api/v1/users/1/documents/')
@@ -803,7 +810,7 @@ describe('In User controller when user is not an admin ', () => {
           });
       });
   });
-  it('method findUserDocument, should not get documents where userId=1, limit = - and respond with status 400',
+  it('should not get documents where userId=1, limit = - ',
       (done) => {
         request(app)
           .get('/api/v1/users/1/documents/?limit=-')
@@ -813,7 +820,8 @@ describe('In User controller when user is not an admin ', () => {
           .expect(400)
           .end((err, res) => {
             if (!err) {
-              assert(res.body.message === 'Please Set Offset and Limit as Integer',
+              assert(res.body.message ===
+                'Please Set Offset and Limit as Integer',
               'Please Set Offset and Limit as Integer');
             } else {
               const error = new Error('Cannot find document');
