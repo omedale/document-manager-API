@@ -135,7 +135,7 @@ export default {
    */
   updateUserRole: (req, res) => {
     if (req.decoded.role === 'admin') {
-      if (!Number.isInteger(Number(req.params.userId))) {
+      if (!Number.isInteger(Number(req.params.id))) {
         return res.status(400).send({
           message: 'Invalid User ID'
         });
@@ -156,7 +156,7 @@ export default {
               });
             } else {
               return User
-                .findById(req.params.userId)
+                .findById(req.params.id)
                 .then((user) => {
                   if (!user) {
                     return res.status(404).send({
@@ -194,7 +194,7 @@ export default {
    * @return {object}  returns response status and json data
    */
   updateUser: (req, res) => {
-    if (!Number.isInteger(Number(req.params.userId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).send({
         message: 'Invalid User ID'
       });
@@ -224,14 +224,14 @@ export default {
         .catch(error => res.status(400).send(error));
     }
     return User
-      .findById(req.params.userId)
+      .findById(req.params.id)
       .then((user) => {
         if (!user) {
           return res.status(400).send({
             message: 'User Not Found',
           });
         }
-        if (Number(req.decoded.id) !== Number(req.params.userId)) {
+        if (Number(req.decoded.id) !== Number(req.params.id)) {
           return res.status(400).send({
             message: 'Access Denied'
           });
@@ -267,7 +267,7 @@ export default {
    * @return {object}  returns response status and json data
    */
   findUser: (req, res) => {
-    if (!Number.isInteger(Number(req.params.userId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).send({
         message: 'Invalid User ID'
       });
@@ -276,7 +276,7 @@ export default {
       return User
         .find({
           where: {
-            id: req.params.userId,
+            id: req.params.id,
           },
           attributes: ['id', 'name', 'role', 'email', 'phone'],
         })
@@ -312,15 +312,15 @@ export default {
    * @return {object}  returns response status and json data
    */
   deleteUser: (req, res) => {
-    if (!Number.isInteger(Number(req.params.userId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).send({
         message: 'Invalid User ID'
       });
     }
-    if (req.decoded.id === Number(req.params.userId) ||
+    if (req.decoded.id === Number(req.params.id) ||
       req.decoded.role === 'admin') {
       return User
-        .findById(req.params.userId)
+        .findById(req.params.id)
         .then((user) => {
           if (!user) {
             return res.status(404).send({
@@ -356,16 +356,16 @@ export default {
         });
       }
     }
-    if (req.decoded.id === Number(req.params.userId) ||
+    if (req.decoded.id === Number(req.params.id) ||
       req.decoded.role === 'admin') {
-      if (!Number.isInteger(Number(req.params.userId))) {
+      if (!Number.isInteger(Number(req.params.id))) {
         return res.status(400).send({
           message: 'Invalid User ID'
         });
       }
       Document.findAll({
         where: {
-          userId: req.params.userId
+          userId: req.params.id
         }
       })
         .then((allDocs) => {
@@ -377,7 +377,7 @@ export default {
               offset,
               limit,
               where: {
-                userId: req.params.userId,
+                userId: req.params.id,
               },
               attributes:
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
@@ -483,7 +483,7 @@ export default {
    * @param {object} res response
    * @return {object}  returns response status and json data
    */
-  getUserPage: (req, res) => {
+  getUserByPage: (req, res) => {
     if (req.decoded.role !== 'admin') {
       return res.status(400).send({
         message: 'Access Denied'
@@ -532,7 +532,7 @@ export default {
    * @param {object} res response
    * @return {object}  returns response status and json data
    */
-  getUserByPage: (req, res) => {
+  getUsers: (req, res) => {
     if (req.decoded.role !== 'admin') {
       return res.status(400).send({
         message: 'Access Denied'

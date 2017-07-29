@@ -63,7 +63,7 @@ export default {
    * @return {object} - returns response status and json data
    */
   updateDocument: (req, res) => {
-    if (!Number.isInteger(Number(req.params.documentId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).json({
         message: 'Invalid document ID'
       });
@@ -71,7 +71,7 @@ export default {
     return Document
       .find({
         where: {
-          id: req.params.documentId,
+          id: req.params.id,
         },
       })
       .then((document) => {
@@ -203,7 +203,7 @@ export default {
    * @return {object} - returns response status and json data
    */
   findDocument: (req, res) => {
-    if (!Number.isInteger(Number(req.params.documentId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.json({
         message: 'Invalid document ID'
       });
@@ -211,7 +211,7 @@ export default {
     if (req.decoded.role === 'admin') {
       return Document
         .find({
-          where: { id: req.params.documentId },
+          where: { id: req.params.id },
           attributes:
           ['id', 'title', 'access', 'document', 'owner', 'createdAt']
         })
@@ -237,7 +237,7 @@ export default {
       return Document
         .find({
           where: {
-            id: req.params.documentId,
+            id: req.params.id,
             access: [req.decoded.role, 'public']
           },
           attributes:
@@ -273,7 +273,7 @@ export default {
    * @return {object} - returns response status and json data
    */
   deleteDocument: (req, res) => {
-    if (!Number.isInteger(Number(req.params.documentId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).send({
         message: 'Invalid document ID'
       });
@@ -282,7 +282,7 @@ export default {
       return Document
         .find({
           where: {
-            id: req.params.documentId
+            id: req.params.id
           }
         })
         .then((document) => {
@@ -302,7 +302,7 @@ export default {
     return Document
       .find({
         where: {
-          id: req.params.documentId,
+          id: req.params.id,
         }
       })
       .then((document) => {
@@ -446,7 +446,7 @@ export default {
    * @param {object} res response
    * @return {object} - returns response status and json data
    */
-  getDocumentPage: (req, res) => {
+  getDocumentByPage: (req, res) => {
     const newPageInfo = req.params.pageNo.split('-').map((val) => {
       return val;
     });
