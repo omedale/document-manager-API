@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { assert } from 'chai';
 import request from 'supertest';
 import 'babel-register';
+import users from '../../build/controllers/users';
 
 const User = require('../../build/models').User;
 const Document = require('../../build/models').Document;
@@ -23,7 +24,6 @@ describe('Set Document controller for test', () => {
     })
       .then((err) => {
         if (!err) {
-          console.log('users tables cleared');
           Document.destroy({
             where: {},
             truncate: true,
@@ -32,100 +32,9 @@ describe('Set Document controller for test', () => {
           })
             .then((err) => {
               if (!err) {
-                console.log('tables cleared');
+                //
               }
             });
-          Role.destroy({
-            where: {},
-            truncate: true,
-            cascade: true,
-            restartIdentity: true
-          })
-            .then((err) => {
-              if (!err) {
-                Role.bulkCreate([{
-                  role: 'admin',
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                },
-                {
-                  role: 'success',
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                },
-                {
-                  role: 'technology',
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                },
-                {
-                  role: 'fellow',
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                },
-                ]).then((err) => {
-                  if (!err) {
-                    console.log('roles created');
-                  }
-                  done();
-                });
-              }
-            });
-        }
-        done();
-      });
-    const user = new User();
-    User.create({
-      name: process.env.NAME,
-      password: user.generateHash(process.env.PASSWORD),
-      email: process.env.ADMINEMAIL,
-      phone: '0908889000',
-      role: process.env.ADMINROLE
-    }).then((err) => {
-      if (!err) {
-        console.log('Admin user created');
-      } else {
-        console.log('Admin not created');
-      }
-      done();
-    });
-
-    token = jwt.sign({
-      id: 1,
-      email: process.env.ADMINEMAIL,
-      name: process.env.NAME,
-      role: process.env.ADMINROLE,
-    }, process.env.JWT_SECRET, { expiresIn: '24h' });
-    request(app)
-      .post('/api/v1/users/auth/register')
-      .send({
-        password: 'ayo',
-        email: 'fellow@gmail.com',
-        name: 'fellow'
-      })
-      .expect(200)
-      .end((err, res) => {
-        if (!err) {
-          console.log('fellow saved');
-        } else {
-          console.log('fellow not save');
-        }
-        done();
-      });
-
-    request(app)
-      .post('/api/v1/users/auth/register')
-      .send({
-        password: 'ayo',
-        email: 'testing@gmail.com',
-        name: 'tester'
-      })
-      .expect(200)
-      .end((err, res) => {
-        if (!err) {
-          console.log('tester saved');
-        } else {
-          console.log('tester not save');
         }
         done();
       });
@@ -138,11 +47,100 @@ describe('Set Document controller for test', () => {
       const error = new Error('token not defind');
       assert.ifError(error);
     }
-  }, 10000);
+  });
 });
 
 describe('On Document controller when user is an admin', () => {
   describe('route GET: /api/v1/documents', () => {
+    beforeEach((done) => {
+      Role.destroy({
+        where: {},
+        truncate: true,
+        cascade: true,
+        restartIdentity: true
+      })
+        .then((err) => {
+          if (!err) {
+            //
+          }
+        });
+      Role.bulkCreate([{
+        role: 'admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        role: 'success',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        role: 'technology',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        role: 'fellow',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      ]).then((err) => {
+        if (!err) {
+          console.log('roles created');
+        }
+        done();
+      });
+      const user = new User();
+      User.create({
+        name: 'admin',
+        email: 'admin@gmail.com',
+        role: 'admin',
+        password: user.generateHash('ayo'),
+        phone: '09890',
+      }).then((respond) => {
+        //
+      });
+
+      token = jwt.sign({
+        id: 1,
+        email: process.env.ADMINEMAIL,
+        name: process.env.NAME,
+        role: process.env.ADMINROLE,
+      }, process.env.JWT_SECRET, { expiresIn: '24h' });
+      request(app)
+        .post('/api/v1/users/auth/register')
+        .send({
+          password: 'ayo',
+          email: 'fellow@gmail.com',
+          name: 'fellow'
+        })
+        .expect(200)
+        .end((err, res) => {
+          if (!err) {
+            //
+          } else {
+            //
+          }
+          done();
+        });
+
+      request(app)
+        .post('/api/v1/users/auth/register')
+        .send({
+          password: 'ayo',
+          email: 'testing@gmail.com',
+          name: 'tester'
+        })
+        .expect(200)
+        .end((err, res) => {
+          if (!err) {
+            console.log('tester saved');
+          } else {
+            console.log('tester not save');
+          }
+          done();
+        });
+    });
     it('should respond with No document Found message',
       (done) => {
         request(app)
