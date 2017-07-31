@@ -1,6 +1,20 @@
 const Document = require('../models').Document;
 const Role = require('../models').Role;
 
+const validationError = (res, errors) => {
+  return res.status(400).send({
+    message:
+    'Invalid Input, please provide appropriate input for all field',
+    errors
+  });
+};
+
+const notFound = (res) => {
+  return res.status(404).send({
+    message: 'Document Not Found',
+  });
+};
+
 export default {
   /**
    * createDocument: This allows registered users create documents
@@ -13,11 +27,8 @@ export default {
     req.checkBody('title', 'Title is required').notEmpty();
     const errors = req.validationErrors();
     if (errors) {
-      return res.status(400).send({
-        message:
-        'Invalid Input, please provide appropriate input for all field',
-        errors
-      });
+      validationError(res, errors);
+      return;
     }
     Role
       .findAll()
@@ -63,7 +74,7 @@ export default {
    * @return {object} - returns response status and json data
    */
   updateDocument: (req, res) => {
-    if (!Number.isInteger(Number(req.params.documentId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).json({
         message: 'Invalid document ID'
       });
@@ -71,14 +82,13 @@ export default {
     return Document
       .find({
         where: {
-          id: req.params.documentId,
+          id: req.params.id,
         },
       })
       .then((document) => {
         if (!document) {
-          return res.status(404).send({
-            message: 'Document Not Found',
-          });
+          notFound(res);
+          return;
         }
         if (Number(document.userId) !== Number(req.decoded.id)) {
           return res.status(400).send({
@@ -137,9 +147,8 @@ export default {
             })
             .then((documents) => {
               if (documents.length === 0) {
-                return res.status(404).send({
-                  message: 'No document Found',
-                });
+                notFound(res);
+                return;
               }
               let pageCount = Math.round(totalCount / limit);
               pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
@@ -203,7 +212,7 @@ export default {
    * @return {object} - returns response status and json data
    */
   findDocument: (req, res) => {
-    if (!Number.isInteger(Number(req.params.documentId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.json({
         message: 'Invalid document ID'
       });
@@ -211,15 +220,14 @@ export default {
     if (req.decoded.role === 'admin') {
       return Document
         .find({
-          where: { id: req.params.documentId },
+          where: { id: req.params.id },
           attributes:
           ['id', 'title', 'access', 'document', 'owner', 'createdAt']
         })
         .then((document) => {
           if (!document) {
-            return res.status(404).send({
-              message: 'Document Not Found',
-            });
+            notFound(res);
+            return;
           }
           return res.status(200).send({
             document: {
@@ -237,7 +245,7 @@ export default {
       return Document
         .find({
           where: {
-            id: req.params.documentId,
+            id: req.params.id,
             access: [req.decoded.role, 'public']
           },
           attributes:
@@ -245,9 +253,8 @@ export default {
         })
         .then((document) => {
           if (!document) {
-            return res.status(404).send({
-              message: 'Document Not Found',
-            });
+            notFound(res);
+            return;
           }
           return res.status(200).send({
             document: {
@@ -273,7 +280,7 @@ export default {
    * @return {object} - returns response status and json data
    */
   deleteDocument: (req, res) => {
-    if (!Number.isInteger(Number(req.params.documentId))) {
+    if (!Number.isInteger(Number(req.params.id))) {
       return res.status(400).send({
         message: 'Invalid document ID'
       });
@@ -282,14 +289,13 @@ export default {
       return Document
         .find({
           where: {
-            id: req.params.documentId
+            id: req.params.id
           }
         })
         .then((document) => {
           if (!document) {
-            return res.status(400).send({
-              message: 'Document Not Found',
-            });
+            notFound(res);
+            return;
           }
           return document
             .destroy()
@@ -302,14 +308,13 @@ export default {
     return Document
       .find({
         where: {
-          id: req.params.documentId,
+          id: req.params.id,
         }
       })
       .then((document) => {
         if (!document) {
-          return res.status(400).send({
-            message: 'Document Not Found',
-          });
+          notFound(res);
+          return;
         }
         if (document.userId !== req.decoded.id) {
           return res.status(400).send({
@@ -360,9 +365,8 @@ export default {
         .then((allDocs) => {
           const totalCount = allDocs.length;
           if (allDocs.length === 0) {
-            return res.status(404).send({
-              message: 'Document Not Found',
-            });
+            notFound(res);
+            return;
           }
           return Document
             .findAll({
@@ -402,9 +406,8 @@ export default {
         .then((allDocs) => {
           const totalCount = allDocs.length;
           if (allDocs.length === 0) {
-            return res.status(404).send({
-              message: 'Document Not Found',
-            });
+            notFound(res);
+            return;
           }
           return Document
             .findAll({
@@ -446,7 +449,7 @@ export default {
    * @param {object} res response
    * @return {object} - returns response status and json data
    */
-  getDocumentPage: (req, res) => {
+  getDocumentByPage: (req, res) => {
     const newPageInfo = req.params.pageNo.split('-').map((val) => {
       return val;
     });
@@ -475,9 +478,8 @@ export default {
       })
         .then((docs) => {
           if (docs.length === 0) {
-            return res.status(404).send({
-              message: 'No Document Found',
-            });
+            notFound(res);
+            return;
           }
           return res.status(200).send(docs);
         })
@@ -493,9 +495,8 @@ export default {
       })
         .then((docs) => {
           if (docs.length === 0) {
-            return res.status(404).send({
-              message: 'No Document Found',
-            });
+            notFound(res);
+            return;
           }
           return res.status(200).send(docs);
         })

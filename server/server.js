@@ -21,7 +21,7 @@ app.use(expressValidator());
 app.use('/api', auth.verifyToken);
 
 // reqires route file
-require('./../build/router')(app, passport);
+require('./../build/route')(app, passport);
 
 app.use(express.static(path.resolve(__dirname, './../public')));
 app.get('*', (request, response) => {

@@ -4,19 +4,17 @@ engines:
     config:
       config: .eslintrc
   duplication:
-    enabled: true
+    enabled: false
     config:
       languages:
       - javascript
-  eslint:
-    enabled: true
   fixme:
     enabled: true
 ratings:
   paths:
   - "**.es6"
   - "**.js"
+  - "**.jsx"
 exclude_paths:
 - node_modules/**/*
-- test/**/*
-- public/**/*
+- test/*

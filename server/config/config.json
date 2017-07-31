@@ -2,16 +2,16 @@
   "development": {
     "username": "postgres",
     "password": "medale",
-    "database": "docme",
+    "database": "test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "use_env_variable": "PRODUCTION_DB_URL",
+    "use_env_variable": "MY_DOC",
     "dialect": "postgres"
   },
   "production": {
-    "use_env_variable": "PRODUCTION_DB_URL",
+    "use_env_variable": "MY_DOC",
     "dialect": "postgres"
   }
 }
