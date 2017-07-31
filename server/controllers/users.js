@@ -385,7 +385,7 @@ export default {
             .then((documents) => {
               if (documents.length === 0) {
                 return res.status(404).send({
-                  message: 'No document Found',
+                  message: 'Document Not Found',
                 });
               }
               let pageCount = Math.round(totalCount / limit);

@@ -60,13 +60,17 @@ $ Please click **[here](https://docme.herokuapp.com)** to view all available end
     $ npm start
 
 
-## Tests
+# Tests
 *  The tests have been written using Gulp-Jasmine and Chai.
 *  They are run using the **`coverage`** tool in order to generate test coverage reports.
 
      -To run test
 
          $ npm test
+
+# Contributing
+If you are planning on contributing to DocMe, that's great. I welcome contributions to DocMe.
+If the contribution you wish to make isn't documented in an existing issue, please create an issue, before you submit a Pull Request. This will allow me and Collaborators a chance to give additional feedback as well. **[Click](https://github.com/omedale/DOCME-CP2/wiki)** here for more information on how to contribute.
 
 # FAQ
 
@@ -111,3 +115,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# Author
+Oluwafemi Medale - @omedale

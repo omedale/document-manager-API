@@ -39,15 +39,15 @@ describe('Set Document controller for test', () => {
         done();
       });
   });
-
-  it('it should set token', () => {
-    if (token) {
-      assert.isDefined(token, 'token is defined');
+  const set = true;
+  it('set should be true', () => {
+    if (set) {
+      assert.isDefined(set, 'test is ready');
     } else {
-      const error = new Error('token not defind');
+      const error = new Error('test is not ready');
       assert.ifError(error);
     }
-  });
+  }, 10000);
 });
 
 describe('On Document controller when user is an admin', () => {
@@ -152,7 +152,7 @@ describe('On Document controller when user is an admin', () => {
           .end((err, res) => {
             if (!err) {
               assert(res.body.message
-                === 'No document Found', 'Documents is found');
+                === 'Document Not Found', 'Document Not Found');
             } else {
               const error = new Error('Documents not found');
               assert.ifError(error);
@@ -566,7 +566,7 @@ describe('In Document controller when user is not an admin', () => {
           .end((err, res) => {
             if (!err) {
               assert(res.body.message ===
-                'No Document Found', 'No Document Found');
+                'Document Not Found', 'Document Not Found');
             } else {
               const error = new Error(err);
               assert.ifError(error);
@@ -716,7 +716,7 @@ describe('In Document controller when user is not an admin', () => {
           .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
-          .expect(400)
+          .expect(404)
           .end((err, res) => {
             if (!err) {
               assert(res.body.message ===
