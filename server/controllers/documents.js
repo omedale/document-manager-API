@@ -1,6 +1,12 @@
 const Document = require('../models').Document;
 const Role = require('../models').Role;
-
+/**
+   * validationError: This returns validation error messages
+   * @function validationError
+   * @param {object} res response
+   * @param {object} errors errors
+   * @return {object} - returns response status and json data
+   */
 const validationError = (res, errors) => {
   return res.status(400).send({
     message:
@@ -8,7 +14,12 @@ const validationError = (res, errors) => {
     errors
   });
 };
-
+/**
+   * notFound: This returns document not found error message
+   * @function notFound
+   * @param {object} res response
+   * @return {object} - returns response status and json data
+   */
 const notFound = (res) => {
   return res.status(404).send({
     message: 'Document Not Found',
@@ -245,8 +256,7 @@ export default {
       return Document
         .find({
           where: {
-            id: req.params.id,
-            access: [req.decoded.role, 'public']
+            id: req.params.id
           },
           attributes:
           ['id', 'title', 'access', 'document', 'owner', 'createdAt']
@@ -256,16 +266,22 @@ export default {
             notFound(res);
             return;
           }
-          return res.status(200).send({
-            document: {
-              id: document.id,
-              title: document.title,
-              owner: document.owner,
-              document: document.document,
-              access: document.access,
-              createdAt: document.createdAt
-            }
-          });
+          if (document.access === req.decoded.role || document.access === 'public') {
+            return res.status(200).send({
+              document: {
+                id: document.id,
+                title: document.title,
+                owner: document.owner,
+                document: document.document,
+                access: document.access,
+                createdAt: document.createdAt
+              }
+            });
+          } else {
+            return res.status(400).send({
+              message: 'Access Denied'
+            });
+          }
         })
         .catch(error => res.status(400).send(error));
     }

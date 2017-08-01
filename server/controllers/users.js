@@ -13,9 +13,9 @@ export default {
    */
   signUp: (req, res) => {
     req.checkBody('email', 'Invalid email').isEmail();
-    req.checkBody('email', 'Email not defined').notEmpty();
-    req.checkBody('name', 'Invalid name').notEmpty();
-    req.checkBody('password', 'Invalid password').notEmpty();
+    req.checkBody('email', 'Email Required').notEmpty();
+    req.checkBody('name', 'Name Required').notEmpty();
+    req.checkBody('password', 'Password required').notEmpty();
     const errors = req.validationErrors();
     if (errors) {
       return res.status(400).send({
@@ -78,7 +78,7 @@ export default {
    */
   signIn: (req, res) => {
     req.checkBody('email', 'Invalid email').isEmail();
-    req.checkBody('email', 'Email not Defined').notEmpty();
+    req.checkBody('email', 'Email is Required').notEmpty();
     req.checkBody('password', 'Password is required').notEmpty();
     const errors = req.validationErrors();
     if (errors) {
