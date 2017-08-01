@@ -1,30 +1,11 @@
+import {
+  notFound,
+  validationError,
+  checkErrors, documentPaginationHelper
+} from './helper';
+
 const Document = require('../models').Document;
 const Role = require('../models').Role;
-/**
-   * validationError: This returns validation error messages
-   * @function validationError
-   * @param {object} res response
-   * @param {object} errors errors
-   * @return {object} - returns response status and json data
-   */
-const validationError = (res, errors) => {
-  return res.status(400).send({
-    message:
-    'Invalid Input, please provide appropriate input for all field',
-    errors
-  });
-};
-/**
-   * notFound: This returns document not found error message
-   * @function notFound
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
-const notFound = (res) => {
-  return res.status(404).send({
-    message: 'Document Not Found',
-  });
-};
 
 export default {
   /**
@@ -35,8 +16,8 @@ export default {
    * @return {object} - returns response status and json data
    */
   createDocument: (req, res) => {
-    req.checkBody('title', 'Title is required').notEmpty();
-    const errors = req.validationErrors();
+    const errorMessage = 'createdocument';
+    const errors = checkErrors(req, errorMessage);
     if (errors) {
       validationError(res, errors);
       return;
@@ -161,18 +142,8 @@ export default {
                 notFound(res);
                 return;
               }
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                documents,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: documents.length,
-                  totalCount,
-                }
-              });
+              documentPaginationHelper(
+                limit, offset, totalCount, documents, res);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -196,18 +167,8 @@ export default {
                   message: 'No document Found',
                 });
               }
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                documents,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: documents.length,
-                  totalCount,
-                }
-              });
+              documentPaginationHelper(
+                limit, offset, totalCount, documents, res);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -266,7 +227,8 @@ export default {
             notFound(res);
             return;
           }
-          if (document.access === req.decoded.role || document.access === 'public') {
+          if (document.access === req.decoded.role
+            || document.access === 'public') {
             return res.status(200).send({
               document: {
                 id: document.id,
@@ -395,18 +357,8 @@ export default {
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                documents,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: documents.length,
-                  totalCount,
-                }
-              });
+              documentPaginationHelper(
+                limit, offset, totalCount, documents, res);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -438,83 +390,9 @@ export default {
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                documents,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: documents.length,
-                  totalCount,
-                }
-              });
+              documentPaginationHelper(
+                limit, offset, totalCount, documents, res);
             });
-        })
-        .catch(error => res.status(400).send(error));
-    }
-  },
-  /**
-   * getDocumentPage: This allows registered users get saved documents by page,
-   * where role = "user's role" and public documents.
-   * It gets all available documents both privates
-   * and public for admin users by page
-   * @function getDocumentPage
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object} - returns response status and json data
-   */
-  getDocumentByPage: (req, res) => {
-    const newPageInfo = req.params.pageNo.split('-').map((val) => {
-      return val;
-    });
-    if (!newPageInfo[1]) {
-      return res.status(400).send({
-        message: 'No Page number'
-      });
-    }
-    if (!Number.isInteger(Number(newPageInfo[1]))) {
-      return res.status(400).send({
-        message: 'Invalid request'
-      });
-    }
-    const page = Number(newPageInfo[1]);
-    let offset = 0;
-    const limit = 10;
-    if (page !== 1) {
-      offset = (page - 1) * 10;
-    }
-
-    if (req.decoded.role === 'admin') {
-      return Document.findAll({
-        offset,
-        limit,
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
-      })
-        .then((docs) => {
-          if (docs.length === 0) {
-            notFound(res);
-            return;
-          }
-          return res.status(200).send(docs);
-        })
-        .catch(error => res.status(400).send(error));
-    } else {
-      return Document.findAll({
-        offset,
-        limit,
-        where: {
-          access: [req.decoded.role, 'public']
-        },
-        attributes: ['id', 'title', 'document', 'owner', 'createdAt']
-      })
-        .then((docs) => {
-          if (docs.length === 0) {
-            notFound(res);
-            return;
-          }
-          return res.status(200).send(docs);
         })
         .catch(error => res.status(400).send(error));
     }

@@ -31,4 +31,3 @@ app.get('*', (request, response) => {
 const server = http.createServer(app);
 server.listen(port);
 module.exports = app;
-console.log('We are using port', port);
