@@ -24,8 +24,8 @@ export default {
     }
     Role
       .findAll()
-      .then((response) => {
-        if (response !== null) {
+      .then((allDocuments) => {
+        if (allDocuments !== null) {
           if (req.body.access === 'public' ||
             req.body.access === 'private' ||
             req.body.access === req.decoded.role) {

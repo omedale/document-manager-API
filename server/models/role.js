@@ -1,5 +1,3 @@
-
-
 /**
    * Defines user model
    * @param {object} sequelize

@@ -29,8 +29,8 @@ export default {
         email: req.body.email
       }
     })
-      .then((response) => {
-        if (!response) {
+      .then((userFound) => {
+        if (!userFound) {
           const user = new User();
           return User
             .create({
@@ -86,32 +86,34 @@ export default {
         email: req.body.email
       }
     })
-      .then((response) => {
+      .then((userFound) => {
         const user = new User();
-        if (response === null) {
+        if (userFound === null) {
           return res.status(400).send({
             message: 'Not an existing user, Please sign up'
           });
         } else {
+          const userDetail = userFound.dataValues;
           if (user.validatePassword(req.body.password,
-            response.dataValues.password) === false) {
+            userDetail.password) === false) {
             return res.status(400).send({
               message: 'Invalid Password'
             });
           }
         }
-        req.logIn(response.dataValues, () => {
+        const userDetail = userFound.dataValues;
+        req.logIn(userDetail, () => {
           const token = user.generateJWT(
-            response.dataValues.id,
-            response.dataValues.role);
+            userDetail.id,
+            userDetail.role);
           // return the token as JSON
           return res.status(200).send({
             message: 'Login Successful',
             token,
             user: {
-              id: response.dataValues.id,
-              email: response.dataValues.email,
-              name: response.dataValues.name
+              id: userDetail.id,
+              email: userDetail.email,
+              name: userDetail.name
             }
           });
         });
@@ -134,11 +136,11 @@ export default {
       }
       Role
         .findAll()
-        .then((response) => {
-          if (response !== null) {
+        .then((roles) => {
+          if (roles !== null) {
             let roleExist = false;
-            response.forEach((array) => {
-              if (array.role === req.body.role) {
+            roles.forEach((role) => {
+              if (role.role === req.body.role) {
                 roleExist = true;
               }
             });
@@ -203,8 +205,8 @@ export default {
           email: req.body.email
         }
       })
-        .then((response) => {
-          if (response) {
+        .then((userFound) => {
+          if (userFound) {
             return res.status(400).send({
               message: 'Email Already Exist'
             });
@@ -357,8 +359,8 @@ export default {
           userId: req.params.id
         }
       })
-        .then((allDocs) => {
-          const totalCount = allDocs.length;
+        .then((allDocuments) => {
+          const totalCount = allDocuments.length;
           const offset = req.query.offset || 0;
           const limit = req.query.limit || 10;
           return Document
@@ -471,8 +473,8 @@ export default {
       }
     }
     User.findAll()
-      .then((response) => {
-        const totalCount = response.length;
+      .then((allUsers) => {
+        const totalCount = allUsers.length;
         const offset = req.query.offset || 0;
         const limit = req.query.limit || 10;
         return User.findAll({

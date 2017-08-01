@@ -424,7 +424,7 @@ describe('In User controller when user is not an admin: ', () => {
           .expect('Content-Type', /json/)
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
+            //
             if (!err) {
               assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
             } else {
@@ -696,7 +696,7 @@ describe('In User controller when user is not an admin ', () => {
           .expect('Content-Type', /json/)
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
+            //
             if (!err) {
               assert(res.body.message === 'Access Denied', 'Access Denied');
             } else {

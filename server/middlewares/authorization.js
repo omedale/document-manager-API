@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-
 /**
    * verifyToken: This verifies all routes that starts with /api
    *  It checks if there is token and check if the token is valid

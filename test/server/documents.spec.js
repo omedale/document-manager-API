@@ -86,7 +86,7 @@ describe('On Document controller when user is an admin', () => {
       },
       ]).then((err) => {
         if (!err) {
-          console.log('roles created');
+          //
         }
         done();
       });
@@ -132,9 +132,9 @@ describe('On Document controller when user is an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            console.log('tester saved');
+            //
           } else {
-            console.log('tester not save');
+            //
           }
           done();
         });
@@ -448,7 +448,7 @@ describe('In Document controller when user is not an admin', () => {
         userId: 2
       }).then((err) => {
         if (!err) {
-          console.log('Document created');
+          //
         }
         done();
       });
