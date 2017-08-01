@@ -31,6 +31,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     }
+  }, {
+    hooks: {
+      beforeUpdate: (user) => {
+        if (user.password) {
+          user.password = user.generateHash(user.password);
+        }
+      }
+    }
   });
 
   User.prototype.generateHash = (password) => {
@@ -41,11 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.compareSync(password, savedPassword);
   };
 
-  User.prototype.generateJWT = (id, email, name, role) => {
+  User.prototype.generateJWT = (id, role) => {
     return jwt.sign({
       id,
-      email,
-      name,
       role,
     }, process.env.JWT_SECRET, { expiresIn: '24h' });
   };

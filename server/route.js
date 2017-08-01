@@ -12,7 +12,6 @@ module.exports = (app, passport) => {
   app.delete('/api/v1/users/:id', users.deleteUser);
   app.get('/api/v1/users/:id/documents/', users.findUserDocument);
   app.get('/api/v1/search/users/', users.searchUser);
-  app.get('/api/v1/users/page/:pageNo', users.getUserByPage);
   app.put('/api/v1/users/role/:id', users.updateUserRole);
 
 // Documents routes
@@ -26,5 +25,4 @@ module.exports = (app, passport) => {
   documents.deleteDocument);
   app.get('/api/v1/search/documents/',
   documents.searchDocument);
-  app.get('/api/v1/documents/page/:pageNo', documents.getDocumentByPage);
 };

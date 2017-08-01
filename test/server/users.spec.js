@@ -424,7 +424,7 @@ describe('In User controller when user is not an admin: ', () => {
           .expect('Content-Type', /json/)
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
+            //
             if (!err) {
               assert(res.body.message === 'Invalid User ID', 'Invalid User ID');
             } else {
@@ -516,27 +516,6 @@ describe('In User controller when user is not an admin: ', () => {
           });
       });
   });
-  // GetUserByPage
-  describe('GET /api/v1/users/page/:pageNo ', () => {
-    it('should return first 10 users and respond with status 200',
-      (done) => {
-        request(app)
-          .get('/api/v1/users/page/page-1')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (!err) {
-              assert((res.body).length >= 0, 'Users found');
-            } else {
-              const error = new Error('Cannot find user');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
   // UpdateUserRole
   describe('POST api/v1/users/role/4 ', () => {
     it('should update user role where id=4 and respond with status 200',
@@ -557,7 +536,7 @@ describe('In User controller when user is not an admin: ', () => {
             }
             done();
           });
-      });
+      }, 40000);
 
     it('should not update user role where id=- and respond with status 400',
       (done) => {
@@ -577,7 +556,7 @@ describe('In User controller when user is not an admin: ', () => {
             }
             done();
           });
-      });
+      }, 40000);
 
     it('should not update user role where id=100 and respond with status 400',
       (done) => {
@@ -597,7 +576,7 @@ describe('In User controller when user is not an admin: ', () => {
             }
             done();
           });
-      });
+      }, 40000);
 
     it('should not update user role where id=1, role=nothing',
       (done) => {
@@ -617,7 +596,7 @@ describe('In User controller when user is not an admin: ', () => {
             }
             done();
           });
-      });
+      }, 40000);
   });
 });
 
@@ -717,7 +696,7 @@ describe('In User controller when user is not an admin ', () => {
           .expect('Content-Type', /json/)
           .expect(400)
           .end((err, res) => {
-            console.log(res.body);
+            //
             if (!err) {
               assert(res.body.message === 'Access Denied', 'Access Denied');
             } else {
@@ -754,26 +733,6 @@ describe('In User controller when user is not an admin ', () => {
       (done) => {
         request(app)
           .get('/api/v1/search/users/?q=fellow')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(400)
-          .end((err, res) => {
-            if (!err) {
-              assert(res.body.message === 'Access Denied', 'Access Denied');
-            } else {
-              const error = new Error('Access Denied for non Admin');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
-  describe('GET /api/v1/users/page/page-1 ', () => {
-    it('should not get user where pageId=page-1 and user = fellow',
-      (done) => {
-        request(app)
-          .get('/api/v1/users/page/page-1')
           .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)

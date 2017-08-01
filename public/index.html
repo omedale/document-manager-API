@@ -255,9 +255,6 @@
                     <a href="#search-users" class="toc-h2 toc-link" data-title="Users">Search Users</a>
                   </li>
                   <li>
-                    <a href="#list-users-by-custom-pagination" class="toc-h2 toc-link" data-title="Users">List Users by custom pagination</a>
-                  </li>
-                  <li>
                     <a href="#update-user-role" class="toc-h2 toc-link" data-title="Users">Update User Role</a>
                   </li>
               </ul>
@@ -282,9 +279,6 @@
                   </li>
                   <li>
                     <a href="#list-documents" class="toc-h2 toc-link" data-title="Documents">List Documents</a>
-                  </li>
-                  <li>
-                    <a href="#list-documents-by-custom-pagination" class="toc-h2 toc-link" data-title="Documents">List Documents by custom pagination</a>
                   </li>
               </ul>
           </li>
@@ -636,7 +630,7 @@ You must replace <code>token</code> with the one you get after authentication.
 <span class="p">}</span>
 </code></pre><h3 id='request-7'>Request</h3>
 <ul>
-<li>Endpoint: GET: <code>/api/v1/users/:id/documents/:pageNo</code></li>
+<li>Endpoint: GET: `/api/v1/users/:id/documents</li>
 <li>Requires: Authorization</li>
 </ul>
 <h3 id='query-parameters-2'>Query Parameters</h3>
@@ -714,68 +708,6 @@ You must replace <code>token</code> with the one you get after authentication.
 <li>Status: <code>200: OK</code></li>
 <li>Body <code>(application/json)</code></li>
 </ul>
-<h2 id='list-users-by-custom-pagination'>List Users by custom pagination</h2>
-<blockquote>
-<p>Response:</p>
-</blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="p">[</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"tester"</span><span class="p">,</span>
-        <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"fellow"</span><span class="p">,</span>
-        <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"testing@gmail.com"</span><span class="p">,</span>
-        <span class="s2">"phone"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Testing master"</span><span class="p">,</span>
-        <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"admin"</span><span class="p">,</span>
-        <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"admin@gmail.com"</span><span class="p">,</span>
-        <span class="s2">"phone"</span><span class="p">:</span> <span class="s2">"7033390748"</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"fellow"</span><span class="p">,</span>
-        <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"success"</span><span class="p">,</span>
-        <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"fellow@gmail.com"</span><span class="p">,</span>
-        <span class="s2">"phone"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">}</span>
-<span class="p">]</span>
-</code></pre><h3 id='request-9'>Request</h3>
-<ul>
-<li>Endpoint: GET: <code>/api/v1/users/page/:pageNo</code></li>
-<li>Requires: Authorization</li>
-</ul>
-<h3 id='response-9'>Response</h3>
-<ul>
-<li>Status: <code>200: OK</code></li>
-<li>Body <code>(application/json)</code></li>
-</ul>
-
-<aside class="notice">
- <code>pageNo</code> must be in the following format <code>page-1</code>, <code>page-2</code> ....
-</aside>
-<h3 id='query-parameters-4'>Query Parameters</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>page-(n)</td>
-<td>10</td>
-<td>Sets the limit.</td>
-</tr>
-</tbody></table>
-
-<aside class="notice">
- Where <code>n</code> is 1,2,3,...n
-</aside>
 <h2 id='update-user-role'>Update User Role</h2>
 <blockquote>
 <p>Request:</p>
@@ -794,13 +726,13 @@ You must replace <code>token</code> with the one you get after authentication.
     <span class="p">},</span>
     <span class="s2">"message"</span><span class="p">:</span> <span class="s2">"Role Updated"</span>
 <span class="p">}</span>
-</code></pre><h3 id='request-10'>Request</h3>
+</code></pre><h3 id='request-9'>Request</h3>
 <ul>
 <li>Endpoint: PUT: <code>/api/v1/users/role/:id</code></li>
 <li>Requires: Authorization</li>
 <li>Body <code>(application/json)</code></li>
 </ul>
-<h3 id='response-10'>Response</h3>
+<h3 id='response-9'>Response</h3>
 <ul>
 <li>Status: <code>200: OK</code></li>
 <li>Body <code>(application/json)</code></li>
@@ -1068,72 +1000,6 @@ You must replace <code>token</code> with the one you get after authentication.
 <li>Status: <code>200: OK</code></li>
 <li>Body <code>(application/json)</code></li>
 </ul>
-<h2 id='list-documents-by-custom-pagination'>List Documents by custom pagination</h2>
-<blockquote>
-<p>Response:</p>
-</blockquote>
-<pre class="highlight javascript tab-javascript"><code><span class="p">[</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"test title"</span><span class="p">,</span>
-        <span class="s2">"document"</span><span class="p">:</span> <span class="s2">"Great Place to Learn"</span><span class="p">,</span>
-        <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"admin"</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"test title"</span><span class="p">,</span>
-        <span class="s2">"document"</span><span class="p">:</span> <span class="s2">"Andela is Fun"</span><span class="p">,</span>
-        <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"admin"</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"test title"</span><span class="p">,</span>
-        <span class="s2">"document"</span><span class="p">:</span> <span class="s2">"Great Place to Learn"</span><span class="p">,</span>
-        <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"admin"</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s2">"id"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-        <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"test title"</span><span class="p">,</span>
-        <span class="s2">"document"</span><span class="p">:</span> <span class="s2">"Great Place to Learn"</span><span class="p">,</span>
-        <span class="s2">"owner"</span><span class="p">:</span> <span class="s2">"admin"</span><span class="p">,</span>
-        <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-07-27"</span>
-    <span class="p">}</span>
-<span class="p">]</span>
-</code></pre><h3 id='request-7'>Request</h3>
-<ul>
-<li>Endpoint: GET: <code>/api/v1/documents/page/:pageNo</code></li>
-<li>Requires: Authorization</li>
-</ul>
-<h3 id='response-7'>Response</h3>
-<ul>
-<li>Status: <code>200: OK</code></li>
-<li>Body <code>(application/json)</code></li>
-</ul>
-
-<aside class="notice">
- <code>pageNo</code> must be in the following format <code>page-1</code>, <code>page-2</code> ....
-</aside>
-<h3 id='query-parameters-2'>Query Parameters</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>page-(n)</td>
-<td>10</td>
-<td>Sets the limit.</td>
-</tr>
-</tbody></table>
-
-<aside class="notice">
- Where <code>n</code> is 1,2,3,...n
-</aside>
 <h1 id='status'>Status</h1>
 <aside class="notice">.</aside>
 
@@ -1146,7 +1012,7 @@ You must replace <code>token</code> with the one you get after authentication.
 </tr>
 </thead><tbody>
 <tr>
-<td>200</td>
+<td>201</td>
 <td>Ok -- Good request</td>
 </tr>
 <tr>

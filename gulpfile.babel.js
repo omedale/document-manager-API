@@ -8,12 +8,6 @@ import exit from 'gulp-exit';
 import coveralls from 'gulp-coveralls';
 import yaml from 'gulp-yaml';
 
-gulp.task('yamltojson', () => {
-  gulp.src('./api/swagger/swagger.yaml')
-    .pipe(yaml({ schema: 'DEFAULT_SAFE_SCHEMA' }))
-    .pipe(gulp.dest('./public/'));
-});
-
 gulp.task('nodemon', () => {
   nodemon({
     script: 'build/server.js',
@@ -33,7 +27,6 @@ gulp.task('dev', () => {
 
 gulp.task('default', ['dev', 'nodemon'], () => {
   gulp.watch('server/**/*.js', ['dev']);
-  gulp.watch('./api/swagger/swagger.yaml', ['yamltojson']);
 });
 
 const jasmineNodeOpts = {
@@ -49,7 +42,7 @@ gulp.task('api-tests', () => {
 });
 
 gulp.task('coverage', (cb) => {
-  gulp.src('build/controllers/*.js')
+  gulp.src('build/**/*.js')
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', () => {

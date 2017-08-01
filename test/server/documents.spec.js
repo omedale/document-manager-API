@@ -86,7 +86,7 @@ describe('On Document controller when user is an admin', () => {
       },
       ]).then((err) => {
         if (!err) {
-          console.log('roles created');
+          //
         }
         done();
       });
@@ -103,8 +103,6 @@ describe('On Document controller when user is an admin', () => {
 
       token = jwt.sign({
         id: 1,
-        email: process.env.ADMINEMAIL,
-        name: process.env.NAME,
         role: process.env.ADMINROLE,
       }, process.env.JWT_SECRET, { expiresIn: '24h' });
       request(app)
@@ -134,9 +132,9 @@ describe('On Document controller when user is an admin', () => {
         .expect(200)
         .end((err, res) => {
           if (!err) {
-            console.log('tester saved');
+            //
           } else {
-            console.log('tester not save');
+            //
           }
           done();
         });
@@ -341,26 +339,6 @@ describe('On Document controller when user is an admin', () => {
           });
       });
   });
-  describe('route GET: /api/v1/documents/page/page-1', () => {
-    it('should return first 10 documents and respond with status 200',
-      (done) => {
-        request(app)
-          .get('/api/v1/documents/page/page-1')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (!err) {
-              assert((res.body).length >= 0, 'Documents found');
-            } else {
-              const error = new Error('Cannot find document');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
   describe('route DELETE /api/v1/documents/2,', () => {
     it('should delete document where id = 2',
       (done) => {
@@ -445,76 +423,36 @@ describe('On Document controller when user is an admin', () => {
 
 
 describe('In Document controller when user is not an admin', () => {
-  beforeEach((done) => {
-    request(app)
-      .post('/api/v1/users/auth/login')
-      .send({
-        password: 'ayo',
-        email: 'fellow@gmail.com'
-      })
-      .expect(200)
-      .end((err, res) => {
-        if (!err) {
-          token = res.body.token;
-          userID = res.body.user.userId;
-          userName = res.body.user.name;
-          done();
-        }
-      });
-    Document.create({
-      title: 'fellow',
-      document: 'nothing',
-      access: 'private',
-      owner: 'fellow',
-      userId: 2
-    }).then((err) => {
-      if (!err) {
-        console.log('Docuemnt created');
-      }
-      done();
-    });
-  });
-  describe('route GET: /api/v1/documents/page/page-hg', () => {
-    it('should return no documents found when padeId = page-hg',
-      (done) => {
-        request(app)
-          .get('/api/v1/documents/page/page-hg')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(400)
-          .end((err, res) => {
-            if (!err) {
-              assert(res.body.message === 'Invalid request', 'Invalid request');
-            } else {
-              const error = new Error(err);
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
-  describe('route GET: /api/v1/documents/page/page,', () => {
-    it('should return no documents found when padeId = page, role=fellow',
-      (done) => {
-        request(app)
-          .get('/api/v1/documents/page/page')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(400)
-          .end((err, res) => {
-            if (!err) {
-              assert(res.body.message === 'No Page number', 'No Page number');
-            } else {
-              const error = new Error(err);
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
   describe('route GET: /api/v1/documents/1', () => {
+    beforeEach((done) => {
+      request(app)
+        .post('/api/v1/users/auth/login')
+        .send({
+          password: 'ayo',
+          email: 'fellow@gmail.com'
+        })
+        .expect(200)
+        .end((err, res) => {
+          if (!err) {
+            token = res.body.token;
+            userID = res.body.user.userId;
+            userName = res.body.user.name;
+            done();
+          }
+        });
+      Document.create({
+        title: 'fellow',
+        document: 'nothing',
+        access: 'private',
+        owner: 'fellow',
+        userId: 2
+      }).then((err) => {
+        if (!err) {
+          //
+        }
+        done();
+      });
+    });
     it('should get document where id = 1, role = fellow',
       (done) => {
         request(app)
@@ -528,47 +466,6 @@ describe('In Document controller when user is not an admin', () => {
               assert(res.body.document.id === 1, 'Document is found');
             } else {
               const error = new Error('Unable to find document');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
-  describe('route GET /api/v1/documents/page/page-1', () => {
-    it('should return first 10 documents and respond with status 200',
-      (done) => {
-        request(app)
-          .get('/api/v1/documents/page/page-1')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(200)
-          .end((err, res) => {
-            if (!err) {
-              assert((res.body).length >= 0, 'Documents found');
-            } else {
-              const error = new Error('Cannot find document');
-              assert.ifError(error);
-            }
-            done();
-          });
-      });
-  });
-  describe('route GET /api/v1/documents/page/page-2', () => {
-    it('should return no documents found when padeId = page-2',
-      (done) => {
-        request(app)
-          .get('/api/v1/documents/page/page-2')
-          .set('Authorization', `${token}`)
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/)
-          .expect(404)
-          .end((err, res) => {
-            if (!err) {
-              assert(res.body.message ===
-                'Document Not Found', 'Document Not Found');
-            } else {
-              const error = new Error(err);
               assert.ifError(error);
             }
             done();

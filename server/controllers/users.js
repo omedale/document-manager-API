@@ -1,3 +1,9 @@
+import {
+  notFound,
+  validationError,
+  checkErrors,
+  documentPaginationHelper,
+  userPaginationHelper } from './helper';
 
 const User = require('../models').User;
 const Document = require('../models').Document;
@@ -12,25 +18,19 @@ export default {
    * @return {object}  returns response status and json data
    */
   signUp: (req, res) => {
-    req.checkBody('email', 'Invalid email').isEmail();
-    req.checkBody('email', 'Email Required').notEmpty();
-    req.checkBody('name', 'Name Required').notEmpty();
-    req.checkBody('password', 'Password required').notEmpty();
-    const errors = req.validationErrors();
+    const errorMessage = 'createuser';
+    const errors = checkErrors(req, errorMessage);
     if (errors) {
-      return res.status(400).send({
-        message:
-        'Invalid Input, please provide appropriate input for all field',
-        errors
-      });
+      validationError(res, errors);
+      return;
     }
     User.find({
       where: {
         email: req.body.email
       }
     })
-      .then((response) => {
-        if (!response) {
+      .then((userFound) => {
+        if (!userFound) {
           const user = new User();
           return User
             .create({
@@ -43,9 +43,8 @@ export default {
             .then((registeredUser) => {
               req.logIn(registeredUser, () => {
                 const token = user
-                  .generateJWT(registeredUser.id,
-                  registeredUser.email,
-                  registeredUser.name,
+                  .generateJWT(
+                    registeredUser.id,
                   registeredUser.role);
                 return res.status(200)
                   .send({
@@ -68,7 +67,6 @@ export default {
       })
       .catch(error => res.status(400).send(error));
   },
-
   /**
    * signIn: Enables users to login to their accounts
    * @function signIn
@@ -77,49 +75,45 @@ export default {
    * @return {object}  returns response status and json data
    */
   signIn: (req, res) => {
-    req.checkBody('email', 'Invalid email').isEmail();
-    req.checkBody('email', 'Email is Required').notEmpty();
-    req.checkBody('password', 'Password is required').notEmpty();
-    const errors = req.validationErrors();
+    const errorMessage = 'login';
+    const errors = checkErrors(req, errorMessage);
     if (errors) {
-      return res.status(400).send({
-        message:
-        'Invalid Input, please provide appropriate input for all field',
-        errors
-      });
+      validationError(res, errors);
+      return;
     }
     User.find({
       where: {
         email: req.body.email
       }
     })
-      .then((response) => {
+      .then((userFound) => {
         const user = new User();
-        if (response === null) {
+        if (userFound === null) {
           return res.status(400).send({
             message: 'Not an existing user, Please sign up'
           });
         } else {
+          const userDetail = userFound.dataValues;
           if (user.validatePassword(req.body.password,
-            response.dataValues.password) === false) {
+            userDetail.password) === false) {
             return res.status(400).send({
               message: 'Invalid Password'
             });
           }
         }
-        req.logIn(response.dataValues, () => {
-          const token = user.generateJWT(response.dataValues.id,
-            response.dataValues.email,
-            response.dataValues.name,
-            response.dataValues.role);
+        const userDetail = userFound.dataValues;
+        req.logIn(userDetail, () => {
+          const token = user.generateJWT(
+            userDetail.id,
+            userDetail.role);
           // return the token as JSON
           return res.status(200).send({
             message: 'Login Successful',
             token,
             user: {
-              id: response.dataValues.id,
-              email: response.dataValues.email,
-              name: response.dataValues.name
+              id: userDetail.id,
+              email: userDetail.email,
+              name: userDetail.name
             }
           });
         });
@@ -142,11 +136,11 @@ export default {
       }
       Role
         .findAll()
-        .then((response) => {
-          if (response !== null) {
+        .then((roles) => {
+          if (roles !== null) {
             let roleExist = false;
-            response.forEach((array) => {
-              if (array.role === req.body.role) {
+            roles.forEach((role) => {
+              if (role.role === req.body.role) {
                 roleExist = true;
               }
             });
@@ -200,22 +194,19 @@ export default {
       });
     }
     if (req.body.email) {
-      req.checkBody('email', 'Invalid email').isEmail();
-      req.checkBody('email', 'Email required').notEmpty();
-      const errors = req.validationErrors();
+      const errorMessage = 'updateuser';
+      const errors = checkErrors(req, errorMessage);
       if (errors) {
-        return res.status(400).send({
-          message:
-          'Invalid Input, please provide appropriate input for all field'
-        });
+        validationError(res, errors);
+        return;
       }
       return User.find({
         where: {
           email: req.body.email
         }
       })
-        .then((response) => {
-          if (response) {
+        .then((userFound) => {
+          if (userFound) {
             return res.status(400).send({
               message: 'Email Already Exist'
             });
@@ -368,8 +359,8 @@ export default {
           userId: req.params.id
         }
       })
-        .then((allDocs) => {
-          const totalCount = allDocs.length;
+        .then((allDocuments) => {
+          const totalCount = allDocuments.length;
           const offset = req.query.offset || 0;
           const limit = req.query.limit || 10;
           return Document
@@ -388,18 +379,9 @@ export default {
                   message: 'Document Not Found',
                 });
               }
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                documents,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: documents.length,
-                  totalCount,
-                }
-              });
+              documentPaginationHelper(
+                limit, offset,
+                totalCount, documents, res);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -455,18 +437,9 @@ export default {
             attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt']
           })
             .then((userslist) => {
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                users: userslist,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: userslist.length,
-                  totalCount,
-                }
-              });
+              userPaginationHelper(
+                limit, offset,
+                totalCount, userslist, res);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -475,53 +448,6 @@ export default {
         message: 'Access Denied'
       });
     }
-  },
-  /**
-   * getUserPage: Enables users to get list of registered users by page
-   * @function getUserPage
-   * @param {object} req request
-   * @param {object} res response
-   * @return {object}  returns response status and json data
-   */
-  getUserByPage: (req, res) => {
-    if (req.decoded.role !== 'admin') {
-      return res.status(400).send({
-        message: 'Access Denied'
-      });
-    }
-    const newPageInfo = req.params.pageNo.split('-').map((val) => {
-      return val;
-    });
-    if (!newPageInfo[1]) {
-      return res.status(400).send({
-        message: 'No Page number'
-      });
-    }
-    if (!Number.isInteger(Number(newPageInfo[1]))) {
-      return res.status(400).send({
-        message: 'Invalid request'
-      });
-    }
-    const page = Number(newPageInfo[1]);
-    let offset = 0;
-    const limit = 10;
-    if (page !== 1) {
-      offset = (page - 1) * 10;
-    }
-    return User.findAll({
-      offset,
-      limit,
-      attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt']
-    })
-      .then((user) => {
-        if (user.length === 0) {
-          return res.status(404).send({
-            message: 'No User Found',
-          });
-        }
-        return res.status(200).send(user);
-      })
-      .catch(error => res.status(400).send(error));
   },
   /**
    * listUsers: Enables users to get list of registered users
@@ -547,8 +473,8 @@ export default {
       }
     }
     User.findAll()
-      .then((response) => {
-        const totalCount = response.length;
+      .then((allUsers) => {
+        const totalCount = allUsers.length;
         const offset = req.query.offset || 0;
         const limit = req.query.limit || 10;
         return User.findAll({
@@ -558,18 +484,9 @@ export default {
         })
           .then((userslist) => {
             if (userslist.length !== 0) {
-              let pageCount = Math.round(totalCount / limit);
-              pageCount = (pageCount < 1 && totalCount > 0) ? 1 : pageCount;
-              const page = Math.round(offset / limit) + 1;
-              return res.status(200).send({
-                users: userslist,
-                metaData: {
-                  page,
-                  pageCount,
-                  count: userslist.length,
-                  totalCount,
-                }
-              });
+              userPaginationHelper(
+                limit, offset,
+                totalCount, userslist, res);
             } else {
               return res.status(404).send({
                 message: 'No User Found',
