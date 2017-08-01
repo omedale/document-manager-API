@@ -19,7 +19,7 @@ DocMe is full stack document management system which uses roles and priviledges 
 
 # Endpoints
 
-$ Please click **[here](https://docme.herokuapp.com)** to view all available endpoints
+Please click **[here](https://docme.herokuapp.com)** to view all available endpoints
 
 # System Dependencies
 
