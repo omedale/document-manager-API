@@ -13,6 +13,22 @@ module.exports.validationError = (res, errors) => {
   });
 };
 /**
+   * verifyLimitAndOffset: Checks if the offset and limit are integer
+   * @function verifyLimitAndOffset
+   * @param {integer} limit errors
+   * @param {integer} offset errors
+   * @param {object} res response
+   * @return {object} - returns response status and json data
+   */
+module.exports.verifyLimitAndOffset = (limit, offset, res) => {
+  if (!Number.isInteger(Number(limit))
+    || !Number.isInteger(Number(offset))) {
+    return res.status(400).send({
+      message: 'Please Set Offset and Limit as Integer'
+    });
+  }
+};
+/**
    * checkErrors: Checks form errors
    * @function checkErrors
    * @param {object} req request
