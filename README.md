@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/omedale/DOCME-CP2.svg?branch=chore%2Fthird-feedback-push)](https://travis-ci.org/omedale/DOCME-CP2)
-[![Coverage Status](https://coveralls.io/repos/github/omedale/DOCME-CP2/badge.svg?branch=chore%2Fthird-feedback-push)](https://coveralls.io/github/omedale/DOCME-CP2?branch=chore%2Fthird-feedback-push)
+[![Coverage Status](https://coveralls.io/repos/github/omedale/DOCME-CP2/badge.svg?branch=master)](https://coveralls.io/github/omedale/DOCME-CP2?branch=chore%2Fthird-feedback-push)
 [![Code Climate](https://codeclimate.com/github/omedale/DOCME-CP2/badges/gpa.svg)](https://codeclimate.com/github/omedale/DOCME-CP2)
 
 # Introduction
