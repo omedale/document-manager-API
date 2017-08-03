@@ -3,7 +3,9 @@ import {
   validationError,
   checkErrors,
   documentPaginationHelper,
-  userPaginationHelper } from './helper';
+  userPaginationHelper,
+  verifyLimitAndOffset
+} from './helper';
 
 const User = require('../models').User;
 const Document = require('../models').Document;
@@ -44,7 +46,7 @@ export default {
               req.logIn(registeredUser, () => {
                 const token = user
                   .generateJWT(
-                    registeredUser.id,
+                  registeredUser.id,
                   registeredUser.role);
                 return res.status(200)
                   .send({
@@ -340,12 +342,8 @@ export default {
    */
   findUserDocument: (req, res) => {
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit))
-        || !Number.isInteger(Number(req.query.offset))) {
-        return res.status(400).send({
-          message: 'Please Set Offset and Limit as Integer'
-        });
-      }
+      verifyLimitAndOffset(req.query.limit, req.query.offset, res);
+      return;
     }
     if (req.decoded.id === Number(req.params.id) ||
       req.decoded.role === 'admin') {
@@ -404,19 +402,24 @@ export default {
         message: 'No key word supplied'
       });
     }
+    const query = req.query.q.trim();
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit))
-        || !Number.isInteger(Number(req.query.offset))) {
-        return res.status(400).send({
-          message: 'Please Set Offset and Limit as Integer'
-        });
-      }
+      verifyLimitAndOffset(req.query.limit, req.query.offset, res);
+      return;
     }
     if (req.decoded.role === 'admin') {
       User
         .findAll({
           where: {
-            name: (req.query.q).toLowerCase()
+            $or: [{
+              name: {
+                $iLike: `%${query.toLowerCase()}%`
+              }
+            }, {
+              email: {
+                $iLike: `%${query.toLowerCase()}%`
+              }
+            }]
           },
         })
         .then((user) => {
@@ -432,7 +435,15 @@ export default {
             offset,
             limit,
             where: {
-              name: (req.query.q).toLowerCase()
+              $or: [{
+                name: {
+                  $iLike: `%${query.toLowerCase()}%`
+                }
+              }, {
+                email: {
+                  $iLike: `%${query.toLowerCase()}%`
+                }
+              }]
             },
             attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt']
           })
@@ -465,12 +476,8 @@ export default {
       });
     }
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit))
-        || !Number.isInteger(Number(req.query.offset))) {
-        return res.status(400).send({
-          message: 'Please Set Offset and Limit as Integer'
-        });
-      }
+      verifyLimitAndOffset(req.query.limit, req.query.offset, res);
+      return;
     }
     User.findAll()
       .then((allUsers) => {

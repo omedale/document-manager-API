@@ -1,7 +1,8 @@
 import {
   notFound,
   validationError,
-  checkErrors, documentPaginationHelper
+  checkErrors, documentPaginationHelper,
+  verifyLimitAndOffset
 } from './helper';
 
 const Document = require('../models').Document;
@@ -117,19 +118,15 @@ export default {
    */
   listDocuments: (req, res) => {
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit))
-        || !Number.isInteger(Number(req.query.offset))) {
-        return res.status(400).send({
-          message: 'Please Set Offset and Limit as Integer'
-        });
-      }
+      verifyLimitAndOffset(req.query.limit, req.query.offset, res);
+      return;
     }
     const offset = req.query.offset || 0;
     const limit = req.query.limit || 10;
     if (req.decoded.role === 'admin') {
       Document.findAll()
-        .then((allDocs) => {
-          const totalCount = allDocs.length;
+        .then((allDocuments) => {
+          const totalCount = allDocuments.length;
           return Document
             .findAll({
               offset,
@@ -151,8 +148,8 @@ export default {
       Document.findAll({
         where: { access: [req.decoded.role, 'public'] }
       })
-        .then((allDocs) => {
-          const totalCount = allDocs.length;
+        .then((allDocuments) => {
+          const totalCount = allDocuments.length;
           return Document
             .findAll({
               offset: req.query.offset || 0,
@@ -278,7 +275,7 @@ export default {
           return document
             .destroy()
             .then(() => res.status(200)
-              .send({ message: 'Document deleted successfully.' }))
+            .send({ message: 'Document deleted successfully.' }))
             .catch(error => res.status(400).send(error));
         })
         .catch(error => res.status(400).send(error));
@@ -323,13 +320,10 @@ export default {
         message: 'No key word supplied'
       });
     }
+    const query = req.query.q.trim();
     if (req.query.limit || req.query.offset) {
-      if (!Number.isInteger(Number(req.query.limit))
-        || !Number.isInteger(Number(req.query.offset))) {
-        return res.status(400).send({
-          message: 'Please Set Offset and Limit as Integer'
-        });
-      }
+      verifyLimitAndOffset(req.query.limit, req.query.offset, res);
+      return;
     }
     const offset = req.query.offset || 0;
     const limit = req.query.limit || 10;
@@ -337,12 +331,24 @@ export default {
       Document
         .findAll({
           where: {
-            title: (req.query.q).toLowerCase()
+            $and: [
+              {
+                title: {
+                  $iLike: `%${query.toLowerCase()}%`
+                }
+              },
+              {
+                access: [req.decoded.role, 'private', 'public']
+              },
+              {
+                userId: req.decoded.id
+              }
+            ]
           }
         })
-        .then((allDocs) => {
-          const totalCount = allDocs.length;
-          if (allDocs.length === 0) {
+        .then((allDocuments) => {
+          const totalCount = allDocuments.length;
+          if (allDocuments.length === 0) {
             notFound(res);
             return;
           }
@@ -351,7 +357,19 @@ export default {
               offset: req.query.offset || 0,
               limit: req.query.limit || 10,
               where: {
-                title: (req.query.q).toLowerCase()
+                $and: [
+                  {
+                    title: {
+                      $iLike: `%${query.toLowerCase()}%`
+                    }
+                  },
+                  {
+                    access: [req.decoded.role, 'private', 'public']
+                  },
+                  {
+                    userId: req.decoded.id
+                  }
+                ]
               },
               attributes:
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
@@ -366,14 +384,24 @@ export default {
       Document
         .findAll({
           where: {
-            userId: req.decoded.id,
-            title: (req.query.q).toLowerCase(),
-            access: [req.decoded.role, 'private', 'public'],
+            $and: [
+              {
+                title: {
+                  $iLike: `%${query.toLowerCase()}%`
+                }
+              },
+              {
+                access: [req.decoded.role, 'private', 'public']
+              },
+              {
+                userId: req.decoded.id
+              }
+            ]
           },
         })
-        .then((allDocs) => {
-          const totalCount = allDocs.length;
-          if (allDocs.length === 0) {
+        .then((allDocuments) => {
+          const totalCount = allDocuments.length;
+          if (allDocuments.length === 0) {
             notFound(res);
             return;
           }
@@ -382,9 +410,19 @@ export default {
               offset: req.query.offset || 0,
               limit: req.query.limit || 10,
               where: {
-                userId: req.decoded.id,
-                title: (req.query.q).toLowerCase(),
-                access: [req.decoded.role, 'private', 'public'],
+                $and: [
+                  {
+                    title: {
+                      $iLike: `%${query.toLowerCase()}%`
+                    }
+                  },
+                  {
+                    access: [req.decoded.role, 'private', 'public']
+                  },
+                  {
+                    userId: req.decoded.id
+                  }
+                ]
               },
               attributes:
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
