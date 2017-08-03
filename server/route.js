@@ -2,7 +2,6 @@ import users from './controllers/users';
 import documents from './controllers/documents';
 
 module.exports = (app, passport) => {
-
   app.use(passport.initialize());
 // Users routes
   app.post('/api/v1/users/auth/register', users.signUp);
