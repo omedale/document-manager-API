@@ -339,9 +339,6 @@ export default {
               },
               {
                 access: [req.decoded.role, 'private', 'public']
-              },
-              {
-                userId: req.decoded.id
               }
             ]
           }
@@ -365,9 +362,6 @@ export default {
                   },
                   {
                     access: [req.decoded.role, 'private', 'public']
-                  },
-                  {
-                    userId: req.decoded.id
                   }
                 ]
               },
@@ -391,10 +385,7 @@ export default {
                 }
               },
               {
-                access: [req.decoded.role, 'private', 'public']
-              },
-              {
-                userId: req.decoded.id
+                access: [req.decoded.role, 'public']
               }
             ]
           },
@@ -417,10 +408,7 @@ export default {
                     }
                   },
                   {
-                    access: [req.decoded.role, 'private', 'public']
-                  },
-                  {
-                    userId: req.decoded.id
+                    access: [req.decoded.role, 'public']
                   }
                 ]
               },

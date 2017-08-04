@@ -672,7 +672,7 @@ describe('In Document controller when user is not an admin', () => {
     it('should not get document where title=test title, role = fellow',
       (done) => {
         request(app)
-          .get('/api/v1/search/documents/?q=test title')
+          .get('/api/v1/search/documents/?q=kkkkkkkk')
           .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
@@ -715,7 +715,7 @@ describe('In Document controller when user is not an admin', () => {
     it('should search for document where title=test title',
       (done) => {
         request(app)
-          .get('/api/v1/search/documents/?q=fellow')
+          .get('/api/v1/search/documents/?q=test title')
           .set('Authorization', `${token}`)
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
