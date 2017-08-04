@@ -15,8 +15,8 @@ module.exports.validationError = (res, errors) => {
 /**
    * verifyLimitAndOffset: Checks if the offset and limit are integer
    * @function verifyLimitAndOffset
-   * @param {integer} limit errors
-   * @param {integer} offset errors
+   * @param {integer} limit limit
+   * @param {integer} offset offset
    * @param {object} res response
    * @return {object} - returns response status and json data
    */
