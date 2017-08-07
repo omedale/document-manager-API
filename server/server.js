@@ -15,16 +15,18 @@ app.set('port', port);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
+app.use(express.static(path.resolve(`${__dirname}./../public`)));
 
-// verifies all routes that starts with /api
 app.use('/api', auth.verifyToken);
 
-// reqires route file
 require('./../build/route')(app, passport);
 
-app.use(express.static(path.resolve(__dirname, './../public')));
-app.get('*', (request, response) => {
-  response.sendFile(path.resolve(__dirname, './../public', 'index.html'));
+app.get('/', (req, res) => {
+  res.status(200).render('index.html');
+});
+
+app.get('*', (req, res) => {
+  res.redirect(302, '/');
 });
 
 const server = http.createServer(app);
