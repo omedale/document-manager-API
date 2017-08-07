@@ -19,16 +19,20 @@ DocMe is full stack document management system which uses roles and priviledges 
 
 # Endpoints
 
-Please click **[here](https://docme.herokuapp.com)** to view all available endpoints
+Please click **[here](https://docme.herokuapp.com)** to view endpoints documentaion
 
-# System Dependencies
+# System Dependecies
+
+What you need to run this app:
+
+* node and npm (brew install node)
+*  **[pgAdmin](https://www.npmjs.com/package/gulp)** - Open Source administration and development platform for PostgreSQL
+
+# Technology
 
 *  **[Chai](https://www.npmjs.com/package/chai)** - Chai is used together with jasmine to test this application
 *  **[Gulp](https://www.npmjs.com/package/gulp)** - Was used for task runner
-*  **[Gulp-bable](https://www.npmjs.com/package/gulp-babel)** - Transpile codes in ES6 to ES5
-*  **[gulp-istanbul](https://www.npmjs.com/package/gulp-istanbul)** - to generate coverage file
-*  **[Gulp-Jasmine](https://www.npmjs.com/package/gulp-jasmine)** - It enables us to test all the endpoints and controllers
-*  **[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)** - It was used user authriaztion and authentication
+*  **[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)** - It was used for user authriaztion and authentication
 *  **[sequelize](https://www.npmjs.com/package/sequelize)** - Used for ORMs database
 *  **[babel-cli](https://www.npmjs.com/package/babel-cli)** - It enables the app scripts to be tested with babel from the command line
 *  The following depencies are required by the app during developmment
@@ -80,7 +84,7 @@ No, its free for everyone.
 
 ## How do I connect to the APIs?
 
-You need to request a resource from one of the endpoints using HTTPS. Generally, reading any data is done through a request with GET method. If you want our server to create, update or delete a given resource, POST or PUT methods are required.
+You need to request a resource from one of the endpoints using HTTPS. Generally, reading any data is done through a request with GET method. If you want our server to create, update or delete a given resource, POST or PUT methods are required. Please click **[here](https://docme.herokuapp.com)** for more information
 
 ## What return formats do you support?
 
@@ -91,7 +95,7 @@ DocMe APIs currently returns data in ```JSON``` format.
 All endpints except login and signup are protected. Users requre ```token``` to access all protected endpoints. ```Token``` is sent to client after successful signup and login. Token must be set as authorization in the ```http request header``` to access the protected routes
 
 # Limitations
-The application uses shared database package, this may lead to slow in response at some point. It also has query limit per day, once exceeded client won't get any response till the next day.
+The application uses shared database (Elephantsql), this may lead to slow in response at some point.
 
 # License
 

@@ -1,9 +1,14 @@
 import {
+  documentPaginationHelper,
+  userPaginationHelper
+} from './../util/pagination';
+
+import {
   notFound,
   validationError,
-  checkErrors, documentPaginationHelper,
+  checkErrors,
   verifyLimitAndOffset
-} from './helper';
+} from './../util/validations';
 
 const Document = require('../models').Document;
 const Role = require('../models').Role;
