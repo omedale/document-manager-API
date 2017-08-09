@@ -1,11 +1,11 @@
 
 /**
-   * pagination: This returns document with pagination
+   * pagination: This returns documents and users with pagination
    * @function pagination
    * @param {integer} limit limit
    * @param {integer} offset offset
    * @param {integer} totalCount totalCount
-   * @param {integer} item items could be list of docuemnts or users
+   * @param {object} item items could be list of docuemnts or users
    * @param {object} res response
    *  @param {string} message message
    * @return {object} - returns response status and json data
