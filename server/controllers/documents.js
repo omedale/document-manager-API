@@ -143,9 +143,12 @@ export default {
                 notFound(res);
                 return;
               }
-              const message = 'document';
-              pagination(
-                limit, offset, totalCount, documents, res, message);
+              const metaData = pagination(
+                limit, offset, totalCount, documents);
+              return res.status(200).send({
+                documents,
+                metaData
+              });
             });
         })
         .catch(error => res.status(400).send(error));
@@ -169,9 +172,12 @@ export default {
                   message: 'No document Found',
                 });
               }
-              const message = 'document';
-              pagination(
-                limit, offset, totalCount, documents, res, message);
+              const metaData = pagination(
+                limit, offset, totalCount, documents);
+              return res.status(200).send({
+                documents,
+                metaData
+              });
             });
         })
         .catch(error => res.status(400).send(error));
@@ -281,7 +287,7 @@ export default {
           return document
             .destroy()
             .then(() => res.status(200)
-            .send({ message: 'Document deleted successfully.' }))
+              .send({ message: 'Document deleted successfully.' }))
             .catch(error => res.status(400).send(error));
         })
         .catch(error => res.status(400).send(error));
@@ -375,9 +381,12 @@ export default {
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
-              const message = 'document';
-              pagination(
-                limit, offset, totalCount, documents, res, message);
+              const metaData = pagination(
+                limit, offset, totalCount, documents);
+              return res.status(200).send({
+                documents,
+                metaData
+              });
             });
         })
         .catch(error => res.status(400).send(error));
@@ -423,9 +432,12 @@ export default {
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
-              const message = 'document';
-              pagination(
-                limit, offset, totalCount, documents, res, message);
+              const metaData = pagination(
+                limit, offset, totalCount, documents);
+              return res.status(200).send({
+                documents,
+                metaData
+              });
             });
         })
         .catch(error => res.status(400).send(error));

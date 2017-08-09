@@ -709,7 +709,7 @@ describe('In User controller when user is not an admin ', () => {
   });
 
   describe('GET api/v1/users/3  ', () => {
-    it('hould not get user where id= 3 and user = fellow ',
+    it('should not get user where id= 3 and user = fellow ',
       (done) => {
         request(app)
           .get('/api/v1/users/3')
