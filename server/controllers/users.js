@@ -1,6 +1,5 @@
 import {
-  documentPaginationHelper,
-  userPaginationHelper
+  pagination
 } from './../util/pagination';
 
 import {
@@ -380,9 +379,10 @@ export default {
                   message: 'Document Not Found',
                 });
               }
-              documentPaginationHelper(
+              const message = 'document';
+              pagination(
                 limit, offset,
-                totalCount, documents, res);
+                totalCount, documents, res, message);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -451,9 +451,10 @@ export default {
             attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt']
           })
             .then((userslist) => {
-              userPaginationHelper(
+              const message = 'user';
+              pagination(
                 limit, offset,
-                totalCount, userslist, res);
+                totalCount, userslist, res, message);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -494,9 +495,10 @@ export default {
         })
           .then((userslist) => {
             if (userslist.length !== 0) {
-              userPaginationHelper(
+              const message = 'user';
+              pagination(
                 limit, offset,
-                totalCount, userslist, res);
+                totalCount, userslist, res, message);
             } else {
               return res.status(404).send({
                 message: 'No User Found',

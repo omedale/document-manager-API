@@ -24,18 +24,18 @@ Please click **[here](https://docme.herokuapp.com)** to view endpoints documenta
 # System Dependecies
 
 What you need to run this app:
-
-* node and npm (brew install node)
-*  **[pgAdmin](https://www.npmjs.com/package/gulp)** - Open Source administration and development platform for PostgreSQL
+*  **[Node](https://nodejs.org/en/)** was used to run JavaScript code on the server. Please click  **[here](https://nodejs.org/en/)** for installation guide
+*  **[pgAdmin](https://https://www.pgadmin.org/)** - Open Source administration and development platform for PostgreSQL. Please click  **[here](https://https://www.pgadmin.org/)** for installation guide
+*  **[Postman](www.getpostman.com)** A Chrome app that you can use to test our API locally. Please click  **[here](www.getpostman.com)** for installation guide
 
 # Technology
 
 *  **[Chai](https://www.npmjs.com/package/chai)** - Chai is used together with jasmine to test this application
+*  **[Express](https://expressjs.com/)** - Express is Node.js web application framework
 *  **[Gulp](https://www.npmjs.com/package/gulp)** - Was used for task runner
 *  **[jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)** - It was used for user authriaztion and authentication
 *  **[sequelize](https://www.npmjs.com/package/sequelize)** - Used for ORMs database
 *  **[babel-cli](https://www.npmjs.com/package/babel-cli)** - It enables the app scripts to be tested with babel from the command line
-*  The following depencies are required by the app during developmment
   *  **[eslint](https://www.npmjs.com/package/eslint)** - This is a javascript syntax highlighter used to highligh syntax error during the development of this app
   * **[gulp-nodemon](https://www.npmjs.com/package/gulp-nodemon)** - to watch the files in the directory for any files change
   * **[supertest](https://www.npmjs.com/package/supertest)** - to run endpoint test
@@ -48,7 +48,6 @@ What you need to run this app:
 *  **[bcrypt](https://www.npmjs.com/package/bcrypt)** - Used to hash user's password
 *  **[coveralls](https://www.npmjs.com/package/coveralls)** - Display test coverage
 *  **[dotenv](https://www.npmjs.com/package/dotenv)** - To protect secret ID
-*  **[Express](https://expressjs.com/)** - Express is Node.js web application framework
 * **[path](https://www.npmjs.com/package/nodemon)** - to get paths during production
 
 
