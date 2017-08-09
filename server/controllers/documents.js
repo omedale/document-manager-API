@@ -1,6 +1,5 @@
 import {
-  documentPaginationHelper,
-  userPaginationHelper
+  pagination
 } from './../util/pagination';
 
 import {
@@ -144,8 +143,9 @@ export default {
                 notFound(res);
                 return;
               }
-              documentPaginationHelper(
-                limit, offset, totalCount, documents, res);
+              const message = 'document';
+              pagination(
+                limit, offset, totalCount, documents, res, message);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -169,8 +169,9 @@ export default {
                   message: 'No document Found',
                 });
               }
-              documentPaginationHelper(
-                limit, offset, totalCount, documents, res);
+              const message = 'document';
+              pagination(
+                limit, offset, totalCount, documents, res, message);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -374,8 +375,9 @@ export default {
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
-              documentPaginationHelper(
-                limit, offset, totalCount, documents, res);
+              const message = 'document';
+              pagination(
+                limit, offset, totalCount, documents, res, message);
             });
         })
         .catch(error => res.status(400).send(error));
@@ -421,8 +423,9 @@ export default {
               ['id', 'title', 'access', 'document', 'owner', 'createdAt']
             })
             .then((documents) => {
-              documentPaginationHelper(
-                limit, offset, totalCount, documents, res);
+              const message = 'document';
+              pagination(
+                limit, offset, totalCount, documents, res, message);
             });
         })
         .catch(error => res.status(400).send(error));
