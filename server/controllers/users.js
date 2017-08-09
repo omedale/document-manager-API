@@ -379,10 +379,13 @@ export default {
                   message: 'Document Not Found',
                 });
               }
-              const message = 'document';
-              pagination(
+              const metaData = pagination(
                 limit, offset,
-                totalCount, documents, res, message);
+                totalCount, documents);
+              return res.status(200).send({
+                documents,
+                metaData
+              });
             });
         })
         .catch(error => res.status(400).send(error));
@@ -451,10 +454,13 @@ export default {
             attributes: ['id', 'name', 'role', 'email', 'phone', 'createdAt']
           })
             .then((userslist) => {
-              const message = 'user';
-              pagination(
+              const metaData = pagination(
                 limit, offset,
-                totalCount, userslist, res, message);
+                totalCount, userslist);
+              return res.status(200).send({
+                users: userslist,
+                metaData
+              });
             });
         })
         .catch(error => res.status(400).send(error));
@@ -495,10 +501,13 @@ export default {
         })
           .then((userslist) => {
             if (userslist.length !== 0) {
-              const message = 'user';
-              pagination(
+              const metaData = pagination(
                 limit, offset,
-                totalCount, userslist, res, message);
+                totalCount, userslist);
+              return res.status(200).send({
+                users: userslist,
+                metaData
+              });
             } else {
               return res.status(404).send({
                 message: 'No User Found',
